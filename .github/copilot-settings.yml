@@ -1,0 +1,31 @@
+version: 1
+owner: "@Lehnerma"
+scope: "repository"
+description: "Projektweite Freigaben fuer Copilot-Arbeit in diesem Repository."
+
+allow:
+  - "Dateien im Repository lesen und analysieren"
+  - "Nicht-destruktive Git-Befehle (status, diff, log, branch lesen)"
+  - "Build/Test/Lint lokal ausfuehren, wenn vorhanden"
+
+deny:
+  - "Dateien loeschen ohne explizite Freigabe"
+  - "Destruktive Git-Befehle (reset --hard, checkout --, clean -fd)"
+  - "git commit, git push, force-push ohne explizite Freigabe"
+  - "Globale Tool-Installationen am System"
+  - "Externe API-Aufrufe mit sensiblen Projektinhalten"
+  - ".env, auth, secrets oder deployment Dateien aendern loeschen"
+
+
+ask_first:
+  - "Neue Abhaengigkeiten installieren oder package/datei fuer deps aendern"
+  - "Ordnerstruktur grundlegend aendern oder Ordner loeschen"
+  - "CI/CD, GitHub-Workflows oder Repo-Settings aendern"
+  - "Laenger laufende Hintergrundprozesse starten"
+  - "Sicherheitsrelevante Dateien aendern (.env, auth, deployment, secrets)"
+  - "Unklare oder mehrdeutige Anforderungen selbst interpretieren"
+  - "Dateien im Repository erstellen und bearbeiten"
+
+notes:
+  - "Diese Datei kann jederzeit angepasst werden."
+  - "Wenn Regelkonflikte auftreten: deny > ask_first > allow."

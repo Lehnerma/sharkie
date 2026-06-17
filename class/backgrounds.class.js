@@ -1,9 +1,9 @@
-class Background extends DrawableObjects{
-    width;
-    height;
+class BackgroundObject extends DrawableObjects{
 
-    constructor(){
+    constructor(width, height){
         super();
+        this.width = width;
+        this.height = height
     }
     
 }

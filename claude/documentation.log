@@ -1,0 +1,14 @@
+## Sharkie Game - Documentation Log
+
+Store questions and concise answers here for future reference.
+
+---
+
+### Format:
+**Q:** [Your question]
+**A:** [Short, concise answer]
+
+---
+
+**Q:** Wie nehme ich in Background.class.js die width/height vom canvas, oder muss das hardcoded sein?
+**A:** Nicht hardcoden! Übergib sie über den constructor. Background constructor sollte width und height als Parameter akzeptieren und speichern. Dann übergibst du beim Erstellen in level1.js: `new Background(canvas.width, canvas.height)`
