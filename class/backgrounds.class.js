@@ -5,4 +5,5 @@ class Background extends DrawableObjects{
     constructor(){
         super();
     }
+    
 }

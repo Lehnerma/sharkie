@@ -3,5 +3,8 @@ class DrawableObjects{
     y;
     height;
     width;
-    
+
+    drawObject(ctx){
+        ctx.dr
+    }
 }
