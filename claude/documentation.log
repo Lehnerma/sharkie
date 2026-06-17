@@ -12,3 +12,27 @@ Store questions and concise answers here for future reference.
 
 **Q:** Wie nehme ich in Background.class.js die width/height vom canvas, oder muss das hardcoded sein?
 **A:** Nicht hardcoden! Übergib sie über den constructor. Background constructor sollte width und height als Parameter akzeptieren und speichern. Dann übergibst du beim Erstellen in level1.js: `new Background(canvas.width, canvas.height)`
+
+**Q:** Kann ich getElementById einfach global nutzen um Canvas-Dimensionen zu greifen?
+**A:** Technisch ja, aber Timing-Problem: level1.js lädt VOR init(). Better: Canvas-Dimensionen über Parameter durchreichen → saubere OOP. init() → World (kennt Canvas) → World gibt Dimensionen an Level.
+
+**Q:** Übergebe ich Canvas-Dimensionen in World.class an Level als Parameter?
+**A:** Ja! Datenfluss: init() → World(canvas) → World hat canvas.width/height → World übergeben an Level(width, height) → Level übergeben an Background(width, height). World empfängt canvas, gibt Dimensionen weiter.
+
+**Q:** Wie übergeben/erstelle ich Background mit canvas-Dimensionen?
+**A:** Background constructor nimmt width/height an. Level constructor empfängt canvasWidth/canvasHeight. World erstellt Level mit: `new Level(enemies, background_objects, canvas.width, canvas.height)`. Dann Level nutzt diese um Background-Objekte zu setzen.
+
+**Q:** Soll ich Background-Objekte in level1.js oder World erstellen?
+**A:** In level1.js! Bessere Separation of Concerns—World kümmert sich um Rendering, Level um Daten. Aber: Wie bekommt level1.js die Canvas-Dimensionen? Option: level1.js wird eine Funktion `createLevel(width, height)` statt eine direkte Instanz.
+
+**Q:** Erstelle mir createLevel Funktion in level1.js
+**A:** level1.js bekommt `createLevel(canvasWidth, canvasHeight)` Funktion die Background-Objekte mit Dimensionen erstellt und Level zurückgibt. World.constructor ruft auf: `this.level = createLevel(canvas.width, canvas.height)`
+
+**Q:** Kann createLevel nicht in Level.class.js als static method sein?
+**A:** Ja! Besser! Static method in Level.class.js: `static createLevel(canvasWidth, canvasHeight) { ... }`. Dann World ruft auf: `Level.createLevel(canvas.width, canvas.height)`. Besseres OOP—Level kümmert sich um sich selbst (Factory Pattern).
+
+**Q:** Wie zeichne ich Background und lagere ihn in level1.js aus?
+**A:** World.draw() muss `this.addObjectsToMap(this.level.background_objects)` aufrufen. Background-Daten (Image, Position) gehören in level1.js als `level1Data` Objekt. Level.createLevel(canvasWidth, canvasHeight, levelData) nutzt diese Daten statt hardcoded. So: Level kümmert sich um Struktur, level1.js um Konfiguration.
+
+**Q:** Was waren die Fehler in Level, World, level1?
+**A:** Level.createLevel: nicht static, map() fehlte return, Constructor/return mismatched. World: level = new Level(canvas.width) vor canvas existiert, createLevel() nie aufgerufen. Lösung: createLevel static, map mit return, World erstellt Level im constructor mit Level.createLevel(canvas.width, canvas.height, level1Data).

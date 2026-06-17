@@ -1,34 +1,33 @@
-class World{
-    canvas;
-    keyboard;
-    ctx;
-    level = level1;
+class World {
+  canvas;
+  keyboard;
+  ctx;
+  level;
 
-    constructor(canvas, keyboard){
-        this.canvas = canvas; // to get information from the canvans
-        this.ctx = canvas.getContext("2d"); // get the coordinate system of the canvas. 
-        this.keyboard = keyboard // set the variables for the btn by clicking to the an by relese to false back.
-        this.draw();
-    }
-
-    draw(){
-        
-    }
-
-  addToMap(mo) {
-    // if (mo.otherDirection) {
-    //   this.flipImage(mo);
-    // }
-    mo.draw(this.ctx);
-    // mo.drawBorderCollision(this.ctx);
-    // if (mo.otherDirection) {
-    //   this.flipImageBack(mo);
-    // }
+  constructor(canvas, keyboard) {
+    this.canvas = canvas;
+    this.ctx = canvas.getContext("2d");
+    this.keyboard = keyboard;
+    this.level = Level.createLevel(canvas.width, canvas.height, level1Data);
+    this.draw();
   }
 
-  addObjectsToMap(objects){
-    objects.forEach( o => {
-        this.addToMap(o)
+  draw() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.addObjectsToMap(this.level.background_objects);
+
+    requestAnimationFrame(() => {
+      this.draw();
+    });
+  }
+
+  addToMap(mo) {
+    mo.drawObject(this.ctx);
+  }
+
+  addObjectsToMap(objects) {
+    objects.forEach((o) => {
+      this.addToMap(o);
     });
   }
 }
