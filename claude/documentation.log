@@ -36,3 +36,6 @@ Store questions and concise answers here for future reference.
 
 **Q:** Was waren die Fehler in Level, World, level1?
 **A:** Level.createLevel: nicht static, map() fehlte return, Constructor/return mismatched. World: level = new Level(canvas.width) vor canvas existiert, createLevel() nie aufgerufen. Lösung: createLevel static, map mit return, World erstellt Level im constructor mit Level.createLevel(canvas.width, canvas.height, level1Data).
+
+**Q:** Wieso wirft drawImage einen Fehler "Argument 1 could not be converted"?
+**A:** Das Bild wird asynchron geladen (loadImage setzt nur src). Wenn drawObject() aufgerufen wird, bevor das Bild fertig ist, ist this.img undefined/nicht ready. Lösung: Das Image muss vorgeladen sein, bevor drawObject() aufgerufen wird. Das Image-Objekt hat ein `onload`-Event, oder Bilder vor dem Rendering vorrücken.

@@ -1,5 +1,6 @@
 class World {
   canvas;
+  sharkie = new Sharkie();
   keyboard;
   ctx;
   level;
@@ -15,7 +16,7 @@ class World {
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.addObjectsToMap(this.level.background_objects);
-
+    this.addToMap(this.sharkie)
     requestAnimationFrame(() => {
       this.draw();
     });
