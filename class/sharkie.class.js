@@ -19,21 +19,38 @@ class Sharkie extends MoveableObjects {
     "assets/images/1.Sharkie/1.IDLE/17.png",
     "assets/images/1.Sharkie/1.IDLE/18.png",
   ];
+  
+  LONG_IDLE = [
+    "assets/images/1.Sharkie/2.Long_IDLE/i1.png",
+    "assets/images/1.Sharkie/2.Long_IDLE/I2.png",
+    "assets/images/1.Sharkie/2.Long_IDLE/I3.png",
+    "assets/images/1.Sharkie/2.Long_IDLE/I4.png",
+    "assets/images/1.Sharkie/2.Long_IDLE/I5.png",
+    "assets/images/1.Sharkie/2.Long_IDLE/I6.png",
+    "assets/images/1.Sharkie/2.Long_IDLE/I7.png",
+    "assets/images/1.Sharkie/2.Long_IDLE/I8.png",
+    "assets/images/1.Sharkie/2.Long_IDLE/I9.png",
+    "assets/images/1.Sharkie/2.Long_IDLE/I10.pn",
+    "assets/images/1.Sharkie/2.Long_IDLE/I11.pn",
+    "assets/images/1.Sharkie/2.Long_IDLE/I12.pn",
+    "assets/images/1.Sharkie/2.Long_IDLE/I13.pn",
+    "assets/images/1.Sharkie/2.Long_IDLE/I14.pn",
+  ];
 
   constructor() {
     super();
-    this.loadImage('assets/images/1.Sharkie/1.IDLE/1.png');
+    this.loadImage("assets/images/1.Sharkie/1.IDLE/1.png");
     this.loadImages(this.IDLE);
     this.x = 200;
     this.y = 200;
     this.height = 200;
     this.width = 200;
-    this.animateSharkie()
+    this.animateSharkie();
   }
 
-  animateSharkie(){
+  animateSharkie() {
     setInterval(() => {
-        this.animate(this.IDLE)
+      this.animate(this.IDLE);
     }, 100);
   }
 }
