@@ -10,4 +10,10 @@ class MoveableObjects extends DrawableObjects{
         this.img = this.imgCache[path]
         this.currentImage++;
     }
+
+    playAnimation(images, frames = 100){
+        setInterval(() => {
+            this.animate(images)
+        }, frames);
+    }
 }
