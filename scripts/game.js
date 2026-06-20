@@ -21,17 +21,19 @@ function init() {
 }
 
 window.addEventListener("keydown", (e) => {
-  console.log(`key  code: ${e.code}`); // logs out the key codes for the btns
+  // console.log(`key  code: ${e.code}`); // logs out the key codes for the btns
   const pressedKey = keyMap[e.code];
+  console.log(pressedKey);
+  
   if (pressedKey) {
-    keyboard[action] = true;
+    keyboard[pressedKey] = true;
   }
 });
 
 window.addEventListener("keyup", (e) => {
-  console.log(`key  code: ${e.code}`); // logs out the key codes for the btns
+  // console.log(`key  code: ${e.code}`); // logs out the key codes for the btns
   const pressedKey = keyMap[e.code];
   if (pressedKey) {
-    keyboard[action] = false;
+    keyboard[pressedKey] = false;
   }
 });

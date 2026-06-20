@@ -37,6 +37,12 @@ class Sharkie extends MoveableObjects {
     "assets/images/1.Sharkie/2.Long_IDLE/I14.png",
   ];
 
+  SWIM_1 = ["assets/images/1.Sharkie/3.Swim/1.png", "assets/images/1.Sharkie/3.Swim/2.png", "assets/images/1.Sharkie/3.Swim/3.png", "assets/images/1.Sharkie/3.Swim/4.png", "assets/images/1.Sharkie/3.Swim/5.png", "assets/images/1.Sharkie/3.Swim/6.png"];
+
+  SWIM_2 = ["assets/images/1.Sharkie/3.Swim/1.png", "assets/images/1.Sharkie/3.Swim/2.png", "assets/images/1.Sharkie/3.Swim/3.png", "assets/images/1.Sharkie/3.Swim/5.png", "assets/images/1.Sharkie/3.Swim/6.png"];
+
+  SWIM_3 = ["assets/images/1.Sharkie/3.Swim/2.png", "assets/images/1.Sharkie/3.Swim/3.png", "assets/images/1.Sharkie/3.Swim/5.png", "assets/images/1.Sharkie/3.Swim/6.png"];
+
   constructor() {
     super();
     this.loadImage("assets/images/1.Sharkie/1.IDLE/1.png");
@@ -50,6 +56,6 @@ class Sharkie extends MoveableObjects {
   }
 
   animateSharkie() {
-    this.playAnimation(this.IDLE, 150)
+    this.playAnimation(this.IDLE, 150);
   }
 }

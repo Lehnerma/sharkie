@@ -1,5 +1,6 @@
 class MoveableObjects extends DrawableObjects{
-
+speedX = 0.15;
+speedY = 0.15;
     constructor(){
         super();
     }
@@ -15,5 +16,20 @@ class MoveableObjects extends DrawableObjects{
         setInterval(() => {
             this.animate(images)
         }, frames);
+    }
+
+    moveRight(){
+        this.x += this.speedX;
+    }
+
+    moveLeft(){
+        this.x -= this.speedX;
+    }
+
+    moveUp(){
+        this.x -= this.speedY;
+    }
+    moveDown(){
+        this.x += this.speedY;
     }
 }
