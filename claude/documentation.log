@@ -39,3 +39,9 @@ Store questions and concise answers here for future reference.
 
 **Q:** Wieso wirft drawImage einen Fehler "Argument 1 could not be converted"?
 **A:** Das Bild wird asynchron geladen (loadImage setzt nur src). Wenn drawObject() aufgerufen wird, bevor das Bild fertig ist, ist this.img undefined/nicht ready. Lösung: Das Image muss vorgeladen sein, bevor drawObject() aufgerufen wird. Das Image-Objekt hat ein `onload`-Event, oder Bilder vor dem Rendering vorrücken.
+
+**Q:** Wie verhindere/erlaube ich diagonales Wandern in animateSharkie()?
+**A:** Mit `if/else if` wird NUR EINE Bewegung pro Frame ausgeführt → verhindert Diagonales. Mit mehreren `if` (ohne else) können mehrere Tasten gleichzeitig aktiv sein → erlaubt Diagonales. Entscheidung: Was willst du? Dann Code-Struktur anpassen.
+
+**Q:** Wie mache ich animateSharkie() übersichtlicher mit vielen Richtungen?
+**A:** Statt if/else if für jede Richtung: Ein Movements-Objekt erstellen, das Tastatur-Keys auf Methoden abbildet. Dann in einer Schleife durchlaufen: `for (let key in movements) { if (this.world.keyboard[key]) movements[key].call(this); }`. DRY-er und erweiterbar.

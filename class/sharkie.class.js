@@ -1,4 +1,6 @@
 class Sharkie extends MoveableObjects {
+  world;
+
   IDLE = [
     "assets/images/1.Sharkie/1.IDLE/1.png",
     "assets/images/1.Sharkie/1.IDLE/2.png",
@@ -52,10 +54,28 @@ class Sharkie extends MoveableObjects {
     this.y = 200;
     this.height = 200;
     this.width = 200;
+    this.speedX = 3;
+    this.speedY = 3;
     this.animateSharkie();
   }
 
   animateSharkie() {
+    setInterval(() => {
+    //   if (this.world.keyboard.RIGHT) {
+    //     this.moveRight();
+    //   } else if (this.world.keyboard.LEFT) {
+    //     this.moveLeft();
+    //   } else if (this.world.keyboard.UP) {
+    //     this.moveUp();
+    //   } else if ( this.world.keyboard.DOWN) {
+    //     this.moveDown();
+    //   }
+    for (let key in this.movements){
+        if ( this.world.keyboard[key]){
+            this.movements[key]();
+        }
+    }
+    }, 1000 / 60);
     this.playAnimation(this.IDLE, 150);
   }
 }

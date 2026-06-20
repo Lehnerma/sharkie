@@ -27,9 +27,16 @@ speedY = 0.15;
     }
 
     moveUp(){
-        this.x -= this.speedY;
+        this.y -= this.speedY;
     }
     moveDown(){
-        this.x += this.speedY;
+        this.y += this.speedY;
+    }
+
+    movements = {
+        RIGHT: ()=> this.moveRight(),
+        LEFT: ()=> this.moveLeft(),
+        UP: ()=> this.moveUp(),
+        DOWN: ()=> this.moveDown()
     }
 }
