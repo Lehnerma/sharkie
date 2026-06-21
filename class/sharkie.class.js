@@ -1,5 +1,6 @@
 class Sharkie extends MoveableObjects {
   world;
+  isSleeping;
 
   IDLE = [
     "assets/images/1.Sharkie/1.IDLE/1.png",
@@ -22,7 +23,7 @@ class Sharkie extends MoveableObjects {
     "assets/images/1.Sharkie/1.IDLE/18.png",
   ];
 
-  LONG_IDLE = [
+  LONG_IDLE_INTRO = [
     "assets/images/1.Sharkie/2.Long_IDLE/i1.png",
     "assets/images/1.Sharkie/2.Long_IDLE/I2.png",
     "assets/images/1.Sharkie/2.Long_IDLE/I3.png",
@@ -32,12 +33,9 @@ class Sharkie extends MoveableObjects {
     "assets/images/1.Sharkie/2.Long_IDLE/I7.png",
     "assets/images/1.Sharkie/2.Long_IDLE/I8.png",
     "assets/images/1.Sharkie/2.Long_IDLE/I9.png",
-    "assets/images/1.Sharkie/2.Long_IDLE/I10.png",
-    "assets/images/1.Sharkie/2.Long_IDLE/I11.png",
-    "assets/images/1.Sharkie/2.Long_IDLE/I12.png",
-    "assets/images/1.Sharkie/2.Long_IDLE/I13.png",
-    "assets/images/1.Sharkie/2.Long_IDLE/I14.png",
   ];
+
+  LONG_IDLE_SLEEP = ["assets/images/1.Sharkie/2.Long_IDLE/I10.png", "assets/images/1.Sharkie/2.Long_IDLE/I11.png", "assets/images/1.Sharkie/2.Long_IDLE/I12.png", "assets/images/1.Sharkie/2.Long_IDLE/I13.png", "assets/images/1.Sharkie/2.Long_IDLE/I14.png"];
 
   SWIM_1 = ["assets/images/1.Sharkie/3.Swim/1.png", "assets/images/1.Sharkie/3.Swim/2.png", "assets/images/1.Sharkie/3.Swim/3.png", "assets/images/1.Sharkie/3.Swim/4.png", "assets/images/1.Sharkie/3.Swim/5.png", "assets/images/1.Sharkie/3.Swim/6.png"];
 
@@ -49,7 +47,8 @@ class Sharkie extends MoveableObjects {
     super();
     this.loadImage("assets/images/1.Sharkie/1.IDLE/1.png");
     this.loadImages(this.IDLE);
-    this.loadImages(this.LONG_IDLE);
+    this.loadImages(this.LONG_IDLE_INTRO);
+    this.loadImages(this.LONG_IDLE_SLEEP);
     this.loadImages(this.SWIM_1);
     this.loadImages(this.SWIM_3);
     this.x = 200;
@@ -63,22 +62,33 @@ class Sharkie extends MoveableObjects {
 
   animateSharkie() {
     setInterval(() => {
-    for (let key in this.movements){
-        if ( this.world.keyboard[key]){
-            this.movements[key]();
+      for (let key in this.movements) {
+        if (this.world.keyboard[key]) {
+          this.movements[key]();
         }
-    }
+      }
     }, 1000 / 60);
 
-    // this.playAnimation(this.IDLE, 150);
-setInterval(()=>{
-    if (this.world.keyboard.UP || this.world.keyboard.DOWN) {
-        this.animate(this.SWIM_1)
-    }
-    if (this.world.keyboard.LEFT || this.world.keyboard.RIGHT) {
-        this.animate(this.SWIM_3)
-    }
-}, 150 )
+    setInterval(() => {
+      if (this.world.keyboard.UP || this.world.keyboard.DOWN) {
+        this.animate(this.SWIM_1);
+        this.setTimestamp();
+      } else if (this.world.keyboard.LEFT || this.world.keyboard.RIGHT) {
+        this.animate(this.SWIM_3);
+        this.setTimestamp();
+      } else if (this.timePassed(5)) {
+        this.playIdle();
+      } else {
+        this.animate(this.IDLE);
+      }
+    }, 200);
+  }
 
+  playIdle(){
+    if (this.currentImage <= this.LONG_IDLE_INTRO ){
+        this.animate(this.LONG_IDLE_INTRO)
+    } else {
+        this.animate(this.LONG_IDLE_SLEEP)
+    }
   }
 }

@@ -1,6 +1,7 @@
 class MoveableObjects extends DrawableObjects{
 speedX = 0.15;
 speedY = 0.15;
+lastMove;
     constructor(){
         super();
     }
@@ -38,5 +39,16 @@ speedY = 0.15;
         LEFT: ()=> this.moveLeft(),
         UP: ()=> this.moveUp(),
         DOWN: ()=> this.moveDown()
+    }
+
+    timePassed(time){
+        let timePassed = new Date().getTime() - this.lastMove;
+        timePassed = timePassed / 1000
+        return timePassed > time
+    }
+
+    setTimestamp(){
+        this.lastMove = new Date().getTime();
+        
     }
 }
