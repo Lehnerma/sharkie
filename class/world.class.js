@@ -15,7 +15,7 @@ class World {
   }
 
   /**
-   * connects sharky with this world class that we can use alle the variables in the class sharkie
+   * connects sharky with this.world class that we can use all the variables in the class sharkie, spezial for the keyboard
    */
   setWorld(){
     this.sharkie.world = this;
