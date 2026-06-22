@@ -6,6 +6,11 @@ class World {
   level;
   cameraX;
 
+  endTop
+  endBottom
+  endLeft = -1310
+  endRight
+
   constructor(canvas, keyboard) {
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d");
