@@ -55,7 +55,7 @@ class Sharkie extends MoveableObjects {
     this.y = 200;
     this.height = 250;
     this.width = 250;
-    this.speedX = 3;
+    this.speedX = 3.5;
     this.speedY = 3;
     this.lastMove = new Date().getTime();
     this.animateSharkie();
@@ -68,6 +68,7 @@ class Sharkie extends MoveableObjects {
           this.movements[key]();
         }
       }
+      this.world.camera_x = -this.x + 100; // distanz for the camera
     }, 1000 / 60);
 
     setInterval(() => {

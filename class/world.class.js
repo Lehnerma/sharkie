@@ -4,6 +4,7 @@ class World {
   keyboard;
   ctx;
   level;
+  cameraX;
 
   constructor(canvas, keyboard) {
     this.canvas = canvas;
@@ -21,9 +22,11 @@ class World {
     this.sharkie.world = this;
   }
   draw() {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); //reset the canvas
+    this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.level.background_objects);
     this.addToMap(this.sharkie);
+     this.ctx.translate(-this.camera_x, 0);
     requestAnimationFrame(() => {
       this.draw();
     });
