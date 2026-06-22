@@ -3,6 +3,11 @@ class MoveableObjects extends DrawableObjects {
   speedY = 0.15;
   lastMove;
   otherDirection = false;
+  levelBoundaryLeft;
+  levelBoundaryRight;
+  levelBoundaryUp;
+  levelBoundaryDown;
+
   constructor() {
     super();
   }
@@ -21,18 +26,26 @@ class MoveableObjects extends DrawableObjects {
   }
 
   moveRight() {
-    this.x += this.speedX;
+    if (this.x < this.levelBoundaryRight) {
+      this.x += this.speedX;
+    }
   }
 
   moveLeft() {
-    this.x -= this.speedX;
+    if (this.x > this.levelBoundaryLeft) {
+      this.x -= this.speedX;
+    }
   }
 
   moveUp() {
-    this.y -= this.speedY;
+    if (this.y > this.levelBoundaryUp) {
+      this.y -= this.speedX;
+    }
   }
   moveDown() {
-    this.y += this.speedY;
+    if (this.y < this.levelBoundaryDown) {
+      this.y += this.speedY;
+    }
   }
 
   movements = {
@@ -45,10 +58,12 @@ class MoveableObjects extends DrawableObjects {
       this.setTimestamp();
     },
     UP: () => {
-      (this.moveUp(), this.setTimestamp());
+      this.moveUp();
+      this.setTimestamp();
     },
     DOWN: () => {
-      (this.moveDown(), this.setTimestamp());
+      this.moveDown();
+      this.setTimestamp();
     },
   };
 
