@@ -57,6 +57,7 @@ class Sharkie extends MoveableObjects {
     this.width = 250;
     this.speedX = 3;
     this.speedY = 3;
+    this.lastMove = new Date().getTime();
     this.animateSharkie();
   }
 
@@ -72,10 +73,8 @@ class Sharkie extends MoveableObjects {
     setInterval(() => {
       if (this.world.keyboard.UP || this.world.keyboard.DOWN) {
         this.animate(this.SWIM_1);
-        this.setTimestamp();
       } else if (this.world.keyboard.LEFT || this.world.keyboard.RIGHT) {
         this.animate(this.SWIM_3);
-        this.setTimestamp();
       } else if (this.timePassed(5)) {
         this.playIdle();
       } else {
