@@ -73,8 +73,12 @@ class Sharkie extends MoveableObjects {
     setInterval(() => {
       if (this.world.keyboard.UP || this.world.keyboard.DOWN) {
         this.animate(this.SWIM_1);
-      } else if (this.world.keyboard.LEFT || this.world.keyboard.RIGHT) {
+      } else if (this.world.keyboard.LEFT) {
         this.animate(this.SWIM_3);
+        this.otherDirection = true;
+      } else if (this.world.keyboard.RIGHT) {
+        this.animate(this.SWIM_3);
+        this.otherDirection = false;
       } else if (this.timePassed(5)) {
         this.playIdle();
       } else {
@@ -83,11 +87,11 @@ class Sharkie extends MoveableObjects {
     }, 200);
   }
 
-  playIdle(){
-    if (this.currentImage <= this.LONG_IDLE_INTRO ){
-        this.animate(this.LONG_IDLE_INTRO)
+  playIdle() {
+    if (this.currentImage <= this.LONG_IDLE_INTRO) {
+      this.animate(this.LONG_IDLE_INTRO);
     } else {
-        this.animate(this.LONG_IDLE_SLEEP)
+      this.animate(this.LONG_IDLE_SLEEP);
     }
   }
 }

@@ -2,6 +2,7 @@ class MoveableObjects extends DrawableObjects {
   speedX = 0.15;
   speedY = 0.15;
   lastMove;
+  otherDirection = false;
   constructor() {
     super();
   }
