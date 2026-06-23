@@ -59,8 +59,8 @@ class Sharkie extends MoveableObjects {
     this.speedY = 3;
     this.levelBoundary.left = -1310;
     this.levelBoundary.right = 2200;
-    this.levelBoundary.up = -110;
-    this.levelBoundary.down = 230;
+    this.levelBoundary.top = -90;
+    this.levelBoundary.bottom = 290;
 
     this.collisionOffset.top = 90;
     this.collisionOffset.bottom = 40;

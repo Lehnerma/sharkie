@@ -23,24 +23,24 @@ class MoveableObjects extends DrawableObjects {
   }
 
   moveRight() {
-    if (this.x < this.levelBoundaryRight) {
+    if (this.x < this.levelBoundary.right) {
       this.x += this.speedX;
     }
   }
 
   moveLeft() {
-    if (this.x > this.levelBoundaryLeft) {
+    if (this.x > this.levelBoundary.left) {
       this.x -= this.speedX;
     }
   }
 
   moveUp() {
-    if (this.y > this.levelBoundaryUp) {
+    if (this.y > this.levelBoundary.top) {
       this.y -= this.speedX;
     }
   }
   moveDown() {
-    if (this.y < this.levelBoundaryDown) {
+    if (this.y < this.levelBoundary.bottom) {
       this.y += this.speedY;
     }
   }
@@ -74,23 +74,17 @@ class MoveableObjects extends DrawableObjects {
     this.lastMove = new Date().getTime();
   }
 
-  //colliding and damage
-  /**
-   *  Checks the collision points for the character and a Moveableobject - these could be a Chicken or a other class.
-   * x + width > mo.x = checks the upper right collision corner -> checks the right side of the character.
-   * y + height > mo.y = checks the bottom right collion corner -> checks the right side of the character.
-   * x < mo.x + mo.width = checks the upper left collion corner -> checks the left side of the character
-   * y < mo.y +mo.height = checks the bottom left collion corner ->checks the left side of the character
-   * @param {MoveableObject} *Class mo
-   * @returns Bool for damage controll
-   */
-  isColliding(mo) {
-    const horizontalCollision = this.x + this.width > mo.x && this.x < mo.x + mo.width;
-    const verticalCollision = this.y + this.height > mo.y && this.y < mo.y + mo.height;
-    return horizontalCollision && verticalCollision;
-  }
+
 
   isColliding(mo) {
-    return this.x + this.collisionOffset.left < mo.x + mo.width - mo.collisionOffset.right && this.x + this.width - this.collisionOffset.right > mo.x + mo.collisionOffset.left && this.y + this.collisionOffset.top < mo.y + mo.height - mo.collisionOffset.bottom && this.y + this.height - this.collisionOffset.bottom > mo.y + mo.collisionOffset.top;
+    const leftSide = this.x + this.collisionOffset.left < mo.x + mo.width - mo.collisionOffset.right;
+    const rightSide = this.x + this.width - this.collisionOffset.right > mo.x + mo.collisionOffset.left;
+    const topSide = this.y + this.collisionOffset.top < mo.y + mo.height - mo.collisionOffset.bottom;
+    const bottomSide = this.y + this.height - this.collisionOffset.bottom > mo.y + mo.collisionOffset.top;
+    
+    const horizontalCollision = leftSide && rightSide;
+    const verticalCollision = topSide && bottomSide;
+    
+    return horizontalCollision && verticalCollision;
   }
 }
