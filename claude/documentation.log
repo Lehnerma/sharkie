@@ -49,5 +49,8 @@ Store questions and concise answers here for future reference.
 **Q:** Soll ich das movements-Objekt in MoveableObjects speichern?
 **A:** Ja, sinnvoll — aber mit Vorbehalt. movements-Objekt in MoveableObjects: `movements = { RIGHT: () => this.moveRight(), LEFT: () => this.moveLeft(), ... }`. Vorteil: alle Subklassen (Sharkie, Enemies) haben Zugriff. ABER: MoveableObjects kennt kein keyboard — das gehört zur World. Die Keyboard-Abfrage bleibt in Sharkie. Trennung: movements-Zuordnung in MoveableObjects, Keyboard-Logik in Sharkie.
 
+**Q:** Warum funktioniert `constructor(color = this.getRandomColor())` nicht?
+**A:** Default-Parameter werden ausgewertet bevor `this` existiert (vor super()). Zwei Lösungen: 1) `static getRandomColor()` → Aufruf als `constructor(color = JellyFish.getRandomColor())` — kein this nötig, sauberste Lösung. 2) Im Constructor body nach super(): `color = color || this.getRandomColor()`. Option 1 bevorzugen — static passt wenn die Methode nichts mit einer konkreten Instanz zu tun hat (wie Level.createLevel()).
+
 **Q:** Wie baue ich LONG_IDLE so aus, dass Intro einmal spielt und dann Sleep-Animation loopt?
 **A:**for-Schleife funktioniert nicht — Animationen laufen asynchron über setInterval. Besser: State Machine Pattern. 1) Zwei Arrays: LONG_IDLE_INTRO (Frames 1-9) und LONG_IDLE_SLEEP (Frames 10-14). 2) Boolean: isSleeping = false. 3) In animate() prüfen: wenn currentImage >= INTRO.length → isSleeping = true → auf Sleep-Array umschalten (der dann endlos loopt via %). Klassisches Game-Dev Pattern.

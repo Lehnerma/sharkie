@@ -53,14 +53,20 @@ class Sharkie extends MoveableObjects {
     this.loadImages(this.SWIM_3);
     this.x = 200;
     this.y = 200;
-    this.height = 250;
-    this.width = 250;
+    this.height = 200;
+    this.width = 200;
     this.speedX = 5;
     this.speedY = 3;
-    this.levelBoundaryLeft = -1310;
-    this.levelBoundaryRight = 2200;
-    this.levelBoundaryUp = -110;
-    this.levelBoundaryDown = 230;
+    this.levelBoundary.left = -1310;
+    this.levelBoundary.right = 2200;
+    this.levelBoundary.up = -110;
+    this.levelBoundary.down = 230;
+
+    this.collisionOffset.top = 90;
+    this.collisionOffset.bottom = 40;
+    this.collisionOffset.right = 20;
+    this.collisionOffset.left = 20;
+
     this.lastMove = new Date().getTime();
     this.animateSharkie();
   }

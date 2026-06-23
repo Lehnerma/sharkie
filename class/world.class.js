@@ -1,7 +1,6 @@
 class World {
   canvas;
   sharkie = new Sharkie();
-  enemies = [new JellyFish(), new JellyFish(), new JellyFish(), new JellyFish()];
   keyboard;
   ctx;
   level = level1
@@ -13,6 +12,7 @@ class World {
     this.keyboard = keyboard;
     this.setWorld();
     this.draw();
+    this.helperFunction();
   }
 
   /**
@@ -21,12 +21,13 @@ class World {
   setWorld() {
     this.sharkie.world = this;
   }
+  
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); //reset the canvas
     this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.level.backgrounds);
     this.addToMap(this.sharkie);
-    this.addObjectsToMap(this.enemies);
+    this.addObjectsToMap(this.level.enemies);
     this.ctx.translate(-this.camera_x, 0);
 
     requestAnimationFrame(() => {
@@ -34,12 +35,19 @@ class World {
     });
   }
 
+  helperFunction(){
+    setInterval(() => {
+          this.checkCollison();
+    }, 200);
+
+  }
+
   addToMap(mo) {
     if (mo.otherDirection) {
       this.flipImage(mo);
     }
     mo.drawObject(this.ctx);
-    // mo.drawBorderCollision(this.ctx);
+    mo.drawBorderCollision(this.ctx);
     if (mo.otherDirection) {
       this.flipImageBack(mo);
     }
@@ -65,5 +73,11 @@ class World {
     mo.x = mo.x * -1;
   }
 
-
+  checkCollison(){
+    this.level.enemies.forEach((enemy)=> {
+      if (this.sharkie.isColliding(enemy)){
+        console.log('sharkie hit: ', enemy);
+      }
+    })
+  }
 }

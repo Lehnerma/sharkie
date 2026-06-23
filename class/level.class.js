@@ -2,7 +2,8 @@ class Level {
   enemies;
   backgrounds;
 
-  constructor(background) {
+  constructor(background, enemies) {
     this.backgrounds = background;
+    this.enemies = enemies
   }
 }

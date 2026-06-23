@@ -3,10 +3,7 @@ class MoveableObjects extends DrawableObjects {
   speedY = 0.15;
   lastMove;
   otherDirection = false;
-  levelBoundaryLeft;
-  levelBoundaryRight;
-  levelBoundaryUp;
-  levelBoundaryDown;
+  levelBoundary = { top: 0, bottom: 0, right: 0, left: 0 };
 
   constructor() {
     super();
@@ -75,5 +72,25 @@ class MoveableObjects extends DrawableObjects {
 
   setTimestamp() {
     this.lastMove = new Date().getTime();
+  }
+
+  //colliding and damage
+  /**
+   *  Checks the collision points for the character and a Moveableobject - these could be a Chicken or a other class.
+   * x + width > mo.x = checks the upper right collision corner -> checks the right side of the character.
+   * y + height > mo.y = checks the bottom right collion corner -> checks the right side of the character.
+   * x < mo.x + mo.width = checks the upper left collion corner -> checks the left side of the character
+   * y < mo.y +mo.height = checks the bottom left collion corner ->checks the left side of the character
+   * @param {MoveableObject} *Class mo
+   * @returns Bool for damage controll
+   */
+  isColliding(mo) {
+    const horizontalCollision = this.x + this.width > mo.x && this.x < mo.x + mo.width;
+    const verticalCollision = this.y + this.height > mo.y && this.y < mo.y + mo.height;
+    return horizontalCollision && verticalCollision;
+  }
+
+  isColliding(mo) {
+    return this.x + this.collisionOffset.left < mo.x + mo.width - mo.collisionOffset.right && this.x + this.width - this.collisionOffset.right > mo.x + mo.collisionOffset.left && this.y + this.collisionOffset.top < mo.y + mo.height - mo.collisionOffset.bottom && this.y + this.height - this.collisionOffset.bottom > mo.y + mo.collisionOffset.top;
   }
 }
