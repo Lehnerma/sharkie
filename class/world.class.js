@@ -1,6 +1,7 @@
 class World {
   canvas;
   sharkie = new Sharkie();
+  enemies = [new JellyFish(), new JellyFish()];
   keyboard;
   ctx;
   level;
@@ -26,7 +27,9 @@ class World {
     this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.level.background_objects);
     this.addToMap(this.sharkie);
-     this.ctx.translate(-this.camera_x, 0);
+    this.addObjectsToMap(this.enemies);
+    this.ctx.translate(-this.camera_x, 0);
+
     requestAnimationFrame(() => {
       this.draw();
     });
