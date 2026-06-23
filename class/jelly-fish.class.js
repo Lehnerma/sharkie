@@ -4,22 +4,38 @@ class JellyFish extends MoveableObjects {
 
     PURPLE: ["assets/images/2.Enemy/2 Jelly fish/Regular damage/Lila 1.png", "assets/images/2.Enemy/2 Jelly fish/Regular damage/Lila 2.png", "assets/images/2.Enemy/2 Jelly fish/Regular damage/Lila 3.png", "assets/images/2.Enemy/2 Jelly fish/Regular damage/Lila 4.png"],
 
-    GREEN: ["assets/images/2.Enemy/2 Jelly fish/Super dangerous/Green 1.png", "assets/images/2.Enemy/2 Jelly fish/Super dangerous/Green 2.png", "assets/images/2.Enemy/2 Jelly fish/Super dangerous/Green 3.png", "assets/images/2.Enemy/2 Jelly fish/Super dangerous/Green 4.png"],
+    GREEN: ["assets/images/2.Enemy/2 Jelly fish/S｣per dangerous/Green 1.png", "assets/images/2.Enemy/2 Jelly fish/S｣per dangerous/Green 2.png", "assets/images/2.Enemy/2 Jelly fish/S｣per dangerous/Green 3.png", "assets/images/2.Enemy/2 Jelly fish/S｣per dangerous/Green 4.png"],
 
-    PINK: ["assets/images/2.Enemy/2 Jelly fish/Super dangerous/Pink 1.png", "assets/images/2.Enemy/2 Jelly fish/Super dangerous/Pink 2.png", "assets/images/2.Enemy/2 Jelly fish/Super dangerous/Pink 3.png", "assets/images/2.Enemy/2 Jelly fish/Super dangerous/Pink 4.png"],
+    PINK: ["assets/images/2.Enemy/2 Jelly fish/S｣per dangerous/Pink 1.png", "assets/images/2.Enemy/2 Jelly fish/S｣per dangerous/Pink 2.png", "assets/images/2.Enemy/2 Jelly fish/S｣per dangerous/Pink 3.png", "assets/images/2.Enemy/2 Jelly fish/S｣per dangerous/Pink 4.png"],
   };
-  constructor() {
+
+  constructor(color = JellyFish.getRandomColor()) {
     super();
-    this.x = 400;
-    this.y = 200;
-    this.height = 150;
-    this.width = 150;
-    this.loadImage(this.JELLYFISH.PURPLE[0])
-    this.loadImages(this.JELLYFISH.PURPLE);
-    this.animateJellyfisch();
+    this.x = 800 + Math.random() * 2000;
+    this.y = 10 + Math.random() * 360;
+    this.height = 80;
+    this.width = 80;
+    this.speedX = Math.random() * 2;
+    this.loadImage(this.JELLYFISH[color][0]);
+    this.loadImages(this.JELLYFISH[color]);
+    this.animateJellyfisch(color);
   }
 
-  animateJellyfisch() {
-    this.playAnimation(this.JELLYFISH.PURPLE, 180);
+  animateJellyfisch(color) {
+    this.playAnimation(this.JELLYFISH[color], 180);
+    setInterval(() => {
+      this.x -= this.speedX;
+    }, 1000 / 60);
+  }
+
+  static getRandomColor() {
+    const randomNumber = Math.floor(Math.random() * 4) + 1;
+    const colors = {
+      1: "YELLOW",
+      2: "PURPLE",
+      3: "GREEN",
+      4: "PINK",
+    };
+    return colors[randomNumber];
   }
 }

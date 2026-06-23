@@ -1,17 +1,16 @@
 class World {
   canvas;
   sharkie = new Sharkie();
-  enemies = [new JellyFish(), new JellyFish()];
+  enemies = [new JellyFish(), new JellyFish(), new JellyFish(), new JellyFish()];
   keyboard;
   ctx;
-  level;
+  level = level1
   cameraX;
 
   constructor(canvas, keyboard) {
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d");
     this.keyboard = keyboard;
-    this.level = Level.createLevel(canvas.width, canvas.height, level1Data);
     this.setWorld();
     this.draw();
   }
@@ -25,7 +24,7 @@ class World {
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); //reset the canvas
     this.ctx.translate(this.camera_x, 0);
-    this.addObjectsToMap(this.level.background_objects);
+    this.addObjectsToMap(this.level.backgrounds);
     this.addToMap(this.sharkie);
     this.addObjectsToMap(this.enemies);
     this.ctx.translate(-this.camera_x, 0);
@@ -65,4 +64,6 @@ class World {
     this.ctx.restore(); // wir stellen den ctx wieder her den wir vorher gespeichert haben.
     mo.x = mo.x * -1;
   }
+
+
 }
