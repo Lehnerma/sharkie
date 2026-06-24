@@ -21,7 +21,7 @@ class World {
   setWorld() {
     this.sharkie.world = this;
   }
-  
+
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); //reset the canvas
     this.ctx.translate(this.camera_x, 0);
@@ -76,6 +76,7 @@ class World {
   checkCollison(){
     this.level.enemies.forEach((enemy)=> {
       if (this.sharkie.isColliding(enemy)){
+        this.sharkie.hit();
         console.log('sharkie hit: ', enemy);
       }
     })

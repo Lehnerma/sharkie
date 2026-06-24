@@ -2,8 +2,10 @@ class MoveableObjects extends DrawableObjects {
   speedX = 0.15;
   speedY = 0.15;
   lastMove;
+  lastHit;
   otherDirection = false;
-  levelBoundary = { top: 0, bottom: 0, right: 0, left: 0 };
+
+  health;
 
   constructor() {
     super();
@@ -86,5 +88,27 @@ class MoveableObjects extends DrawableObjects {
     const verticalCollision = topSide && bottomSide;
     
     return horizontalCollision && verticalCollision;
+  }
+
+  hit(){
+    this.health -=1;
+    if (this.health < 0) {
+      this.health = 0
+    } else {
+      this.lastHit = new Date().getTime();
+    }
+  }
+
+  isHurt(seconds = 2){
+    let timePassed = (new Date().getTime() - this.lastHit)/1000; // get the seconds
+    return timePassed < seconds
+  }
+
+/**
+ * checks if health is 0
+ * @returns Bool
+ */
+  isDead(){
+    return this.health == 0
   }
 }

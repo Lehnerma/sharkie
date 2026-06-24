@@ -37,6 +37,50 @@ class Sharkie extends MoveableObjects {
 
   LONG_IDLE_SLEEP = ["assets/images/1.Sharkie/2.Long_IDLE/I10.png", "assets/images/1.Sharkie/2.Long_IDLE/I11.png", "assets/images/1.Sharkie/2.Long_IDLE/I12.png", "assets/images/1.Sharkie/2.Long_IDLE/I13.png", "assets/images/1.Sharkie/2.Long_IDLE/I14.png"];
 
+  DEAD = {
+    POISON: [
+      "assets/images/1.Sharkie/6.dead/1.Poisoned/1.png",
+      "assets/images/1.Sharkie/6.dead/1.Poisoned/2.png",
+      "assets/images/1.Sharkie/6.dead/1.Poisoned/3.png",
+      "assets/images/1.Sharkie/6.dead/1.Poisoned/4.png",
+      "assets/images/1.Sharkie/6.dead/1.Poisoned/5.png",
+      "assets/images/1.Sharkie/6.dead/1.Poisoned/6.png",
+      "assets/images/1.Sharkie/6.dead/1.Poisoned/7.png",
+      "assets/images/1.Sharkie/6.dead/1.Poisoned/8.png",
+      "assets/images/1.Sharkie/6.dead/1.Poisoned/9.png",
+      "assets/images/1.Sharkie/6.dead/1.Poisoned/10.png",
+      "assets/images/1.Sharkie/6.dead/1.Poisoned/11.png",
+      "assets/images/1.Sharkie/6.dead/1.Poisoned/12.png",
+    ],
+    ELECTRO: [
+      "assets/images/1.Sharkie/6.dead/2.Electro_shock/1.png",
+      "assets/images/1.Sharkie/6.dead/2.Electro_shock/2.png",
+      "assets/images/1.Sharkie/6.dead/2.Electro_shock/3.png",
+      "assets/images/1.Sharkie/6.dead/2.Electro_shock/4.png",
+      "assets/images/1.Sharkie/6.dead/2.Electro_shock/5.png",
+      "assets/images/1.Sharkie/6.dead/2.Electro_shock/6.png",
+      "assets/images/1.Sharkie/6.dead/2.Electro_shock/7.png",
+      "assets/images/1.Sharkie/6.dead/2.Electro_shock/8.png",
+      "assets/images/1.Sharkie/6.dead/2.Electro_shock/9.png",
+      "assets/images/1.Sharkie/6.dead/2.Electro_shock/10.png",
+    ],
+  };
+
+  HURT = {
+    POISON: ["assets/images/1.Sharkie/5.Hurt/1.Poisoned/1.png", "assets/images/1.Sharkie/5.Hurt/1.Poisoned/2.png", "assets/images/1.Sharkie/5.Hurt/1.Poisoned/3.png", "assets/images/1.Sharkie/5.Hurt/1.Poisoned/4.png", "assets/images/1.Sharkie/5.Hurt/1.Poisoned/5.png"],
+    ELECTRO: [
+      "assets/images/1.Sharkie/5.Hurt/2.Electric shock/1.png",
+      "assets/images/1.Sharkie/5.Hurt/2.Electric shock/2.png",
+      "assets/images/1.Sharkie/5.Hurt/2.Electric shock/3.png",
+      "assets/images/1.Sharkie/5.Hurt/2.Electric shock/1.png",
+      "assets/images/1.Sharkie/5.Hurt/2.Electric shock/2.png",
+      "assets/images/1.Sharkie/5.Hurt/2.Electric shock/3.png",
+      "assets/images/1.Sharkie/5.Hurt/2.Electric shock/1.png",
+      "assets/images/1.Sharkie/5.Hurt/2.Electric shock/2.png",
+      "assets/images/1.Sharkie/5.Hurt/2.Electric shock/3.png",
+    ],
+  };
+
   SWIM_1 = ["assets/images/1.Sharkie/3.Swim/1.png", "assets/images/1.Sharkie/3.Swim/2.png", "assets/images/1.Sharkie/3.Swim/3.png", "assets/images/1.Sharkie/3.Swim/4.png", "assets/images/1.Sharkie/3.Swim/5.png", "assets/images/1.Sharkie/3.Swim/6.png"];
 
   SWIM_2 = ["assets/images/1.Sharkie/3.Swim/1.png", "assets/images/1.Sharkie/3.Swim/2.png", "assets/images/1.Sharkie/3.Swim/3.png", "assets/images/1.Sharkie/3.Swim/5.png", "assets/images/1.Sharkie/3.Swim/6.png"];
@@ -49,6 +93,9 @@ class Sharkie extends MoveableObjects {
     this.loadImages(this.IDLE);
     this.loadImages(this.LONG_IDLE_INTRO);
     this.loadImages(this.LONG_IDLE_SLEEP);
+    this.loadImages(this.DEAD.ELECTRO);
+    this.loadImages(this.DEAD.POISON);
+    this.loadImages(this.HURT.ELECTRO);
     this.loadImages(this.SWIM_1);
     this.loadImages(this.SWIM_3);
     this.x = 200;
@@ -67,6 +114,8 @@ class Sharkie extends MoveableObjects {
     this.collisionOffset.right = 20;
     this.collisionOffset.left = 20;
 
+    this.health = 100;
+
     this.lastMove = new Date().getTime();
     this.animateSharkie();
   }
@@ -82,7 +131,11 @@ class Sharkie extends MoveableObjects {
     }, 1000 / 60);
 
     setInterval(() => {
-      if (this.world.keyboard.UP || this.world.keyboard.DOWN) {
+      if (this.isDead()) {
+        this.animate(this.DEAD.POISON);
+      } else if (this.isHurt()) {
+        this.animate(this.HURT.ELECTRO);
+      } else if (this.world.keyboard.UP || this.world.keyboard.DOWN) {
         this.animate(this.SWIM_1);
       } else if (this.world.keyboard.LEFT) {
         this.animate(this.SWIM_3);

@@ -52,5 +52,14 @@ Store questions and concise answers here for future reference.
 **Q:** Warum funktioniert `constructor(color = this.getRandomColor())` nicht?
 **A:** Default-Parameter werden ausgewertet bevor `this` existiert (vor super()). Zwei Lösungen: 1) `static getRandomColor()` → Aufruf als `constructor(color = JellyFish.getRandomColor())` — kein this nötig, sauberste Lösung. 2) Im Constructor body nach super(): `color = color || this.getRandomColor()`. Option 1 bevorzugen — static passt wenn die Methode nichts mit einer konkreten Instanz zu tun hat (wie Level.createLevel()).
 
+**Q:** Warum ist die Collision-Box so groß und wie verkleinere ich sie sinnvoll?
+**A:** Sprite-Bilder haben transparente Ränder — die Box umschließt das ganze Bild inkl. leerem Bereich. Lösung: collisionOffset-Objekt mit {top, bottom, left, right} in DrawableObjects deklarieren, in Sharkie/JellyFish mit konkreten Werten befüllen. drawBorderCollision() nutzt dann: x + offset.left, y + offset.top, width - left - right, height - top - bottom. Dieselben Offsets später auch in isColliding() verwenden!
+
+**Q:** Wie implementiere ich isColliding() mit Offset korrekt?
+**A:** AABB Pattern in MoveableObjects: `isColliding(mo) { return this.x + this.collisionOffset.left < mo.x + mo.width - mo.collisionOffset.right && this.x + this.width - this.collisionOffset.right > mo.x + mo.collisionOffset.left && this.y + this.collisionOffset.top < mo.y + mo.height - mo.collisionOffset.bottom && this.y + this.height - this.collisionOffset.bottom > mo.y + mo.collisionOffset.top; }` Aufruf in World: `if (this.sharkie.isColliding(enemy)) { ... }`
+
+**Q:** Häufige Fehler bei Property-Umbenennung (z.B. levelBoundary)?
+**A:** Wenn eine Property von separaten Werten (levelBoundaryLeft) zu einem Objekt (levelBoundary.left) umgebaut wird, ALLE Verwendungsstellen anpassen — auch in Methoden wie moveRight(), moveLeft() etc. Tippfehler (collisionOffset vs collisonOffset) führen zu "Cannot set properties of undefined". Doppelte Methodendefinitionen (isColliding 2x) → JS nimmt immer die letzte, erste wird ignoriert.
+
 **Q:** Wie baue ich LONG_IDLE so aus, dass Intro einmal spielt und dann Sleep-Animation loopt?
 **A:**for-Schleife funktioniert nicht — Animationen laufen asynchron über setInterval. Besser: State Machine Pattern. 1) Zwei Arrays: LONG_IDLE_INTRO (Frames 1-9) und LONG_IDLE_SLEEP (Frames 10-14). 2) Boolean: isSleeping = false. 3) In animate() prüfen: wenn currentImage >= INTRO.length → isSleeping = true → auf Sleep-Array umschalten (der dann endlos loopt via %). Klassisches Game-Dev Pattern.
