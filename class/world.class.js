@@ -5,6 +5,7 @@ class World {
   ctx;
   level = level1;
   cameraX;
+  statusbar = new Statusbar();
 
   constructor(canvas, keyboard) {
     this.canvas = canvas;
@@ -29,7 +30,7 @@ class World {
     this.addToMap(this.sharkie);
     this.addObjectsToMap(this.level.enemies);
     this.ctx.translate(-this.camera_x, 0);
-
+    this.addToMap(this.statusbar)
     requestAnimationFrame(() => {
       this.draw();
     });
@@ -76,6 +77,7 @@ class World {
     this.level.enemies.forEach((enemy) => {
       if (this.sharkie.isColliding(enemy)) {
         this.sharkie.hit();
+        this.statusbar.setPercentage(this.sharkie.health)
         console.log("sharkie hit: ", enemy);
       }
     });
