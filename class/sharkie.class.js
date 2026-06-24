@@ -80,12 +80,13 @@ class Sharkie extends MoveableObjects {
       "assets/images/1.Sharkie/5.Hurt/2.Electric shock/3.png",
     ],
   };
+SWIM = {
+  SWIM_1 = ["assets/images/1.Sharkie/3.Swim/1.png", "assets/images/1.Sharkie/3.Swim/2.png", "assets/images/1.Sharkie/3.Swim/3.png", "assets/images/1.Sharkie/3.Swim/4.png", "assets/images/1.Sharkie/3.Swim/5.png", "assets/images/1.Sharkie/3.Swim/6.png"],
 
-  SWIM_1 = ["assets/images/1.Sharkie/3.Swim/1.png", "assets/images/1.Sharkie/3.Swim/2.png", "assets/images/1.Sharkie/3.Swim/3.png", "assets/images/1.Sharkie/3.Swim/4.png", "assets/images/1.Sharkie/3.Swim/5.png", "assets/images/1.Sharkie/3.Swim/6.png"];
+  SWIM_2 = ["assets/images/1.Sharkie/3.Swim/1.png", "assets/images/1.Sharkie/3.Swim/2.png", "assets/images/1.Sharkie/3.Swim/3.png", "assets/images/1.Sharkie/3.Swim/5.png", "assets/images/1.Sharkie/3.Swim/6.png"],
 
-  SWIM_2 = ["assets/images/1.Sharkie/3.Swim/1.png", "assets/images/1.Sharkie/3.Swim/2.png", "assets/images/1.Sharkie/3.Swim/3.png", "assets/images/1.Sharkie/3.Swim/5.png", "assets/images/1.Sharkie/3.Swim/6.png"];
-
-  SWIM_3 = ["assets/images/1.Sharkie/3.Swim/2.png", "assets/images/1.Sharkie/3.Swim/3.png", "assets/images/1.Sharkie/3.Swim/5.png", "assets/images/1.Sharkie/3.Swim/6.png"];
+  SWIM_3 = ["assets/images/1.Sharkie/3.Swim/2.png", "assets/images/1.Sharkie/3.Swim/3.png", "assets/images/1.Sharkie/3.Swim/5.png", "assets/images/1.Sharkie/3.Swim/6.png"]
+};
 
   constructor() {
     super();
@@ -96,8 +97,8 @@ class Sharkie extends MoveableObjects {
     this.loadImages(this.DEAD.ELECTRO);
     this.loadImages(this.DEAD.POISON);
     this.loadImages(this.HURT.ELECTRO);
-    this.loadImages(this.SWIM_1);
-    this.loadImages(this.SWIM_3);
+    this.loadImages(this.SWIM.SWIM_1);
+    this.loadImages(this.SWIM.SWIM_3);
     this.x = 200;
     this.y = 200;
     this.height = 200;
@@ -136,22 +137,22 @@ class Sharkie extends MoveableObjects {
       } else if (this.isHurt()) {
         this.animate(this.HURT.ELECTRO);
       } else if (this.world.keyboard.UP || this.world.keyboard.DOWN) {
-        this.animate(this.SWIM_1);
+        this.animate(this.SWIM.SWIM_1);
       } else if (this.world.keyboard.LEFT) {
-        this.animate(this.SWIM_3);
+        this.animate(this.SWIM.SWIM_3);
         this.otherDirection = true;
       } else if (this.world.keyboard.RIGHT) {
-        this.animate(this.SWIM_3);
+        this.animate(this.SWIM.SWIM_3);
         this.otherDirection = false;
       } else if (this.timePassed(5)) {
-        this.playIdle();
+        this.playLongIdle();
       } else {
         this.animate(this.IDLE);
       }
     }, 200);
   }
 
-  playIdle() {
+  playLongIdle() {
     if (this.currentImage <= this.LONG_IDLE_INTRO) {
       this.animate(this.LONG_IDLE_INTRO);
     } else {
