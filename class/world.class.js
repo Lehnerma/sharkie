@@ -3,7 +3,7 @@ class World {
   sharkie = new Sharkie();
   keyboard;
   ctx;
-  level = level1
+  level = level1;
   cameraX;
 
   constructor(canvas, keyboard) {
@@ -35,11 +35,10 @@ class World {
     });
   }
 
-  helperFunction(){
+  helperFunction() {
     setInterval(() => {
-          this.checkCollison();
+      this.checkCollison();
     }, 200);
-
   }
 
   addToMap(mo) {
@@ -73,12 +72,12 @@ class World {
     mo.x = mo.x * -1;
   }
 
-  checkCollison(){
-    this.level.enemies.forEach((enemy)=> {
-      if (this.sharkie.isColliding(enemy)){
+  checkCollison() {
+    this.level.enemies.forEach((enemy) => {
+      if (this.sharkie.isColliding(enemy)) {
         this.sharkie.hit();
-        console.log('sharkie hit: ', enemy);
+        console.log("sharkie hit: ", enemy);
       }
-    })
+    });
   }
 }
