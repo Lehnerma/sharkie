@@ -137,8 +137,8 @@ class Sharkie extends MoveableObjects {
 
     this.collisionOffset.top = 90;
     this.collisionOffset.bottom = 40;
-    this.collisionOffset.right = 20;
-    this.collisionOffset.left = 20;
+    this.collisionOffset.right = 40;
+    this.collisionOffset.left = 40;
 
     this.health = 100;
 
