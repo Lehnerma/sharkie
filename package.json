@@ -7,7 +7,7 @@
     "lint:html": "html-validate **/*.html --ignore node_modules/"
   },
   "devDependencies": {
-    "eslint":         "^8.57.0",
+    "eslint":         "^10.5.0",
     "html-validate":  "^8.0.0"
   }
 }
