@@ -34,6 +34,9 @@ class Endboss extends MoveableObjects {
 
   constructor() {
     super();
+
+    this.loadImage('assets/images/2.Enemy/endboss/2_floating/1.png')
+
     this.width = 500;
     this.height = 500;
     this.collisionOffset.top = 150;

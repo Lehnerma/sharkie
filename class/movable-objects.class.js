@@ -6,6 +6,9 @@ class MoveableObjects extends DrawableObjects {
   lastHit;
   otherDirection = false;
 
+  isAttacking = false;
+  attackFrame = 0;
+
   health;
 
   constructor() {
@@ -91,6 +94,7 @@ class MoveableObjects extends DrawableObjects {
 
   hit() {
     this.health -= 5;
+    this.setTimestamp();
     if (this.health < 0) {
       this.health = 0;
     } else {
@@ -100,6 +104,7 @@ class MoveableObjects extends DrawableObjects {
 
   isHurt(seconds = 2) {
     let timePassed = (new Date().getTime() - this.lastHit) / 1000; // get the seconds
+
     return timePassed < seconds;
   }
 
@@ -121,5 +126,17 @@ class MoveableObjects extends DrawableObjects {
 
   isAboveGround() {
     return this.y <= 260;
+  }
+
+  playAttack(images) {
+    let path = images[this.attackFrame];
+    this.setTimestamp();
+    this.img = this.imgCache[path];
+    if (this.attackFrame < images.length - 1) {
+      this.attackFrame++;
+    } else {
+      this.isAttacking = false;
+      this.attackFrame = 0;
+    }
   }
 }

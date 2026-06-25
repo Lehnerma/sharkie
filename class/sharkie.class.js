@@ -2,40 +2,40 @@ class Sharkie extends MoveableObjects {
   world;
   isSleeping;
 
-  IDLE = [
-    "assets/images/1.Sharkie/1.IDLE/1.png",
-    "assets/images/1.Sharkie/1.IDLE/2.png",
-    "assets/images/1.Sharkie/1.IDLE/3.png",
-    "assets/images/1.Sharkie/1.IDLE/4.png",
-    "assets/images/1.Sharkie/1.IDLE/5.png",
-    "assets/images/1.Sharkie/1.IDLE/6.png",
-    "assets/images/1.Sharkie/1.IDLE/7.png",
-    "assets/images/1.Sharkie/1.IDLE/8.png",
-    "assets/images/1.Sharkie/1.IDLE/9.png",
-    "assets/images/1.Sharkie/1.IDLE/10.png",
-    "assets/images/1.Sharkie/1.IDLE/11.png",
-    "assets/images/1.Sharkie/1.IDLE/12.png",
-    "assets/images/1.Sharkie/1.IDLE/13.png",
-    "assets/images/1.Sharkie/1.IDLE/14.png",
-    "assets/images/1.Sharkie/1.IDLE/15.png",
-    "assets/images/1.Sharkie/1.IDLE/16.png",
-    "assets/images/1.Sharkie/1.IDLE/17.png",
-    "assets/images/1.Sharkie/1.IDLE/18.png",
-  ];
-
-  LONG_IDLE_INTRO = [
-    "assets/images/1.Sharkie/2.Long_IDLE/i1.png",
-    "assets/images/1.Sharkie/2.Long_IDLE/I2.png",
-    "assets/images/1.Sharkie/2.Long_IDLE/I3.png",
-    "assets/images/1.Sharkie/2.Long_IDLE/I4.png",
-    "assets/images/1.Sharkie/2.Long_IDLE/I5.png",
-    "assets/images/1.Sharkie/2.Long_IDLE/I6.png",
-    "assets/images/1.Sharkie/2.Long_IDLE/I7.png",
-    "assets/images/1.Sharkie/2.Long_IDLE/I8.png",
-    "assets/images/1.Sharkie/2.Long_IDLE/I9.png",
-  ];
-
-  LONG_IDLE_SLEEP = ["assets/images/1.Sharkie/2.Long_IDLE/I10.png", "assets/images/1.Sharkie/2.Long_IDLE/I11.png", "assets/images/1.Sharkie/2.Long_IDLE/I12.png", "assets/images/1.Sharkie/2.Long_IDLE/I13.png", "assets/images/1.Sharkie/2.Long_IDLE/I14.png"];
+  IDLE = {
+    IDLE: [
+      "assets/images/1.Sharkie/1.IDLE/1.png",
+      "assets/images/1.Sharkie/1.IDLE/2.png",
+      "assets/images/1.Sharkie/1.IDLE/3.png",
+      "assets/images/1.Sharkie/1.IDLE/4.png",
+      "assets/images/1.Sharkie/1.IDLE/5.png",
+      "assets/images/1.Sharkie/1.IDLE/6.png",
+      "assets/images/1.Sharkie/1.IDLE/7.png",
+      "assets/images/1.Sharkie/1.IDLE/8.png",
+      "assets/images/1.Sharkie/1.IDLE/9.png",
+      "assets/images/1.Sharkie/1.IDLE/10.png",
+      "assets/images/1.Sharkie/1.IDLE/11.png",
+      "assets/images/1.Sharkie/1.IDLE/12.png",
+      "assets/images/1.Sharkie/1.IDLE/13.png",
+      "assets/images/1.Sharkie/1.IDLE/14.png",
+      "assets/images/1.Sharkie/1.IDLE/15.png",
+      "assets/images/1.Sharkie/1.IDLE/16.png",
+      "assets/images/1.Sharkie/1.IDLE/17.png",
+      "assets/images/1.Sharkie/1.IDLE/18.png",
+    ],
+    LONG_IDLE_INTRO: [
+      "assets/images/1.Sharkie/2.Long_IDLE/i1.png",
+      "assets/images/1.Sharkie/2.Long_IDLE/I2.png",
+      "assets/images/1.Sharkie/2.Long_IDLE/I3.png",
+      "assets/images/1.Sharkie/2.Long_IDLE/I4.png",
+      "assets/images/1.Sharkie/2.Long_IDLE/I5.png",
+      "assets/images/1.Sharkie/2.Long_IDLE/I6.png",
+      "assets/images/1.Sharkie/2.Long_IDLE/I7.png",
+      "assets/images/1.Sharkie/2.Long_IDLE/I8.png",
+      "assets/images/1.Sharkie/2.Long_IDLE/I9.png",
+    ],
+    LONG_IDLE_SLEEP: ["assets/images/1.Sharkie/2.Long_IDLE/I10.png", "assets/images/1.Sharkie/2.Long_IDLE/I11.png", "assets/images/1.Sharkie/2.Long_IDLE/I12.png", "assets/images/1.Sharkie/2.Long_IDLE/I13.png", "assets/images/1.Sharkie/2.Long_IDLE/I14.png"],
+  };
 
   DEAD = {
     POISON: [
@@ -148,9 +148,9 @@ class Sharkie extends MoveableObjects {
   }
 
   preloadImages() {
-    this.loadImages(this.IDLE);
-    this.loadImages(this.LONG_IDLE_INTRO);
-    this.loadImages(this.LONG_IDLE_SLEEP);
+    this.loadImages(this.IDLE.IDLE);
+    this.loadImages(this.IDLE.LONG_IDLE_INTRO);
+    this.loadImages(this.IDLE.LONG_IDLE_SLEEP);
     this.loadImages(this.DEAD.ELECTRO);
     this.loadImages(this.DEAD.POISON);
     this.loadImages(this.HURT.ELECTRO);
@@ -162,7 +162,7 @@ class Sharkie extends MoveableObjects {
   animateSharkie() {
     setInterval(() => {
       for (let key in this.movements) {
-        if (this.world.keyboard[key]) {
+        if (this.world.keyboard[key] && !this.isAttacking) {
           this.movements[key]();
         }
       }
@@ -172,6 +172,8 @@ class Sharkie extends MoveableObjects {
     setInterval(() => {
       if (this.isDead()) {
         this.animate(this.DEAD.POISON);
+      } else if (this.isAttacking) {
+        this.playAttack(this.ATTACK.FIN_SLAP);
       } else if (this.isHurt()) {
         this.animate(this.HURT.ELECTRO);
       } else if (this.world.keyboard.UP || this.world.keyboard.DOWN) {
@@ -182,21 +184,22 @@ class Sharkie extends MoveableObjects {
       } else if (this.world.keyboard.RIGHT) {
         this.animate(this.SWIM.SWIM_3);
         this.otherDirection = false;
-      } else if (this.world.keyboard.SPACE) {
-        this.animate(this.ATTACK.FIN_SLAP);
+      } else if (this.world.keyboard.D) {
+        this.isAttacking = true;
+        this.playAttack(this.ATTACK.FIN_SLAP);
       } else if (this.timePassed(10)) {
         this.playLongIdle();
       } else {
-        this.animate(this.IDLE);
+        this.animate(this.IDLE.IDLE);
       }
-    }, 200);
+    }, 150);
   }
 
   playLongIdle() {
-    if (this.currentImage <= this.LONG_IDLE_INTRO) {
-      this.animate(this.LONG_IDLE_INTRO);
+    if (this.currentImage <= this.IDLE.LONG_IDLE_INTRO) {
+      this.animate(this.IDLE.LONG_IDLE_INTRO);
     } else {
-      this.animate(this.LONG_IDLE_SLEEP);
+      this.animate(this.IDLE.LONG_IDLE_SLEEP);
     }
   }
 
