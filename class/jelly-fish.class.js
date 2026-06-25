@@ -1,4 +1,4 @@
-class JellyFish extends MoveableObjects {
+class JellyFish extends Enemies {
   JELLYFISH = {
     YELLOW: ["assets/images/2.Enemy/2 Jelly fish/Regular damage/Yellow 1.png", "assets/images/2.Enemy/2 Jelly fish/Regular damage/Yellow 2.png", "assets/images/2.Enemy/2 Jelly fish/Regular damage/Yellow 3.png", "assets/images/2.Enemy/2 Jelly fish/Regular damage/Yellow 4.png"],
 
@@ -11,10 +11,7 @@ class JellyFish extends MoveableObjects {
 
   constructor(color = JellyFish.getRandomColor()) {
     super();
-    this.x = 800 + Math.random() * 2000;
-    this.y = 10 + Math.random() * 360;
-    this.height = 80;
-    this.width = 80;
+
     this.speedX = Math.random() * 2;
     this.loadImage(this.JELLYFISH[color][0]);
     this.loadImages(this.JELLYFISH[color]);
