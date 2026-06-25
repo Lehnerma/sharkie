@@ -44,8 +44,17 @@ class Endboss extends MoveableObjects {
     this.y = -20;
     this.health = 100;
 
-    this.loadImages(this.MOVES.FLOATING);
+    this.preloadImages();
+
     this.animation();
+  }
+
+  preloadImages(){
+    this.loadImages(this.MOVES.FLOATING);
+    this.loadImages(this.MOVES.INTRODUCE);
+    this.loadImages(this.MOVES.ATTACK);
+    this.loadImages(this.MOVES.DEAD);
+    this.loadImages(this.MOVES.HURT);
   }
 
   animation() {

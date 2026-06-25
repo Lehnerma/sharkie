@@ -115,6 +115,39 @@ class Sharkie extends MoveableObjects {
   constructor() {
     super();
     this.loadImage("assets/images/1.Sharkie/1.IDLE/1.png");
+
+    this.x = 200;
+    this.y = 200;
+    this.height = 200;
+    this.width = 200;
+    this.speedX = 5;
+    this.speedY = 3;
+    this.health = 100;
+
+    this.preloadImages();
+    this.setBoundary();
+    this.setOffset();
+
+    this.lastMove = new Date().getTime();
+    this.applyGravity();
+    this.animateSharkie();
+  }
+
+  setOffset() {
+    this.collisionOffset.top = 90;
+    this.collisionOffset.bottom = 40;
+    this.collisionOffset.right = 40;
+    this.collisionOffset.left = 40;
+  }
+
+  setBoundary() {
+    this.levelBoundary.left = -1310;
+    this.levelBoundary.right = 2200;
+    this.levelBoundary.top = -90;
+    this.levelBoundary.bottom = 290;
+  }
+
+  preloadImages() {
     this.loadImages(this.IDLE);
     this.loadImages(this.LONG_IDLE_INTRO);
     this.loadImages(this.LONG_IDLE_SLEEP);
@@ -124,27 +157,6 @@ class Sharkie extends MoveableObjects {
     this.loadImages(this.SWIM.SWIM_1);
     this.loadImages(this.SWIM.SWIM_3);
     this.loadImages(this.ATTACK.FIN_SLAP);
-    this.x = 200;
-    this.y = 200;
-    this.height = 200;
-    this.width = 200;
-    this.speedX = 5;
-    this.speedY = 3;
-    this.levelBoundary.left = -1310;
-    this.levelBoundary.right = 2200;
-    this.levelBoundary.top = -90;
-    this.levelBoundary.bottom = 290;
-
-    this.collisionOffset.top = 90;
-    this.collisionOffset.bottom = 40;
-    this.collisionOffset.right = 40;
-    this.collisionOffset.left = 40;
-
-    this.health = 100;
-
-    this.lastMove = new Date().getTime();
-    this.applyGravity();
-    this.animateSharkie();
   }
 
   animateSharkie() {

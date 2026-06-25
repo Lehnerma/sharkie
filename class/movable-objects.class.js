@@ -1,7 +1,7 @@
 class MoveableObjects extends DrawableObjects {
   speedX = 0.15;
   speedY = 0.15;
-  gravityY = 3;
+  gravityY = 1.5;
   lastMove;
   lastHit;
   otherDirection = false;
