@@ -6,6 +6,7 @@ class MoveableObjects extends DrawableObjects {
   lastHit;
   otherDirection = false;
 
+  moving = false;
   isAttacking = false;
   attackFrame = 0;
 
@@ -31,23 +32,27 @@ class MoveableObjects extends DrawableObjects {
   moveRight() {
     if (this.x < this.levelBoundary.right) {
       this.x += this.speedX;
+      this.moving = true;
     }
   }
 
   moveLeft() {
     if (this.x > this.levelBoundary.left) {
       this.x -= this.speedX;
+      this.moving = true;
     }
   }
 
   moveUp() {
     if (this.y > this.levelBoundary.top) {
-      this.y -= this.speedX;
+      this.y -= this.speedY;
+      this.moving = true;
     }
   }
   moveDown() {
     if (this.y < this.levelBoundary.bottom) {
       this.y += this.speedY;
+      this.moving = true;
     }
   }
 
@@ -118,7 +123,7 @@ class MoveableObjects extends DrawableObjects {
 
   applyGravity() {
     setInterval(() => {
-      if (this.isAboveGround()) {
+      if (this.isAboveGround() && this.isMoving()) {
         this.y += this.gravityY;
       }
     }, 1000 / 25);
@@ -138,5 +143,9 @@ class MoveableObjects extends DrawableObjects {
       this.isAttacking = false;
       this.attackFrame = 0;
     }
+  }
+
+  isMoving() {
+    return !this.moving;
   }
 }

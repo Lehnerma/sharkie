@@ -6,6 +6,7 @@ class World {
   level = level1;
   cameraX;
   statusbar = new Statusbar();
+  world_end = 3700;
 
   constructor(canvas, keyboard) {
     this.canvas = canvas;

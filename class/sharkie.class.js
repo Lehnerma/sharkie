@@ -120,8 +120,8 @@ class Sharkie extends MoveableObjects {
     this.y = 200;
     this.height = 200;
     this.width = 200;
-    this.speedX = 5;
-    this.speedY = 3;
+    this.speedX = 20;
+    this.speedY = 5;
     this.health = 100;
 
     this.preloadImages();
@@ -141,8 +141,8 @@ class Sharkie extends MoveableObjects {
   }
 
   setBoundary() {
-    this.levelBoundary.left = -1310;
-    this.levelBoundary.right = 2200;
+    this.levelBoundary.left = -620;
+    this.levelBoundary.right = 3700;
     this.levelBoundary.top = -90;
     this.levelBoundary.bottom = 290;
   }
@@ -191,6 +191,7 @@ class Sharkie extends MoveableObjects {
         this.playLongIdle();
       } else {
         this.animate(this.IDLE.IDLE);
+        this.moving = false;
       }
     }, 150);
   }
