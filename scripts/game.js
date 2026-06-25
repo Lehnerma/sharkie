@@ -23,7 +23,7 @@ function init() {
 window.addEventListener("keydown", (e) => {
   // console.log(`key  code: ${e.code}`); // logs out the key codes for the btns
   const pressedKey = keyMap[e.code];
-  console.log(pressedKey);
+  // console.log(pressedKey);
   
   if (pressedKey) {
     keyboard[pressedKey] = true;

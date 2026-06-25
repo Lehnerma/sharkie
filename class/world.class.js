@@ -29,10 +29,10 @@ class World {
     this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.level.backgrounds);
     this.addToMap(this.sharkie);
-    this.addObjectsToMap(this.level.endboss)
+    this.addObjectsToMap(this.level.endboss);
     this.addObjectsToMap(this.level.enemies);
     this.ctx.translate(-this.camera_x, 0);
-    this.addToMap(this.statusbar)
+    this.addToMap(this.statusbar);
     requestAnimationFrame(() => {
       this.draw();
     });
@@ -76,11 +76,17 @@ class World {
   }
 
   checkCollison() {
-    this.level.enemies.forEach((enemy) => {
-      if (this.sharkie.isColliding(enemy)) {
+    this.level.enemies.forEach((enemy, index) => {
+      if (this.sharkie.isColliding(enemy) && this.sharkie.isAttacking) {
+        enemy.hit(20);
+        console.log("hit for Sharkie: ", enemy, index);
+        if (enemy.isDead()) {
+          this.level.enemies.splice(index, 1);
+        }
+        
+      } else if (this.sharkie.isColliding(enemy)) {
         this.sharkie.hit();
-        this.statusbar.setPercentage(this.sharkie.health)
-        console.log("sharkie hit: ", enemy);
+        this.statusbar.setPercentage(this.sharkie.health);
       }
     });
   }

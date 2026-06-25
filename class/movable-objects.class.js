@@ -97,8 +97,8 @@ class MoveableObjects extends DrawableObjects {
     return horizontalCollision && verticalCollision;
   }
 
-  hit() {
-    this.health -= 5;
+  hit(hitpoints = 5) {
+    this.health -= hitpoints;
     this.setTimestamp();
     if (this.health < 0) {
       this.health = 0;
