@@ -143,6 +143,7 @@ class Sharkie extends MoveableObjects {
     this.health = 100;
 
     this.lastMove = new Date().getTime();
+    this.applyGravity();
     this.animateSharkie();
   }
 

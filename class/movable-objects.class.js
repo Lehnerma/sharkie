@@ -1,6 +1,7 @@
 class MoveableObjects extends DrawableObjects {
   speedX = 0.15;
   speedY = 0.15;
+  gravityY = 3;
   lastMove;
   lastHit;
   otherDirection = false;
@@ -76,39 +77,49 @@ class MoveableObjects extends DrawableObjects {
     this.lastMove = new Date().getTime();
   }
 
-
-
   isColliding(mo) {
     const leftSide = this.x + this.collisionOffset.left < mo.x + mo.width - mo.collisionOffset.right;
     const rightSide = this.x + this.width - this.collisionOffset.right > mo.x + mo.collisionOffset.left;
     const topSide = this.y + this.collisionOffset.top < mo.y + mo.height - mo.collisionOffset.bottom;
     const bottomSide = this.y + this.height - this.collisionOffset.bottom > mo.y + mo.collisionOffset.top;
-    
+
     const horizontalCollision = leftSide && rightSide;
     const verticalCollision = topSide && bottomSide;
-    
+
     return horizontalCollision && verticalCollision;
   }
 
-  hit(){
+  hit() {
     this.health -= 5;
     if (this.health < 0) {
-      this.health = 0
+      this.health = 0;
     } else {
       this.lastHit = new Date().getTime();
     }
   }
 
-  isHurt(seconds = 2){
-    let timePassed = (new Date().getTime() - this.lastHit)/1000; // get the seconds
-    return timePassed < seconds
+  isHurt(seconds = 2) {
+    let timePassed = (new Date().getTime() - this.lastHit) / 1000; // get the seconds
+    return timePassed < seconds;
   }
 
-/**
- * checks if health is 0
- * @returns Bool
- */
-  isDead(){
-    return this.health == 0
+  /**
+   * checks if health is 0
+   * @returns Bool
+   */
+  isDead() {
+    return this.health == 0;
+  }
+
+  applyGravity() {
+    setInterval(() => {
+      if (this.isAboveGround()) {
+        this.y += this.gravityY;
+      }
+    }, 1000 / 25);
+  }
+
+  isAboveGround() {
+    return this.y <= 260;
   }
 }
