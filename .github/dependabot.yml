@@ -1,0 +1,10 @@
+# Dependabot: prüft wöchentlich ob deine devDependencies Updates haben
+# und erstellt automatisch Pull Requests mit den Updates
+# Du musst sie nur noch reviewen und mergen
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
