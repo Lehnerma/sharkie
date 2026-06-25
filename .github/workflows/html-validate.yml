@@ -2,9 +2,9 @@ name: HTML Validate
 
 on:
   push:
-    branches: [main, master]
+    branches: [main]
   pull_request:
-    branches: [main, master]
+    branches: [main]
 
 jobs:
   html-validate:
@@ -18,11 +18,11 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
 
       - name: Install dependencies
         run: npm install
 
       # Prüft alle .html Dateien gegen die Regeln in .htmlvalidate.json
       - name: Validate HTML files
-        run: npx html-validate "**/*.html" --ignore "node_modules/**" --config config/.htmlvalidate.json
+        run: npx html-validate . --config config/.htmlvalidate.json

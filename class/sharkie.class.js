@@ -80,13 +80,37 @@ class Sharkie extends MoveableObjects {
       "assets/images/1.Sharkie/5.Hurt/2.Electric shock/3.png",
     ],
   };
-SWIM = {
-  SWIM_1: ["assets/images/1.Sharkie/3.Swim/1.png", "assets/images/1.Sharkie/3.Swim/2.png", "assets/images/1.Sharkie/3.Swim/3.png", "assets/images/1.Sharkie/3.Swim/4.png", "assets/images/1.Sharkie/3.Swim/5.png", "assets/images/1.Sharkie/3.Swim/6.png"],
 
-  SWIM_2: ["assets/images/1.Sharkie/3.Swim/1.png", "assets/images/1.Sharkie/3.Swim/2.png", "assets/images/1.Sharkie/3.Swim/3.png", "assets/images/1.Sharkie/3.Swim/5.png", "assets/images/1.Sharkie/3.Swim/6.png"],
+  SWIM = {
+    SWIM_1: ["assets/images/1.Sharkie/3.Swim/1.png", "assets/images/1.Sharkie/3.Swim/2.png", "assets/images/1.Sharkie/3.Swim/3.png", "assets/images/1.Sharkie/3.Swim/4.png", "assets/images/1.Sharkie/3.Swim/5.png", "assets/images/1.Sharkie/3.Swim/6.png"],
 
-  SWIM_3: ["assets/images/1.Sharkie/3.Swim/2.png", "assets/images/1.Sharkie/3.Swim/3.png", "assets/images/1.Sharkie/3.Swim/5.png", "assets/images/1.Sharkie/3.Swim/6.png"]
-};
+    SWIM_2: ["assets/images/1.Sharkie/3.Swim/1.png", "assets/images/1.Sharkie/3.Swim/2.png", "assets/images/1.Sharkie/3.Swim/3.png", "assets/images/1.Sharkie/3.Swim/5.png", "assets/images/1.Sharkie/3.Swim/6.png"],
+
+    SWIM_3: ["assets/images/1.Sharkie/3.Swim/2.png", "assets/images/1.Sharkie/3.Swim/3.png", "assets/images/1.Sharkie/3.Swim/5.png", "assets/images/1.Sharkie/3.Swim/6.png"],
+  };
+
+  ATTACK = {
+    FIN_SLAP: [
+      "assets/images/1.Sharkie/4.Attack/fin_slap/1.png",
+      "assets/images/1.Sharkie/4.Attack/fin_slap/2.png",
+      "assets/images/1.Sharkie/4.Attack/fin_slap/3.png",
+      "assets/images/1.Sharkie/4.Attack/fin_slap/4.png",
+      "assets/images/1.Sharkie/4.Attack/fin_slap/5.png",
+      "assets/images/1.Sharkie/4.Attack/fin_slap/6.png",
+      "assets/images/1.Sharkie/4.Attack/fin_slap/7.png",
+      "assets/images/1.Sharkie/4.Attack/fin_slap/8.png",
+    ],
+    BUBBLE: [
+      "assets/images/1.Sharkie/4.Attack/bubble_trap/op1/1.png",
+      "assets/images/1.Sharkie/4.Attack/bubble_trap/op1/2.png",
+      "assets/images/1.Sharkie/4.Attack/bubble_trap/op1/3.png",
+      "assets/images/1.Sharkie/4.Attack/bubble_trap/op1/4.png",
+      "assets/images/1.Sharkie/4.Attack/bubble_trap/op1/5.png",
+      "assets/images/1.Sharkie/4.Attack/bubble_trap/op1/6.png",
+      "assets/images/1.Sharkie/4.Attack/bubble_trap/op1/7.png",
+      "assets/images/1.Sharkie/4.Attack/bubble_trap/op1/8.png",
+    ],
+  };
 
   constructor() {
     super();
@@ -99,6 +123,7 @@ SWIM = {
     this.loadImages(this.HURT.ELECTRO);
     this.loadImages(this.SWIM.SWIM_1);
     this.loadImages(this.SWIM.SWIM_3);
+    this.loadImages(this.ATTACK.FIN_SLAP);
     this.x = 200;
     this.y = 200;
     this.height = 200;
@@ -144,7 +169,9 @@ SWIM = {
       } else if (this.world.keyboard.RIGHT) {
         this.animate(this.SWIM.SWIM_3);
         this.otherDirection = false;
-      } else if (this.timePassed(5)) {
+      } else if (this.world.keyboard.SPACE) {
+        this.animate(this.ATTACK.FIN_SLAP);
+      } else if (this.timePassed(10)) {
         this.playLongIdle();
       } else {
         this.animate(this.IDLE);
