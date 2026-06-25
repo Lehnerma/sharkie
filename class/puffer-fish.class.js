@@ -24,6 +24,17 @@ class PufferFish extends Enemies {
 
   constructor() {
     super();
+    this.preloadImages();
+    this.colors = {
+      1: "GREEN",
+      2: "RED",
+      3: "BLUE",
+    };
+    this.color = this.getRandomColor();
+    this.loadImage(this.MOVES.SWIM[this.color][0]);
+    this.height = 60;
+    this.width = 60;
+    this.animateFish();
   }
 
   preloadImages() {
@@ -41,13 +52,10 @@ class PufferFish extends Enemies {
     this.loadImages(this.MOVES.DEAD.BLUE);
   }
 
-  static getRandomColor() {
-    const randomNumber = Math.floor(Math.random() * 4) + 1;
-    const colors = {
-      1: "GREEN",
-      2: "RED",
-      3: "BLUE",
-    };
-    return colors[randomNumber];
+  animateFish() {
+    this.playAnimation(this.MOVES.SWIM[this.color], 180);
+    setInterval(() => {
+      this.x -= this.speedX;
+    }, 1000 / 60);
   }
 }
