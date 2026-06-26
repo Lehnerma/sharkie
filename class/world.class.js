@@ -1,6 +1,7 @@
 class World {
   canvas;
   sharkie = new Sharkie();
+  bubbles = [new Bubble()];
   keyboard;
   ctx;
   level = level1;
@@ -31,6 +32,7 @@ class World {
     this.addToMap(this.sharkie);
     this.addObjectsToMap(this.level.endboss);
     this.addObjectsToMap(this.level.enemies);
+    this.addObjectsToMap(this.bubbles);
     this.ctx.translate(-this.camera_x, 0);
     this.addToMap(this.statusbar);
     requestAnimationFrame(() => {
@@ -40,7 +42,8 @@ class World {
 
   helperFunction() {
     setInterval(() => {
-      this.checkCollison();   
+      this.checkCollison();
+      this.checkShootBubble();
     }, 200);
   }
 
@@ -83,11 +86,17 @@ class World {
         if (enemy.isDead() && enemy.readyToRemove) {
           this.level.enemies.splice(index, 1);
         }
-        
       } else if (this.sharkie.isColliding(enemy)) {
         this.sharkie.hit();
         this.statusbar.setPercentage(this.sharkie.health);
       }
     });
+  }
+
+  checkShootBubble() {
+    if (this.keyboard.SPACE) {
+      let newBubble = new Bubble(this.sharkie.x + 125, this.sharkie.y + 105);
+      this.bubbles.push(newBubble);
+    }
   }
 }
