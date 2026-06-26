@@ -73,6 +73,23 @@ class MoveableObjects extends DrawableObjects {
       this.moveDown();
       this.setTimestamp();
     },
+    // WASD movements.
+    W: () => {
+      this.moveUp();
+      this.setTimestamp();
+    },
+    A: () => {
+      this.moveLeft();
+      this.setTimestamp();
+    },
+    S: () => {
+      this.moveDown();
+      this.setTimestamp();
+    },
+    D: () => {
+      this.moveRight();
+      this.setTimestamp();
+    },
   };
 
   timePassed(time) {

@@ -77,7 +77,7 @@ class World {
 
   checkCollison() {
     this.level.enemies.forEach((enemy, index) => {
-      if (this.sharkie.isColliding(enemy) && this.sharkie.isAttacking) {
+      if (this.sharkie.isColliding(enemy) && this.sharkie.isAttacking && !enemy.isDefeated) {
         enemy.hit(20);
         enemy.defeat();
         if (enemy.isDead() && enemy.readyToRemove) {

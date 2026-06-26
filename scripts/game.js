@@ -9,10 +9,12 @@ const keyMap = {
   ArrowLeft: "LEFT",
   ArrowRight: "RIGHT",
   KeyB: "B",
-  KeyD: "D",
+  KeyE: "E",
+
   KeyW: "W",
   KeyA: "A",
   KeyS: "S",
+  KeyD: "D",
 };
 
 function init() {
@@ -24,7 +26,7 @@ window.addEventListener("keydown", (e) => {
   // console.log(`key  code: ${e.code}`); // logs out the key codes for the btns
   const pressedKey = keyMap[e.code];
   // console.log(pressedKey);
-  
+
   if (pressedKey) {
     keyboard[pressedKey] = true;
   }

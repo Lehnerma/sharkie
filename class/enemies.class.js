@@ -3,6 +3,7 @@ class Enemies extends MoveableObjects {
   colors = {};
   defeatFrame = 0;
   readyToRemove = false;
+  isDefeated = false;
 
   constructor() {
     super();
@@ -26,7 +27,8 @@ class Enemies extends MoveableObjects {
     if (this.defeatFrame < images.length - 1) {
       this.defeatFrame++;
     } else {
-      this.readyToRemove = true; 
+      this.readyToRemove = true;
+      this.isDefeated = true;
       this.defeatFrame = 0;
     }
   }

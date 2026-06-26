@@ -134,6 +134,43 @@ class Sharkie extends MoveableObjects {
     this.animateSharkie();
   }
 
+animateSharkie() {
+    setInterval(() => {
+      for (let key in this.movements) {
+        if (this.world.keyboard[key] && !this.isAttacking) {
+          this.movements[key]();
+        }
+      }
+      this.world.camera_x = -this.x + 100; // distanz for the camera
+    }, 1000 / 60);
+
+    setInterval(() => {
+      if (this.isDead()) {
+        this.animate(this.DEAD.POISON);
+      } else if (this.isAttacking) {
+        this.playAttack(this.ATTACK.FIN_SLAP);
+      } else if (this.isHurt()) {
+        this.animate(this.HURT.ELECTRO);
+      } else if (this.world.keyboard.UP || this.world.keyboard.DOWN || this.world.keyboard.W || this.world.keyboard.S) {
+        this.animate(this.SWIM.SWIM_1);
+      } else if (this.world.keyboard.LEFT || this.world.keyboard.A) {
+        this.animate(this.SWIM.SWIM_3);
+        this.otherDirection = true;
+      } else if (this.world.keyboard.RIGHT || this.world.keyboard.D) {
+        this.animate(this.SWIM.SWIM_3);
+        this.otherDirection = false;
+      } else if (this.world.keyboard.E) {
+        this.isAttacking = true;
+        this.playAttack(this.ATTACK.FIN_SLAP);
+      } else if (this.timePassed(10)) {
+        this.playLongIdle();
+      } else {
+        this.animate(this.IDLE.IDLE);
+        this.moving = false;
+      }
+    }, 150);
+  }
+  
   setOffset() {
     this.collisionOffset.top = 90;
     this.collisionOffset.bottom = 40;
@@ -160,42 +197,7 @@ class Sharkie extends MoveableObjects {
     this.loadImages(this.ATTACK.FIN_SLAP);
   }
 
-  animateSharkie() {
-    setInterval(() => {
-      for (let key in this.movements) {
-        if (this.world.keyboard[key] && !this.isAttacking) {
-          this.movements[key]();
-        }
-      }
-      this.world.camera_x = -this.x + 100; // distanz for the camera
-    }, 1000 / 60);
-
-    setInterval(() => {
-      if (this.isDead()) {
-        this.animate(this.DEAD.POISON);
-      } else if (this.isAttacking) {
-        this.playAttack(this.ATTACK.FIN_SLAP);
-      } else if (this.isHurt()) {
-        this.animate(this.HURT.ELECTRO);
-      } else if (this.world.keyboard.UP || this.world.keyboard.DOWN) {
-        this.animate(this.SWIM.SWIM_1);
-      } else if (this.world.keyboard.LEFT) {
-        this.animate(this.SWIM.SWIM_3);
-        this.otherDirection = true;
-      } else if (this.world.keyboard.RIGHT) {
-        this.animate(this.SWIM.SWIM_3);
-        this.otherDirection = false;
-      } else if (this.world.keyboard.D) {
-        this.isAttacking = true;
-        this.playAttack(this.ATTACK.FIN_SLAP);
-      } else if (this.timePassed(10)) {
-        this.playLongIdle();
-      } else {
-        this.animate(this.IDLE.IDLE);
-        this.moving = false;
-      }
-    }, 150);
-  }
+  
 
   playLongIdle() {
     if (this.currentImage <= this.IDLE.LONG_IDLE_INTRO) {
