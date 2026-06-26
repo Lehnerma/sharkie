@@ -148,7 +148,9 @@ animateSharkie() {
       if (this.isDead()) {
         this.animate(this.DEAD.POISON);
       } else if (this.isAttacking) {
-        this.playAttack(this.ATTACK.FIN_SLAP);
+        this.playAttack(this.ATTACK.FIN_SLAP, () => this.finishFinSlap());
+      } else if (this.isAttackingBubble) {
+        this.playAttack(this.ATTACK.BUBBLE, () => this.finishBubbleAttack());
       } else if (this.isHurt()) {
         this.animate(this.HURT.ELECTRO);
       } else if (this.world.keyboard.UP || this.world.keyboard.DOWN || this.world.keyboard.W || this.world.keyboard.S) {
@@ -161,8 +163,11 @@ animateSharkie() {
         this.otherDirection = false;
       } else if (this.world.keyboard.E) {
         this.isAttacking = true;
-        this.playAttack(this.ATTACK.FIN_SLAP);
-      } else if (this.timePassed(10)) {
+        this.playAttack(this.ATTACK.FIN_SLAP, ()=> this.finishFinSlap());
+      } else if (this.world.keyboard.SPACE) {
+        this.isAttackingBubble = true;
+        this.playAttack(this.ATTACK.BUBBLE, ()=> this.finishBubbleAttack());
+      }else if (this.timePassed(10)) {
         this.playLongIdle();
       } else {
         this.animate(this.IDLE.IDLE);
@@ -195,9 +200,18 @@ animateSharkie() {
     this.loadImages(this.SWIM.SWIM_1);
     this.loadImages(this.SWIM.SWIM_3);
     this.loadImages(this.ATTACK.FIN_SLAP);
+    this.loadImages(this.ATTACK.BUBBLE);
   }
 
   
+
+  finishFinSlap() {
+    this.isAttacking = false;
+  }
+
+  finishBubbleAttack() {
+    this.isAttackingBubble = false;
+  }
 
   playLongIdle() {
     if (this.currentImage <= this.IDLE.LONG_IDLE_INTRO) {

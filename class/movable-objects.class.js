@@ -150,14 +150,14 @@ class MoveableObjects extends DrawableObjects {
     return this.y <= 260;
   }
 
-  playAttack(images) {
+  playAttack(images, onFinish) {
     let path = images[this.attackFrame];
     this.setTimestamp();
     this.img = this.imgCache[path];
     if (this.attackFrame < images.length - 1) {
       this.attackFrame++;
     } else {
-      this.isAttacking = false;
+      onFinish();
       this.attackFrame = 0;
     }
   }
