@@ -40,7 +40,7 @@ class World {
 
   helperFunction() {
     setInterval(() => {
-      this.checkCollison();
+      this.checkCollison();   
     }, 200);
   }
 
@@ -79,7 +79,6 @@ class World {
     this.level.enemies.forEach((enemy, index) => {
       if (this.sharkie.isColliding(enemy) && this.sharkie.isAttacking) {
         enemy.hit(20);
-        console.log("hit for Sharkie: ", enemy, index);
         enemy.defeat();
         if (enemy.isDead() && enemy.readyToRemove) {
           this.level.enemies.splice(index, 1);

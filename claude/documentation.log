@@ -63,3 +63,18 @@ Store questions and concise answers here for future reference.
 
 **Q:** Wie baue ich LONG_IDLE so aus, dass Intro einmal spielt und dann Sleep-Animation loopt?
 **A:**for-Schleife funktioniert nicht — Animationen laufen asynchron über setInterval. Besser: State Machine Pattern. 1) Zwei Arrays: LONG_IDLE_INTRO (Frames 1-9) und LONG_IDLE_SLEEP (Frames 10-14). 2) Boolean: isSleeping = false. 3) In animate() prüfen: wenn currentImage >= INTRO.length → isSleeping = true → auf Sleep-Array umschalten (der dann endlos loopt via %). Klassisches Game-Dev Pattern.
+
+**Q:** Wie spiele ich eine Angriffs-Animation einmal ab (playAttack)?
+**A:** Kein eigenes setInterval in playAttack — der äußere setInterval in animateSharkie übernimmt das Timing. playAttack() rückt pro Aufruf einen Frame weiter via attackFrame++. isAttacking-Flag verhindert Neustart während Animation läuft. In animateSharkie: `else if (this.isAttacking)` VOR der Tastaturabfrage setzen, damit die Animation auch bei losgelassener Taste durchläuft. Abbruchbedingung: `attackFrame >= images.length - 1` → isAttacking = false, attackFrame = 0.
+
+**Q:** Wie verhindere ich Bewegung während Sharkie angreift?
+**A:** In animateSharkie() im ersten setInterval (Bewegungs-Loop): `if (this.world.keyboard[key] && !this.isAttacking)` — Bewegung wird blockiert solange isAttacking true ist.
+
+**Q:** Wie füge ich Enemy-Schaden und Death-Animation ein?
+**A:** 1) health in Enemies-Basisklasse definieren (this.health = 20). 2) hit(hitpoints) in MoveableObjects mit Parameter für variable Stärke. 3) In checkCollision() in World: wenn isColliding && isAttacking → enemy.hit(20). 4) defeat()-Methode in jeder Enemy-Klasse: ruft defeatAnimation(this.MOVES.DEAD[this.color]) auf — World kennt so den Typ nicht. 5) defeatAnimation() in Enemies: frame-für-frame wie playAttack, am Ende readyToRemove = true setzen. 6) splice(index, 1) erst wenn readyToRemove true ist.
+
+**Q:** Warum kein pop() sondern splice() beim Enemy entfernen?
+**A:** pop() entfernt immer das LETZTE Element im Array — nicht den getroffenen Enemy. splice(index, 1) entfernt genau ein Element an der richtigen Position. Index kommt vom forEach-Callback: `enemies.forEach((enemy, index) => ...)`.
+
+**Q:** Wie vermeide ich typ-spezifische Abfragen in World (instanceof PufferFish etc.)?
+**A:** defeat()-Methode in jeder Unterklasse definieren die intern this.MOVES.DEAD[this.color] kennt. World ruft nur enemy.defeat() auf — Polymorphismus. Alternativ: defeat() in Enemies-Basisklasse wenn alle Subklassen dieselbe MOVES-Struktur haben.
