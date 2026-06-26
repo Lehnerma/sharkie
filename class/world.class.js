@@ -80,7 +80,8 @@ class World {
       if (this.sharkie.isColliding(enemy) && this.sharkie.isAttacking) {
         enemy.hit(20);
         console.log("hit for Sharkie: ", enemy, index);
-        if (enemy.isDead()) {
+        enemy.defeat();
+        if (enemy.isDead() && enemy.readyToRemove) {
           this.level.enemies.splice(index, 1);
         }
         

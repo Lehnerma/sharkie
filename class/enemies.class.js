@@ -2,13 +2,14 @@ class Enemies extends MoveableObjects {
   color;
   colors = {};
   defeatFrame = 0;
+  readyToRemove = false;
 
   constructor() {
     super();
     this.x = 800 + Math.random() * 3600;
     this.y = 10 + Math.random() * 360;
     this.speedX = Math.random() * 2;
-    this.health = 20;
+    this.health = 15;
   }
 
   getRandomColor() {
@@ -25,6 +26,7 @@ class Enemies extends MoveableObjects {
     if (this.defeatFrame < images.length - 1) {
       this.defeatFrame++;
     } else {
+      this.readyToRemove = true; 
       this.defeatFrame = 0;
     }
   }

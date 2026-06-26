@@ -35,6 +35,7 @@ class PufferFish extends Enemies {
     this.height = 60;
     this.width = 60;
     this.animateFish();
+    
   }
 
   preloadImages() {
@@ -57,5 +58,9 @@ class PufferFish extends Enemies {
     setInterval(() => {
       this.x -= this.speedX;
     }, 1000 / 60);
+  }
+
+  defeat(){
+    this.defeatAnimation(this.MOVES.DEAD[this.color]);
   }
 }
