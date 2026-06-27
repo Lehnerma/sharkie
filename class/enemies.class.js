@@ -4,6 +4,7 @@ class Enemies extends MoveableObjects {
   defeatFrame = 0;
   readyToRemove = false;
   isDefeated = false;
+  canDirectHit;
 
   constructor() {
     super();

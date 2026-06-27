@@ -31,6 +31,7 @@ class JellyFish extends Enemies {
     this.color = this.getRandomColor();
     this.height = 80;
     this.width = 80;
+    this.canDirectHit = false;
     this.loadImage(this.MOVES.SWIM[this.color][0]);
     this.preloadImages();
     this.animateJellyfisch();

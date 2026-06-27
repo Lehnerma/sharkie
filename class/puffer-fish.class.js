@@ -34,6 +34,7 @@ class PufferFish extends Enemies {
     this.loadImage(this.MOVES.SWIM[this.color][0]);
     this.height = 60;
     this.width = 60;
+    this.canDirectHit = true;
     this.animateFish();
     
   }
