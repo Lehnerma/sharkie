@@ -1,6 +1,8 @@
 class Sharkie extends MoveableObjects {
   world;
   isSleeping;
+  isBubbleShoot = true;
+  bubbleShotTimestamp;
 
   IDLE = {
     IDLE: [
@@ -108,7 +110,7 @@ class Sharkie extends MoveableObjects {
       "assets/images/1.Sharkie/4.Attack/bubble_trap/op1/5.png",
       "assets/images/1.Sharkie/4.Attack/bubble_trap/op1/6.png",
       "assets/images/1.Sharkie/4.Attack/bubble_trap/op1/7.png",
-      "assets/images/1.Sharkie/4.Attack/bubble_trap/op1/8.png",
+      // "assets/images/1.Sharkie/4.Attack/bubble_trap/op1/8.png",
     ],
   };
 
@@ -122,7 +124,7 @@ class Sharkie extends MoveableObjects {
     this.width = 200;
     this.speedX = 5;
     this.speedY = 5;
-    this.gravityY = 0.2
+    this.gravityY = 0.2;
     this.health = 100;
 
     this.preloadImages();
@@ -134,7 +136,7 @@ class Sharkie extends MoveableObjects {
     this.animateSharkie();
   }
 
-animateSharkie() {
+  animateSharkie() {
     setInterval(() => {
       for (let key in this.movements) {
         if (this.world.keyboard[key] && !this.isAttacking) {
@@ -150,7 +152,7 @@ animateSharkie() {
       } else if (this.isAttacking) {
         this.playAttack(this.ATTACK.FIN_SLAP, () => this.finishFinSlap());
       } else if (this.isAttackingBubble) {
-        this.playAttack(this.ATTACK.BUBBLE, () => this.finishBubbleAttack());
+        this.playAttack(this.ATTACK.BUBBLE, () => this.finishBubbleAttackAnimation());
       } else if (this.isHurt()) {
         this.animate(this.HURT.ELECTRO);
       } else if (this.world.keyboard.UP || this.world.keyboard.DOWN || this.world.keyboard.W || this.world.keyboard.S) {
@@ -163,11 +165,11 @@ animateSharkie() {
         this.otherDirection = false;
       } else if (this.world.keyboard.E) {
         this.isAttacking = true;
-        this.playAttack(this.ATTACK.FIN_SLAP, ()=> this.finishFinSlap());
-      } else if (this.world.keyboard.SPACE) {
+        this.playAttack(this.ATTACK.FIN_SLAP, () => this.finishFinSlap());
+      } else if (this.world.keyboard.SPACE && this.isBubbleShoot) {
         this.isAttackingBubble = true;
-        this.playAttack(this.ATTACK.BUBBLE, ()=> this.finishBubbleAttack());
-      }else if (this.timePassed(10)) {
+        this.playAttack(this.ATTACK.BUBBLE, () => this.finishBubbleAttackAnimation());
+      } else if (this.timePassed(10)) {
         this.playLongIdle();
       } else {
         this.animate(this.IDLE.IDLE);
@@ -175,7 +177,7 @@ animateSharkie() {
       }
     }, 150);
   }
-  
+
   setOffset() {
     this.collisionOffset.top = 90;
     this.collisionOffset.bottom = 40;
@@ -203,14 +205,13 @@ animateSharkie() {
     this.loadImages(this.ATTACK.BUBBLE);
   }
 
-  
-
   finishFinSlap() {
     this.isAttacking = false;
   }
 
-  finishBubbleAttack() {
+  finishBubbleAttackAnimation() {
     this.isAttackingBubble = false;
+    this.bubbleShoot();
   }
 
   playLongIdle() {
@@ -227,5 +228,18 @@ animateSharkie() {
         this.movements[key]();
       }
     }
+  }
+
+  bubbleShootTimer() {
+    setTimeout(() => {
+      this.isBubbleShoot = true;
+    }, 2000);
+  }
+
+  bubbleShoot() {
+    let newBubble = new Bubble(this.x + 145, this.y + 110);
+    this.isBubbleShoot = false;
+    this.world.bubbles.push(newBubble);
+    this.bubbleShootTimer();
   }
 }

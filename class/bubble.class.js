@@ -6,10 +6,10 @@ class Bubble extends MoveableObjects {
     super();
     this.width = 30;
     this.height = 30;
-    this.speedX = 2;
+    this.speedX = 3;
     this.loadImages(this.BUBBLE);
     this.loadImages(this.POISON_BUBBLE);
-    this.loadImage(this.BUBBLE)
+    this.loadImage(this.BUBBLE[0])
     this.x = x;
     this.y = y;
     this.bubbleAttack(x, y);

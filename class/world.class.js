@@ -43,7 +43,7 @@ class World {
   helperFunction() {
     setInterval(() => {
       this.checkCollison();
-      this.checkShootBubble();
+      // this.checkShootBubble();
     }, 200);
   }
 
@@ -93,10 +93,5 @@ class World {
     });
   }
 
-  checkShootBubble() {
-    if (this.keyboard.SPACE) {
-      let newBubble = new Bubble(this.sharkie.x + 125, this.sharkie.y + 105);
-      this.bubbles.push(newBubble);
-    }
-  }
+
 }
