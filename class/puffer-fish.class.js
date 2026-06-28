@@ -35,8 +35,10 @@ class PufferFish extends Enemies {
     this.height = 60;
     this.width = 60;
     this.canDirectHit = true;
+
+    this.animationState = "TRANSITTION";
+
     this.animateFish();
-    
   }
 
   preloadImages() {
@@ -55,13 +57,36 @@ class PufferFish extends Enemies {
   }
 
   animateFish() {
-    this.playAnimation(this.MOVES.SWIM[this.color], 180);
+    // this.playAnimation(this.MOVES.SWIM[this.color], 180);
+    this.animationImages();
     setInterval(() => {
       this.x -= this.speedX;
     }, 1000 / 60);
   }
 
-  defeat(){
+  animationImages() {
+    setInterval(() => {
+      if (this.animationState === "SWIM") {
+        this.animate(this.MOVES.SWIM[this.color]);
+      } else if (this.animationState === "TRANSITTION") {
+        this.playTransition();
+      } else if (this.animationState === "BUBBLE_SWIM") {
+        this.animate(this.MOVES.BUBBLE_SWIM[this.color]);
+      }
+    }, 180);
+  }
+
+  playTransition() {
+    this.img = this.imgCache[this.MOVES.TRANSITION[this.color][this.animationFrame]];
+    if (this.animationFrame < this.MOVES.TRANSITION[this.color].length - 1) {
+      this.animationFrame++;
+    } else {
+      this.animationState = "BUBBLE_SWIM";
+      this.animationFrame = 0;
+    }
+    this.animate(this.MOVES.TRANSITION[this.color]);
+  }
+  defeat() {
     this.defeatAnimation(this.MOVES.DEAD[this.color]);
   }
 }

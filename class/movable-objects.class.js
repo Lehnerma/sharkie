@@ -152,7 +152,6 @@ class MoveableObjects extends DrawableObjects {
 
   playAttack(images, onFinish) {
     let path = images[this.attackFrame];
-    this.setTimestamp();
     this.img = this.imgCache[path];
     if (this.attackFrame < images.length - 1) {
       this.attackFrame++;
@@ -160,6 +159,7 @@ class MoveableObjects extends DrawableObjects {
       onFinish();
       this.attackFrame = 0;
     }
+    this.setTimestamp(); // wird gesetzt um die longIdle richtig zu triggern
   }
 
   isMoving() {

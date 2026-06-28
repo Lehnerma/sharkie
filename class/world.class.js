@@ -23,6 +23,9 @@ class World {
    */
   setWorld() {
     this.sharkie.world = this;
+    this.level.enemies.forEach((enemy) => {
+      enemy.world = this;
+    });
   }
 
   draw() {
@@ -35,6 +38,7 @@ class World {
     this.addObjectsToMap(this.bubbles);
     this.ctx.translate(-this.camera_x, 0);
     this.addToMap(this.statusbar);
+    // this.creatPufferfish()
     requestAnimationFrame(() => {
       this.draw();
     });
@@ -93,5 +97,9 @@ class World {
     });
   }
 
-
+  creatPufferfish(duration) {
+    setInterval(() => {
+      this.level.enemies.push(new PufferFish());
+    }, duration);
+  }
 }

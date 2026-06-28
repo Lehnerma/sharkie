@@ -5,6 +5,9 @@ class Enemies extends MoveableObjects {
   readyToRemove = false;
   isDefeated = false;
   canDirectHit;
+  world; // zugriff auf die komplette welt das ich sachen abfragen kann zb. Sharkie
+  animationState = "SWIM";
+  animationFrame = 0;
 
   constructor() {
     super();
