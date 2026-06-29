@@ -25,6 +25,8 @@ class World {
     this.sharkie.world = this;
     this.level.enemies.forEach((enemy) => {
       enemy.world = this;
+      console.log(enemy);
+      
     });
   }
 

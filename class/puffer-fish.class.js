@@ -36,8 +36,6 @@ class PufferFish extends Enemies {
     this.width = 60;
     this.canDirectHit = true;
 
-    this.animationState = "TRANSITTION";
-
     this.animateFish();
   }
 
@@ -61,6 +59,7 @@ class PufferFish extends Enemies {
     this.animationImages();
     setInterval(() => {
       this.x -= this.speedX;
+      this.transitionToBubble();
     }, 1000 / 60);
   }
 
@@ -88,5 +87,16 @@ class PufferFish extends Enemies {
   }
   defeat() {
     this.defeatAnimation(this.MOVES.DEAD[this.color]);
+  }
+
+  transitionToBubble() {
+    if (!this.world) return;
+    this.distanceX = this.x - this.world.sharkie.x;
+    this.distanceY = this.y - this.world.sharkie.y;
+    const distance = Math.sqrt(this.distanceX * this.distanceX + this.distanceY * this.distanceY);
+    if(this.distanceX < 100 && this.distanceY < -50) {
+      console.log('testitest');
+      
+    }
   }
 }
