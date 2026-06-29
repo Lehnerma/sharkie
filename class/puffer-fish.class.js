@@ -67,12 +67,12 @@ class PufferFish extends Enemies {
     setInterval(() => {
       if (this.animationState === "SWIM") {
         this.animate(this.MOVES.SWIM[this.color]);
-      } else if (this.animationState === "TRANSITTION") {
+      } else if (this.animationState === "TRANSITION") {
         this.playTransition();
       } else if (this.animationState === "BUBBLE_SWIM") {
         this.animate(this.MOVES.BUBBLE_SWIM[this.color]);
       }
-    }, 180);
+    }, 100);
   }
 
   playTransition() {
@@ -83,7 +83,7 @@ class PufferFish extends Enemies {
       this.animationState = "BUBBLE_SWIM";
       this.animationFrame = 0;
     }
-    this.animate(this.MOVES.TRANSITION[this.color]);
+    // this.MOVES.TRANSITION[this.color];
   }
   defeat() {
     this.defeatAnimation(this.MOVES.DEAD[this.color]);
@@ -94,9 +94,9 @@ class PufferFish extends Enemies {
     this.distanceX = this.x - this.world.sharkie.x;
     this.distanceY = this.y - this.world.sharkie.y;
     const distance = Math.sqrt(this.distanceX * this.distanceX + this.distanceY * this.distanceY);
-    if(this.distanceX < 100 && this.distanceY < -50) {
-      console.log('testitest');
-      
+    if (distance < 250 && this.animationState === "SWIM") {
+      this.animationState = "TRANSITION";
+      this.animationFrame = 0;
     }
   }
 }
