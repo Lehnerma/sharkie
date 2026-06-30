@@ -2,7 +2,7 @@ class World {
   canvas;
   sharkie = new Sharkie();
   bubbles = [new Bubble()];
-  coin = [new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin()];
+  coins = [new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin()];
   keyboard;
   ctx;
   level = level1;
@@ -36,7 +36,7 @@ class World {
     this.addToMap(this.sharkie);
     this.addObjectsToMap(this.level.endboss);
     this.addObjectsToMap(this.level.enemies);
-    this.addObjectsToMap(this.coin);
+    this.addObjectsToMap(this.coins);
     this.addObjectsToMap(this.bubbles);
     this.ctx.translate(-this.camera_x, 0);
     this.addToMap(this.statusbar);
@@ -50,6 +50,7 @@ class World {
     setInterval(() => {
       this.checkCollison();
       // this.checkShootBubble();
+      this.checkCoinCollision()
     }, 200);
   }
 
@@ -99,9 +100,11 @@ class World {
     });
   }
 
-  creatPufferfish(duration) {
-    setInterval(() => {
-      this.level.enemies.push(new PufferFish());
-    }, duration);
+  checkCoinCollision(){
+    this.coins.forEach((coin, index) => {
+      if (this.sharkie.isColliding(coin)){
+        this.coins.splice(index, 1);
+      }
+    })
   }
 }
