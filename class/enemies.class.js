@@ -11,8 +11,8 @@ class Enemies extends MoveableObjects {
 
   constructor() {
     super();
-    this.x = 800 + Math.random() * 3600;
-    this.y = 10 + Math.random() * 360;
+    this.x = this.getRandomX();
+    this.y = this.getRandomY();
     this.speedX = Math.random() * 2;
     this.health = 15;
   }

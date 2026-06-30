@@ -38,4 +38,13 @@ class DrawableObjects {
     ctx.rect(this.x + this.collisionOffset.right, this.y + this.collisionOffset.top, this.width - this.collisionOffset.left - this.collisionOffset.right, this.height - this.collisionOffset.top - this.collisionOffset.bottom);
     ctx.stroke();
   }
+
+  getRandomY(){
+    return 10 + Math.random() * 360;
+  }
+
+  getRandomX(){
+    return 300 + Math.random() * 3600;
+  }
+
 }

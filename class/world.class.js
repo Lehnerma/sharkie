@@ -2,6 +2,7 @@ class World {
   canvas;
   sharkie = new Sharkie();
   bubbles = [new Bubble()];
+  coin = [new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin()];
   keyboard;
   ctx;
   level = level1;
@@ -25,8 +26,6 @@ class World {
     this.sharkie.world = this;
     this.level.enemies.forEach((enemy) => {
       enemy.world = this;
-      console.log(enemy);
-      
     });
   }
 
@@ -37,10 +36,11 @@ class World {
     this.addToMap(this.sharkie);
     this.addObjectsToMap(this.level.endboss);
     this.addObjectsToMap(this.level.enemies);
+    this.addObjectsToMap(this.coin);
     this.addObjectsToMap(this.bubbles);
     this.ctx.translate(-this.camera_x, 0);
     this.addToMap(this.statusbar);
-    // this.creatPufferfish()
+
     requestAnimationFrame(() => {
       this.draw();
     });
