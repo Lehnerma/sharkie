@@ -9,9 +9,6 @@ class Enemies extends MoveableObjects {
   animationState = "SWIM";
   animationFrame = 0;
 
-  distanceX;
-  distanceY;
-
   constructor() {
     super();
     this.x = 800 + Math.random() * 3600;

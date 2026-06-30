@@ -1,0 +1,8 @@
+**Q:** Wie gibt man einer Enemy-Klasse Zugriff auf die World (z.B. Sharkie's Position)?
+**A:** In `world.class.js` → `setWorld()` nach der Sharkie-Zeile ein `forEach` über `this.level.enemies` hinzufügen und `enemy.world = this` setzen. Guard clause in der Enemy-Methode nicht vergessen: `if (!this.world) return;` — der setInterval startet vor setWorld().
+
+**Q:** Wie baut man eine State-Machine für Animationen in einer Enemy-Klasse?
+**A:** `animationState` und `animationFrame` als Properties in der Basisklasse `Enemies` definieren (Initialwert "SWIM"). In der Subklasse einen setInterval bauen der je nach State die richtige Animation spielt. Für einmalige Animationen (z.B. TRANSITION) den Frame manuell hochzählen und am Ende den State wechseln — kein extra `playAnimation()` Aufruf der loopt.
+
+**Q:** Wie lässt man PufferFish bei Nähe zu Sharkie die TRANSITION → BUBBLE_SWIM Animation abspielen?
+**A:** Distanz mit Pythagoras berechnen: `Math.sqrt(dx*dx + dy*dy)`. Bei `distance < X && animationState === "SWIM"` den State auf "TRANSITION" setzen und `animationFrame = 0` zurücksetzen. Die TRANSITION läuft einmalig durch (frame hochzählen bis length-1), dann automatisch State auf "BUBBLE_SWIM" — der dann in der Schleife weiterläuft. Lokale `const` für distanceX/distanceY verwenden, nicht `this.distanceX`.

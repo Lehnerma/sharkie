@@ -43,7 +43,7 @@ class Endboss extends MoveableObjects {
     this.collisionOffset.bottom = 100;
     this.collisionOffset.right = 20;
     this.collisionOffset.left = 20;
-    this.x = 600;
+    this.x = 2000;
     this.y = -20;
     this.health = 100;
 

@@ -83,7 +83,6 @@ class PufferFish extends Enemies {
       this.animationState = "BUBBLE_SWIM";
       this.animationFrame = 0;
     }
-    // this.MOVES.TRANSITION[this.color];
   }
   defeat() {
     this.defeatAnimation(this.MOVES.DEAD[this.color]);
@@ -91,9 +90,9 @@ class PufferFish extends Enemies {
 
   transitionToBubble() {
     if (!this.world) return;
-    this.distanceX = this.x - this.world.sharkie.x;
-    this.distanceY = this.y - this.world.sharkie.y;
-    const distance = Math.sqrt(this.distanceX * this.distanceX + this.distanceY * this.distanceY);
+    const distanceX = this.x - this.world.sharkie.x;
+    const distanceY = this.y - this.world.sharkie.y;
+    const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
     if (distance < 250 && this.animationState === "SWIM") {
       this.animationState = "TRANSITION";
       this.animationFrame = 0;
