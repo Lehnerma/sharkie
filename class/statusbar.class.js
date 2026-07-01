@@ -20,7 +20,7 @@ class Statusbar extends DrawableObjects {
 
   /**
    * checks the percentage and returns the right index for render the status bar.
-   * @returns Number from 0 to 5 for the right index of the statusbars
+   * @returns Number from 0 to 5 for the right index of the statusbar
    */
   getImageIndex(percentage) {
     if (percentage == 100) {
