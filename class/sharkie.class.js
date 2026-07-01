@@ -143,7 +143,7 @@ class Sharkie extends MoveableObjects {
           this.movements[key]();
         }
       }
-      this.world.camera_x = -this.x + 100; // distanz for the camera
+      this.world.camera_x = -this.x + 100; // distance for the camera
     }, 1000 / 60);
 
     setInterval(() => {
@@ -165,6 +165,7 @@ class Sharkie extends MoveableObjects {
         this.otherDirection = false;
       } else if (this.world.keyboard.E) {
         this.isAttacking = true;
+        this.addDistanceForSlap();
         this.playAttack(this.ATTACK.FIN_SLAP, () => this.finishFinSlap());
       } else if (this.world.keyboard.SPACE && this.isBubbleShoot) {
         this.isAttackingBubble = true;
@@ -241,5 +242,13 @@ class Sharkie extends MoveableObjects {
     this.isBubbleShoot = false;
     this.world.bubbles.push(newBubble);
     this.bubbleShootTimer();
+  }
+
+  addDistanceForSlap() {
+    if (this.otherDirection) {
+      this.x -= 10;
+    } else {
+      this.x += 10;
+    }
   }
 }

@@ -20,9 +20,7 @@ class World {
     this.helperFunction();
   }
 
-  /**
-   * connects sharky with this.world class that we can use all the variables in the class sharkie, spezial for the keyboard
-   */
+
   setWorld() {
     this.sharkie.world = this;
     this.level.enemies.forEach((enemy) => {
@@ -50,7 +48,7 @@ class World {
 
   helperFunction() {
     setInterval(() => {
-      this.checkCollison();
+      this.checkCollision();
       // this.checkShootBubble();
       this.checkCoinCollision();
     }, 200);
@@ -75,19 +73,19 @@ class World {
 
   // mirrors the image to the other direction witch the bool value from this.otherDirection
   flipImage(mo) {
-    this.ctx.save(); // speichert den ctx damit wir wieder auf den ursprunglichen zuruckgreifen konnen.
-    this.ctx.translate(mo.width, 0); // beim drehen wird die width des bildes abgezogen das es sich auf den stand dreht.
-    this.ctx.scale(-1, 1); // die eigentliche spiegelung.
+    this.ctx.save();
+    this.ctx.translate(mo.width, 0); 
+    this.ctx.scale(-1, 1); 
     mo.x = mo.x * -1;
   }
 
   // set the image to the normal direction back.
   flipImageBack(mo) {
-    this.ctx.restore(); // wir stellen den ctx wieder her den wir vorher gespeichert haben.
+    this.ctx.restore();
     mo.x = mo.x * -1;
   }
 
-  checkCollison() {
+  checkCollision() {
     this.level.enemies.forEach((enemy, index) => {
       if (this.sharkie.isColliding(enemy) && this.sharkie.isAttacking && !enemy.isDefeated && enemy.canDirectHit) {
         enemy.hit(20);
@@ -104,7 +102,7 @@ class World {
 
   checkCoinCollision() {
     this.coins.forEach((coin, index) => {
-      if (this.sharkie.isColliding(coin)) {
+      if (this.sharkie.isColliding(coin) && this.coinbar.coinCounter < 100) {
         this.coinbar.collectCoin();
         console.log(this.coinbar.coinCounter);
         this.coins.splice(index, 1);
