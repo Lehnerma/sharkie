@@ -2,12 +2,13 @@ class World {
   canvas;
   sharkie = new Sharkie();
   bubbles = [new Bubble()];
-  coins = [new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin()];
+  coins = [new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(),new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(),new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin()];
   keyboard;
   ctx;
   level = level1;
   cameraX;
-  statusbar = new Statusbar();
+  healthbar = new Healthbar();
+  coinbar = new Coinbar();
   world_end = 3700;
 
   constructor(canvas, keyboard) {
@@ -39,7 +40,8 @@ class World {
     this.addObjectsToMap(this.coins);
     this.addObjectsToMap(this.bubbles);
     this.ctx.translate(-this.camera_x, 0);
-    this.addToMap(this.statusbar);
+    this.addToMap(this.healthbar);
+    this.addToMap(this.coinbar);
 
     requestAnimationFrame(() => {
       this.draw();
@@ -50,7 +52,7 @@ class World {
     setInterval(() => {
       this.checkCollison();
       // this.checkShootBubble();
-      this.checkCoinCollision()
+      this.checkCoinCollision();
     }, 200);
   }
 
@@ -95,16 +97,18 @@ class World {
         }
       } else if (this.sharkie.isColliding(enemy)) {
         this.sharkie.hit();
-        this.statusbar.setPercentage(this.sharkie.health);
+        this.healthbar.renderHealthbar(this.sharkie.health);
       }
     });
   }
 
-  checkCoinCollision(){
+  checkCoinCollision() {
     this.coins.forEach((coin, index) => {
-      if (this.sharkie.isColliding(coin)){
+      if (this.sharkie.isColliding(coin)) {
+        this.coinbar.collectCoin();
+        console.log(this.coinbar.coinCounter);
         this.coins.splice(index, 1);
       }
-    })
+    });
   }
 }

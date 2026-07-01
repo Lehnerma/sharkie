@@ -8,7 +8,8 @@ class DrawableObjects {
   currentImage = 0;
   collisionOffset = { top: 0, bottom: 0, right: 0, left: 0 };
   levelBoundary = { top: 0, bottom: 0, right: 0, left: 0 };
-  healthPercentage;
+
+  coinCounter = 0;
   
   drawObject(ctx) {
     ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
