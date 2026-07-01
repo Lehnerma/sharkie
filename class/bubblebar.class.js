@@ -4,7 +4,7 @@ class Bubblebar extends Statusbar {
   constructor() {
     super();
     this.loadImages(this.BUBBLES);
-    this.y = 85;
+    this.y = 70;
     this.setPercentage(this.poisonCounter, this.BUBBLES);
   }
 
