@@ -4,10 +4,7 @@ class Coinbar extends Statusbar {
   constructor() {
     super();
     this.loadImages(this.COIN);
-    this.x = 10;
     this.y = 45;
-    this.width = 180;
-    this.height = 50;
     this.setPercentage(this.coinCounter, this.COIN);
   }
 

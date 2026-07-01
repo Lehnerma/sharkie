@@ -1,17 +1,12 @@
 class Statusbar extends DrawableObjects {
   healthPercentage;
 
-
   constructor() {
     super();
-    this.x = 10;
-    this.y = 10;
-    this.width = 180;
-    this.height = 50;
-
+    this.x = 5;
+    this.width = 140;
+    this.height = 40;
   }
-
-
 
   setPercentage(percentage, images) {
     let path = images[this.getImageIndex(percentage)];

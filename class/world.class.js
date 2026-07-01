@@ -9,6 +9,7 @@ class World {
   cameraX;
   healthbar = new Healthbar();
   coinbar = new Coinbar();
+  bubblebar = new Bubblebar();
   world_end = 3700;
 
   constructor(canvas, keyboard) {
@@ -40,6 +41,7 @@ class World {
     this.ctx.translate(-this.camera_x, 0);
     this.addToMap(this.healthbar);
     this.addToMap(this.coinbar);
+    this.addToMap(this.bubblebar);
 
     requestAnimationFrame(() => {
       this.draw();
@@ -49,7 +51,6 @@ class World {
   helperFunction() {
     setInterval(() => {
       this.checkCollision();
-      // this.checkShootBubble();
       this.checkCoinCollision();
     }, 200);
   }
