@@ -105,7 +105,6 @@ class World {
     this.coins.forEach((coin, index) => {
       if (this.sharkie.isColliding(coin) && this.coinbar.coinCounter < 100) {
         this.coinbar.collectCoin();
-        console.log(this.coinbar.coinCounter);
         this.coins.splice(index, 1);
       }
     });
