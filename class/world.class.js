@@ -3,6 +3,7 @@ class World {
   sharkie = new Sharkie();
   bubbles = [new Bubble()];
   coins = [new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(),new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(),new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin()];
+  poisonBottles = [];
   keyboard;
   ctx;
   level = level1;
@@ -108,5 +109,12 @@ class World {
         this.coins.splice(index, 1);
       }
     });
+  }
+
+  checkPoisonBottleCollision(){
+    this.poisonBottles.forEach((poisonBottles, index) => {
+      this.poisonBottles.collectBottle();
+      // feat: splice function
+    })
   }
 }
