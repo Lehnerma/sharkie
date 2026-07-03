@@ -3,14 +3,14 @@ class World {
   sharkie = new Sharkie();
   bubbles = [new Bubble()];
   coins = [new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin()];
-  poisonBottles = [new Poisonbottle(), new Poisonbottle(), new Poisonbottle(), new Poisonbottle(), new Poisonbottle(), new Poisonbottle(), new Poisonbottle(), new Poisonbottle(), new Poisonbottle(), new Poisonbottle()];
+  bottles = [new Poisonbottle(), new Poisonbottle(), new Poisonbottle(), new Poisonbottle(), new Poisonbottle(), new Poisonbottle(), new Poisonbottle(), new Poisonbottle(), new Poisonbottle(), new Poisonbottle()];
   keyboard;
   ctx;
   level = level1;
   cameraX;
   healthbar = new Healthbar();
   coinbar = new Coinbar();
-  bubblebar = new Bubblebar();
+  bottlebar = new Bottlebar();
   world_end = 3700;
 
   constructor(canvas, keyboard) {
@@ -37,12 +37,12 @@ class World {
     this.addObjectsToMap(this.level.endboss);
     this.addObjectsToMap(this.level.enemies);
     this.addObjectsToMap(this.coins);
-    this.addObjectsToMap(this.poisonBottles);
+    this.addObjectsToMap(this.bottles);
     this.addObjectsToMap(this.bubbles);
     this.ctx.translate(-this.camera_x, 0);
     this.addToMap(this.healthbar);
     this.addToMap(this.coinbar);
-    this.addToMap(this.bubblebar);
+    this.addToMap(this.bottlebar);
 
     requestAnimationFrame(() => {
       this.draw();
@@ -53,6 +53,7 @@ class World {
     setInterval(() => {
       this.checkCollision();
       this.checkCoinCollision();
+      this.checkPoisonBottleCollision();
     }, 200);
   }
 
@@ -113,9 +114,12 @@ class World {
 
   //TODO add the splice function to the cut out the right bottle from the array
   checkPoisonBottleCollision() {
-    this.poisonBottles.forEach((poisonBottles, index) => {
-      this.poisonBottles.collectBottle();
-      //! feat: splice function
+    this.bottles.forEach((bottle, index) => {
+      if (this.sharkie.isColliding(bottle) && this.bottlebar.bottleCounter < 100) {
+        this.bottlebar.collectBottle();
+
+        this.bottles.splice(index, 1)
+      }
     });
   }
 }

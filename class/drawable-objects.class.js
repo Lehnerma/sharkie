@@ -10,7 +10,7 @@ class DrawableObjects {
   levelBoundary = { top: 0, bottom: 0, right: 0, left: 0 };
 
   coinCounter = 0;
-  poisonCounter = 0;
+  bottleCounter = 0;
 
   drawObject(ctx) {
     ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
