@@ -13,21 +13,21 @@ class Poisonbottle extends DrawableObjects {
     DARK: ["assets/images/4_Marcadores/poison/Dark - Left.png", "assets/images/4_Marcadores/poison/Dark - Right.png"],
     LIGHT: ["assets/images/4_Marcadores/poison/Light - Left.png", "assets/images/4_Marcadores/poison/Light - Right.png"],
   };
-  constructor() {
+  constructor(type) {
     super();
     this.preloadImages();
-    this.loadImage(this.POISON_BOTTLE.DARK[0])
+    this.loadImage(this.POISON_BOTTLE.DARK[0]);
 
     this.width = 40;
     this.height = 50;
     this.getRandomCoordinate();
-    this.run();
+    this.run(type);
   }
 
-  run(){
-    setInterval(()=>{
-      this.animate(this.POISON_BOTTLE.ANIMATION)
-    }, 200)
+  run(type) {
+    setInterval(() => {
+      this.animate(this.getImages(type));
+    }, 250);
   }
 
   preloadImages() {
@@ -36,5 +36,19 @@ class Poisonbottle extends DrawableObjects {
     this.loadImages(this.POISON_BOTTLE.LIGHT);
   }
 
+  getImages(bottle) {
+    if (bottle == "dark") {
+      this.y = 360;
+      return this.POISON_BOTTLE.DARK;
+    } else if (bottle == "light") {
+      this.y = 360;
+      return this.POISON_BOTTLE.LIGHT[this.zeroOrOne()];
+    } else {
+      return this.POISON_BOTTLE.ANIMATION[this.zeroOrOne()];
+    }
+  }
 
+  zeroOrOne() {
+    return Math.round(Math.random);
+  }
 }

@@ -3,7 +3,7 @@ class World {
   sharkie = new Sharkie();
   bubbles = [new Bubble()];
   coins = [new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(),new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(),new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin()];
-  poisonBottles = [ new Poisonbottle(),new Poisonbottle(),new Poisonbottle(),new Poisonbottle(),new Poisonbottle(),new Poisonbottle(),new Poisonbottle()];
+  poisonBottles = [ new Poisonbottle('dark'),new Poisonbottle('light'),new Poisonbottle('light'),new Poisonbottle('dark'),new Poisonbottle(),new Poisonbottle(),new Poisonbottle()];
   keyboard;
   ctx;
   level = level1;
