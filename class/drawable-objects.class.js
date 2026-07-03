@@ -11,7 +11,7 @@ class DrawableObjects {
 
   coinCounter = 0;
   poisonCounter = 0;
-  
+
   drawObject(ctx) {
     ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
   }
@@ -41,12 +41,22 @@ class DrawableObjects {
     ctx.stroke();
   }
 
-  getRandomY(){
-    return 10 + Math.random() * 360;
+  getRandomY() {
+    return 10 + Math.random() * 340;
   }
 
-  getRandomX(){
-    return 300 + Math.random() * 3600;
+  getRandomX() {
+    return 600 + Math.random() * 3600;
   }
 
+  getRandomCoordinate() {
+    this.y = this.getRandomY();
+    this.x = this.getRandomX();
+  }
+  animate(images) {
+    let i = this.currentImage % images.length;
+    let path = images[i];
+    this.img = this.imgCache[path];
+    this.currentImage++;
+  }
 }

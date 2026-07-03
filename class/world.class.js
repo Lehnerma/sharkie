@@ -3,7 +3,7 @@ class World {
   sharkie = new Sharkie();
   bubbles = [new Bubble()];
   coins = [new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(),new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(),new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin()];
-  poisonBottles = [];
+  poisonBottles = [ new Poisonbottle(),new Poisonbottle(),new Poisonbottle(),new Poisonbottle(),new Poisonbottle(),new Poisonbottle(),new Poisonbottle()];
   keyboard;
   ctx;
   level = level1;
@@ -38,6 +38,7 @@ class World {
     this.addObjectsToMap(this.level.endboss);
     this.addObjectsToMap(this.level.enemies);
     this.addObjectsToMap(this.coins);
+    this.addObjectsToMap(this.poisonBottles);
     this.addObjectsToMap(this.bubbles);
     this.ctx.translate(-this.camera_x, 0);
     this.addToMap(this.healthbar);
@@ -73,7 +74,7 @@ class World {
     });
   }
 
-  // mirrors the image to the other direction witch the bool value from this.otherDirection
+  //* mirrors the image to the other direction witch the bool value from this.otherDirection
   flipImage(mo) {
     this.ctx.save();
     this.ctx.translate(mo.width, 0); 
@@ -81,7 +82,7 @@ class World {
     mo.x = mo.x * -1;
   }
 
-  // set the image to the normal direction back.
+  //* set the image to the normal direction back.
   flipImageBack(mo) {
     this.ctx.restore();
     mo.x = mo.x * -1;
@@ -111,10 +112,11 @@ class World {
     });
   }
 
+  //TODO add the splice function to the cut out the right bottle from the array
   checkPoisonBottleCollision(){
     this.poisonBottles.forEach((poisonBottles, index) => {
       this.poisonBottles.collectBottle();
-      // feat: splice function
+      //! feat: splice function
     })
   }
 }

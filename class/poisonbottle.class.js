@@ -16,11 +16,18 @@ class Poisonbottle extends DrawableObjects {
   constructor() {
     super();
     this.preloadImages();
+    this.loadImage(this.POISON_BOTTLE.DARK[0])
 
     this.width = 40;
-    this.height = 40;
-    this.x = this.getRandomX();
-    this.y = this.getRandomY();
+    this.height = 50;
+    this.getRandomCoordinate();
+    this.run();
+  }
+
+  run(){
+    setInterval(()=>{
+      this.animate(this.POISON_BOTTLE.ANIMATION)
+    }, 200)
   }
 
   preloadImages() {
@@ -28,4 +35,6 @@ class Poisonbottle extends DrawableObjects {
     this.loadImages(this.POISON_BOTTLE.DARK);
     this.loadImages(this.POISON_BOTTLE.LIGHT);
   }
+
+
 }
