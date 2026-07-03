@@ -1,4 +1,8 @@
-class Poisonbottle extends DrawableObjects {
+class Poisonbottle extends MoveableObjects {
+  possibleTypes = ["DARK", "LIGHT", "ANIMATION"];
+  direction;
+  type;
+
   POISON_BOTTLE = {
     ANIMATION: [
       "assets/images/4_Marcadores/poison/Animada/1.png",
@@ -10,45 +14,57 @@ class Poisonbottle extends DrawableObjects {
       "assets/images/4_Marcadores/poison/Animada/7.png",
       "assets/images/4_Marcadores/poison/Animada/8.png",
     ],
-    DARK: ["assets/images/4_Marcadores/poison/Dark - Left.png", "assets/images/4_Marcadores/poison/Dark - Right.png"],
-    LIGHT: ["assets/images/4_Marcadores/poison/Light - Left.png", "assets/images/4_Marcadores/poison/Light - Right.png"],
+    DARK: {
+      LEFT: "assets/images/4_Marcadores/poison/Dark - Left.png",
+      RIGHT: "assets/images/4_Marcadores/poison/Dark - Right.png",
+    },
+    LIGHT: {
+      LEFT: "assets/images/4_Marcadores/poison/Light - Left.png",
+      RIGHT: "assets/images/4_Marcadores/poison/Light - Right.png",
+    },
   };
-  constructor(type) {
+  constructor() {
     super();
+    this.direction = this.rightOrLeft();
+    this.getType();
     this.preloadImages();
-    this.loadImage(this.POISON_BOTTLE.DARK[0]);
-
     this.width = 40;
     this.height = 50;
     this.getRandomCoordinate();
-    this.run(type);
+    this.run();
   }
 
-  run(type) {
+  run(){
     setInterval(() => {
-      this.animate(this.getImages(type));
-    }, 250);
+      this.renderBottles()
+    }, 150);
   }
 
   preloadImages() {
     this.loadImages(this.POISON_BOTTLE.ANIMATION);
-    this.loadImages(this.POISON_BOTTLE.DARK);
-    this.loadImages(this.POISON_BOTTLE.LIGHT);
+    this.loadImage(this.POISON_BOTTLE.DARK[this.direction])
   }
 
-  getImages(bottle) {
-    if (bottle == "dark") {
-      this.y = 360;
-      return this.POISON_BOTTLE.DARK;
-    } else if (bottle == "light") {
-      this.y = 360;
-      return this.POISON_BOTTLE.LIGHT[this.zeroOrOne()];
+  renderBottles() {
+    if (this.type == "ANIMATION"){
+      this.animate(this.POISON_BOTTLE.ANIMATION);
     } else {
-      return this.POISON_BOTTLE.ANIMATION[this.zeroOrOne()];
+      this.loadImage(this.POISON_BOTTLE[this.type][this.direction])
+      this.y = 360
     }
   }
 
-  zeroOrOne() {
-    return Math.round(Math.random);
+  rightOrLeft() {
+    const zeroOrOne = Math.floor(Math.random() * 2);
+    if (zeroOrOne === 0) {
+      return "LEFT";
+    } else {
+      return "RIGHT";
+    }
+  }
+
+  getType() {
+    const index = Math.floor(Math.random() * 3);
+    this.type = this.possibleTypes[index];
   }
 }

@@ -2,8 +2,8 @@ class World {
   canvas;
   sharkie = new Sharkie();
   bubbles = [new Bubble()];
-  coins = [new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(),new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(),new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin()];
-  poisonBottles = [ new Poisonbottle('dark'),new Poisonbottle('light'),new Poisonbottle('light'),new Poisonbottle('dark'),new Poisonbottle(),new Poisonbottle(),new Poisonbottle()];
+  coins = [new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin()];
+  poisonBottles = [new Poisonbottle(), new Poisonbottle(), new Poisonbottle(), new Poisonbottle(), new Poisonbottle(), new Poisonbottle(), new Poisonbottle(), new Poisonbottle(), new Poisonbottle(), new Poisonbottle()];
   keyboard;
   ctx;
   level = level1;
@@ -21,7 +21,6 @@ class World {
     this.draw();
     this.helperFunction();
   }
-
 
   setWorld() {
     this.sharkie.world = this;
@@ -77,8 +76,8 @@ class World {
   //* mirrors the image to the other direction witch the bool value from this.otherDirection
   flipImage(mo) {
     this.ctx.save();
-    this.ctx.translate(mo.width, 0); 
-    this.ctx.scale(-1, 1); 
+    this.ctx.translate(mo.width, 0);
+    this.ctx.scale(-1, 1);
     mo.x = mo.x * -1;
   }
 
@@ -113,10 +112,10 @@ class World {
   }
 
   //TODO add the splice function to the cut out the right bottle from the array
-  checkPoisonBottleCollision(){
+  checkPoisonBottleCollision() {
     this.poisonBottles.forEach((poisonBottles, index) => {
       this.poisonBottles.collectBottle();
       //! feat: splice function
-    })
+    });
   }
 }
