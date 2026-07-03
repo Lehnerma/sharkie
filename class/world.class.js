@@ -1,7 +1,7 @@
 class World {
   canvas;
   sharkie = new Sharkie();
-  bubbles = [new Bubble()];
+  bubbles = [];
   coins = [new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin()];
   bottles = [new Poisonbottle(), new Poisonbottle(), new Poisonbottle(), new Poisonbottle(), new Poisonbottle(), new Poisonbottle(), new Poisonbottle(), new Poisonbottle(), new Poisonbottle(), new Poisonbottle()];
   keyboard;
@@ -74,7 +74,6 @@ class World {
     });
   }
 
-  //* mirrors the image to the other direction witch the bool value from this.otherDirection
   flipImage(mo) {
     this.ctx.save();
     this.ctx.translate(mo.width, 0);
@@ -82,7 +81,6 @@ class World {
     mo.x = mo.x * -1;
   }
 
-  //* set the image to the normal direction back.
   flipImageBack(mo) {
     this.ctx.restore();
     mo.x = mo.x * -1;
@@ -112,14 +110,21 @@ class World {
     });
   }
 
-  //TODO add the splice function to the cut out the right bottle from the array
   checkPoisonBottleCollision() {
     this.bottles.forEach((bottle, index) => {
       if (this.sharkie.isColliding(bottle) && this.bottlebar.bottleCounter < 100) {
         this.bottlebar.collectBottle();
-
-        this.bottles.splice(index, 1)
+        this.bottles.splice(index, 1);
       }
     });
+  }
+
+  deleteBubble(){
+    this.bubbles.forEach((bubble, index)=>{
+      if (bubble.x)
+      this.bubbles.splice(index,1)
+    console.log('delete bubble');
+    
+    })
   }
 }

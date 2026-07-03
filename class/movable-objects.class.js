@@ -11,6 +11,7 @@ class MoveableObjects extends DrawableObjects {
   attackFrame = 0;
 
   health;
+  isBubbleShoot = true;
 
   constructor() {
     super();

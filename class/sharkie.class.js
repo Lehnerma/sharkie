@@ -1,8 +1,8 @@
 class Sharkie extends MoveableObjects {
   world;
   isSleeping;
-  isBubbleShoot = true;
   bubbleShotTimestamp;
+  poison = false;
 
   IDLE = {
     IDLE: [
@@ -234,11 +234,14 @@ class Sharkie extends MoveableObjects {
   bubbleShootTimer() {
     setTimeout(() => {
       this.isBubbleShoot = true;
+      this.world.deleteBubble();
     }, 2000);
   }
 
+
   bubbleShoot() {
-    let newBubble = new Bubble(this.x + 145, this.y + 110);
+    this.checkPoison();
+    let newBubble = new Bubble(this.x + 145, this.y + 110, this.poison);
     this.isBubbleShoot = false;
     this.world.bubbles.push(newBubble);
     this.bubbleShootTimer();
@@ -249,6 +252,18 @@ class Sharkie extends MoveableObjects {
       this.x -= 20;
     } else {
       this.x += 10;
+    }
+  }
+
+  checkPoison() {
+    if (this.world.bottlebar.bottleCounter > 0) {
+      console.log(`poisonbottle counter: ${this.world.bottlebar.bottleCounter}`);
+      this.poison = true;
+      this.world.bottlebar.bottleCounter -= 10;
+      this.world.bottlebar.renderBottle(this.world.bottlebar.bottleCounter);
+    } else {
+      this.poison = false;
+      console.log(`poisonbottle counter: ${this.world.bottlebar.bottleCounter}`);
     }
   }
 }
