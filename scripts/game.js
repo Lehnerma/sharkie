@@ -10,6 +10,7 @@ const keyMap = {
   ArrowRight: "RIGHT",
   KeyB: "B",
   KeyE: "E",
+  KeyH: "H",
 
   KeyW: "W",
   KeyA: "A",

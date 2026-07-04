@@ -12,6 +12,7 @@ class World {
   coinbar = new Coinbar();
   bottlebar = new Bottlebar();
   world_end = 3700;
+  lastShopBuy = 0;
 
   constructor(canvas, keyboard) {
     this.canvas = canvas;
@@ -54,7 +55,38 @@ class World {
       this.checkEnemyCollision();
       this.checkCoinCollision();
       this.checkPoisonBottleCollision();
+      this.checkShopInput();
     }, 200);
+  }
+
+  checkShopInput() {
+    const now = new Date().getTime();
+    if (now - this.lastShopBuy < 5000) return;
+    if (this.keyboard.H) {
+      this.buyHeal();
+    } else if (this.keyboard.B) {
+      this.buyBottles();
+    }
+  }
+
+  buyHeal() {
+    if (this.coinbar.coinCounter >= 10 && this.sharkie.health < 100) {
+      this.coinbar.coinCounter -= 10;
+      this.coinbar.renderCoinbar(this.coinbar.coinCounter);
+      this.sharkie.health = Math.min(100, this.sharkie.health + 50);
+      this.healthbar.renderHealthbar(this.sharkie.health);
+      this.lastShopBuy = new Date().getTime();
+    }
+  }
+
+  buyBottles() {
+    if (this.coinbar.coinCounter >= 10 && this.bottlebar.bottleCounter < 100) {
+      this.coinbar.coinCounter -= 10;
+      this.coinbar.renderCoinbar(this.coinbar.coinCounter);
+      this.bottlebar.bottleCounter = Math.min(100, this.bottlebar.bottleCounter + 50);
+      this.bottlebar.renderBottle(this.bottlebar.bottleCounter);
+      this.lastShopBuy = new Date().getTime();
+    }
   }
 
   addToMap(mo) {
