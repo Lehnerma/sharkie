@@ -95,7 +95,15 @@ class World {
           this.level.enemies.splice(index, 1);
         }
       } else if (this.sharkie.isColliding(enemy)) {
-        if (enemy instanceof JellyFish) {
+        this.getLastHitTypeSharkie(enemy);
+        this.sharkie.hit();
+        this.healthbar.renderHealthbar(this.sharkie.health);
+      }
+    });
+  }
+
+  getLastHitTypeSharkie(enemy){
+    if (enemy instanceof JellyFish) {
           this.sharkie.lastHitType = "ELECTRO";
           console.log('hit by a jellyfish');
           
@@ -104,10 +112,6 @@ class World {
           console.log('hit by a pufferfish');
           
         }
-        this.sharkie.hit();
-        this.healthbar.renderHealthbar(this.sharkie.health);
-      }
-    });
   }
 
   checkCoinCollision() {

@@ -156,7 +156,7 @@ class Sharkie extends MoveableObjects {
       } else if (this.isAttackingBubble) {
         this.playAttack(this.ATTACK.BUBBLE, () => this.finishBubbleAttackAnimation());
       } else if (this.isHurt()) {
-        this.animate(this.HURT.ELECTRO);
+        this.animate(this.HURT[this.lastHitType]);
       } else if (this.world.keyboard.UP || this.world.keyboard.DOWN || this.world.keyboard.W || this.world.keyboard.S) {
         this.animate(this.SWIM.SWIM_1);
       } else if (this.world.keyboard.LEFT || this.world.keyboard.A) {
@@ -202,6 +202,7 @@ class Sharkie extends MoveableObjects {
     this.loadImages(this.DEAD.ELECTRO);
     this.loadImages(this.DEAD.POISON);
     this.loadImages(this.HURT.ELECTRO);
+    this.loadImages(this.HURT.POISON);
     this.loadImages(this.SWIM.SWIM_1);
     this.loadImages(this.SWIM.SWIM_3);
     this.loadImages(this.ATTACK.FIN_SLAP);
