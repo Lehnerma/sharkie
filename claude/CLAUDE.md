@@ -43,6 +43,8 @@ Order in `index.html` matters due to class dependencies:
 
 Store short, concise answers in `documentation.log` in the project root for future reference. Format: **Q:** question | **A:** answer
 
+**At the end of every conversation session**, automatically append a keyword-style summary of all topics discussed to `documentation.log` — no user confirmation needed. Use the same Q/A format, keep answers concise and keyword-heavy (no full sentences). Cover every meaningful concept, decision, or pattern from the session.
+
 ### Key Implementation Patterns
 
 1. **Canvas Drawing**: Objects implement `draw(ctx)` methods called by World's `addToMap()`.

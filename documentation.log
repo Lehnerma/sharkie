@@ -6,3 +6,9 @@
 
 **Q:** Wie lässt man PufferFish bei Nähe zu Sharkie die TRANSITION → BUBBLE_SWIM Animation abspielen?
 **A:** Distanz mit Pythagoras berechnen: `Math.sqrt(dx*dx + dy*dy)`. Bei `distance < X && animationState === "SWIM"` den State auf "TRANSITION" setzen und `animationFrame = 0` zurücksetzen. Die TRANSITION läuft einmalig durch (frame hochzählen bis length-1), dann automatisch State auf "BUBBLE_SWIM" — der dann in der Schleife weiterläuft. Lokale `const` für distanceX/distanceY verwenden, nicht `this.distanceX`.
+
+**Q:** Wie baut man unterschiedliche Hurt-Animationen je nach Feindtyp (Elektro vs. Gift)?
+**A:** 3 Schritte: (1) `lastHurtType` Property in Sharkie hinzufügen ('ELECTRO' oder 'POISON'). (2) In `world.class.js → checkCollision()` vor `sharkie.hit()` mit `instanceof JellyFish` / `instanceof PufferFish` prüfen und `sharkie.lastHurtType` setzen. (3) In `animateSharkie()` statt `HURT.ELECTRO` → `HURT[this.lastHurtType]` verwenden. JellyFish = ELECTRO, PufferFish = POISON.
+
+**Q:** Wie baut man einen dynamischen Enemy-Spawn (Enemies entfernen + nachspawnen, Mindestanzahl, zufälliger Typ)?
+**A:** Funktion in `world.class.js`, Aufruf in `helperFunction()`. (1) Enemies per `forEach` + `splice` entfernen wenn `enemy.x < -200` (off-screen links). (2) Nach dem Entfernen `if (this.level.enemies.length < 10)` → neue Enemies pushen. (3) Zufälliger Typ: `Math.random() < 0.5 ? new PufferFish() : new JellyFish()`. Spawn-Position: `x = this.world_end`. Nach Push: `enemy.world = this` setzen (wie in `setWorld()`).
