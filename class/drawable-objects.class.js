@@ -34,11 +34,13 @@ class DrawableObjects {
   }
 
   drawBorderCollision(ctx) {
-    if (this instanceof Sharkie || this instanceof JellyFish) ctx.beginPath();
-    ctx.lineWidth = "1";
-    ctx.strokeStyle = "red";
-    ctx.rect(this.x + this.collisionOffset.right, this.y + this.collisionOffset.top, this.width - this.collisionOffset.left - this.collisionOffset.right, this.height - this.collisionOffset.top - this.collisionOffset.bottom);
-    ctx.stroke();
+    if (this instanceof Sharkie || this instanceof JellyFish || this instanceof PufferFish) {
+      ctx.beginPath();
+      ctx.lineWidth = "1";
+      ctx.strokeStyle = "red";
+      ctx.rect(this.x + this.collisionOffset.right, this.y + this.collisionOffset.top, this.width - this.collisionOffset.left - this.collisionOffset.right, this.height - this.collisionOffset.top - this.collisionOffset.bottom);
+      ctx.stroke();
+    }
   }
 
   getRandomY() {
@@ -53,6 +55,4 @@ class DrawableObjects {
     this.y = this.getRandomY();
     this.x = this.getRandomX();
   }
-
-
 }

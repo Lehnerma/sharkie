@@ -51,7 +51,7 @@ class World {
 
   helperFunction() {
     setInterval(() => {
-      this.checkCollision();
+      this.checkEnemyCollision();
       this.checkCoinCollision();
       this.checkPoisonBottleCollision();
     }, 200);
@@ -86,7 +86,7 @@ class World {
     mo.x = mo.x * -1;
   }
 
-  checkCollision() {
+  checkEnemyCollision() {
     this.level.enemies.forEach((enemy, index) => {
       if (this.sharkie.isColliding(enemy) && this.sharkie.isAttacking && !enemy.isDefeated && enemy.canDirectHit) {
         enemy.hit(20);
@@ -95,6 +95,15 @@ class World {
           this.level.enemies.splice(index, 1);
         }
       } else if (this.sharkie.isColliding(enemy)) {
+        if (enemy instanceof JellyFish) {
+          this.sharkie.lastHitType = "ELECTRO";
+          console.log('hit by a jellyfish');
+          
+        } else {
+          this.sharkie.lastHitType = "POISON";
+          console.log('hit by a pufferfish');
+          
+        }
         this.sharkie.hit();
         this.healthbar.renderHealthbar(this.sharkie.health);
       }
@@ -119,12 +128,10 @@ class World {
     });
   }
 
-  deleteBubble(){
-    this.bubbles.forEach((bubble, index)=>{
-      if (bubble.x)
-      this.bubbles.splice(index,1)
-    console.log('delete bubble');
-    
-    })
+  deleteBubble() {
+    this.bubbles.forEach((bubble, index) => {
+      if (bubble.x) this.bubbles.splice(index, 1);
+      console.log("delete bubble");
+    });
   }
 }

@@ -3,6 +3,8 @@ class Sharkie extends MoveableObjects {
   isSleeping;
   bubbleShotTimestamp;
   poison = false;
+  lastHitType;
+
 
   IDLE = {
     IDLE: [
