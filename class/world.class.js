@@ -13,6 +13,7 @@ class World {
   bottlebar = new Bottlebar();
   world_end = 3700;
   lastShopBuy = 0;
+  coinReplenishing = false;
 
   constructor(canvas, keyboard) {
     this.canvas = canvas;
@@ -21,6 +22,7 @@ class World {
     this.setWorld();
     this.draw();
     this.helperFunction();
+    this.addElementsToWorld();
   }
 
   setWorld() {
@@ -59,6 +61,23 @@ class World {
     }, 200);
   }
 
+  addElementsToWorld() {
+    setInterval(() => {
+      this.addCoinsToWorld();
+    }, 5000);
+  }
+
+  addCoinsToWorld() {
+    if (this.coins.length < 3) this.coinReplenishing = true;
+    if (this.coinReplenishing) {
+      if (this.coins.length < 5) {
+        this.coins.push(new Coin());
+      } else {
+        this.coinReplenishing = false;
+      }
+    }
+  }
+
   checkShopInput() {
     const now = new Date().getTime();
     if (now - this.lastShopBuy < 5000) return;
@@ -71,7 +90,7 @@ class World {
 
   buyHeal() {
     if (this.coinbar.coinCounter >= 10 && this.sharkie.health < 100) {
-      this.coinbar.coinCounter -= 10;
+      this.coinbar.coinCounter -= 50;
       this.coinbar.renderCoinbar(this.coinbar.coinCounter);
       this.sharkie.health = Math.min(100, this.sharkie.health + 50);
       this.healthbar.renderHealthbar(this.sharkie.health);
@@ -81,7 +100,7 @@ class World {
 
   buyBottles() {
     if (this.coinbar.coinCounter >= 10 && this.bottlebar.bottleCounter < 100) {
-      this.coinbar.coinCounter -= 10;
+      this.coinbar.coinCounter -= 50;
       this.coinbar.renderCoinbar(this.coinbar.coinCounter);
       this.bottlebar.bottleCounter = Math.min(100, this.bottlebar.bottleCounter + 50);
       this.bottlebar.renderBottle(this.bottlebar.bottleCounter);
@@ -134,16 +153,14 @@ class World {
     });
   }
 
-  getLastHitTypeSharkie(enemy){
+  getLastHitTypeSharkie(enemy) {
     if (enemy instanceof JellyFish) {
-          this.sharkie.lastHitType = "ELECTRO";
-          console.log('hit by a jellyfish');
-          
-        } else {
-          this.sharkie.lastHitType = "POISON";
-          console.log('hit by a pufferfish');
-          
-        }
+      this.sharkie.lastHitType = "ELECTRO";
+      console.log("hit by a jellyfish");
+    } else {
+      this.sharkie.lastHitType = "POISON";
+      console.log("hit by a pufferfish");
+    }
   }
 
   checkCoinCollision() {
