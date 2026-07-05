@@ -5,7 +5,7 @@ class Enemies extends MoveableObjects {
   readyToRemove = false;
   isDefeated = false;
   canDirectHit;
-  world; // zugriff auf die komplette welt das ich sachen abfragen kann zb. Sharkie
+  world; // over this we can get the information about sharkie. 
   animationState = "SWIM";
   animationFrame = 0;
 
