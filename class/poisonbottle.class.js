@@ -30,27 +30,28 @@ class Poisonbottle extends MoveableObjects {
     this.preloadImages();
     this.width = 40;
     this.height = 50;
-    this.getRandomCoordinate();
+    this.getRandomX(this.worldEndX);
+    this.getRandomY();
     this.run();
   }
 
-  run(){
+  run() {
     setInterval(() => {
-      this.renderBottles()
+      this.renderBottles();
     }, 150);
   }
 
   preloadImages() {
     this.loadImages(this.POISON_BOTTLE.ANIMATION);
-    this.loadImage(this.POISON_BOTTLE.DARK[this.direction])
+    this.loadImage(this.POISON_BOTTLE.DARK[this.direction]);
   }
 
   renderBottles() {
-    if (this.type == "ANIMATION"){
+    if (this.type == "ANIMATION") {
       this.animate(this.POISON_BOTTLE.ANIMATION);
     } else {
-      this.loadImage(this.POISON_BOTTLE[this.type][this.direction])
-      this.y = 360
+      this.loadImage(this.POISON_BOTTLE[this.type][this.direction]);
+      this.y = 360;
     }
   }
 

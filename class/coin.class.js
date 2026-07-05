@@ -6,7 +6,7 @@ class Coin extends DrawableObjects {
     this.loadImage(this.COINS[1]);
     this.width = 40;
     this.height = 40;
-    this.x = this.getRandomX();
+    this.x = this.getRandomX(this.worldEndX);
     this.y = this.getRandomY();
   }
 

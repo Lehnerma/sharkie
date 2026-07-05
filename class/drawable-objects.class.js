@@ -12,6 +12,9 @@ class DrawableObjects {
   coinCounter = 0;
   bottleCounter = 0;
 
+  //* endpoint for coins or bottles.
+  worldEndX = 3600
+
   drawObject(ctx) {
     ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
   }
@@ -47,8 +50,8 @@ class DrawableObjects {
     return 10 + Math.random() * 340;
   }
 
-  getRandomX() {
-    return 600 + Math.random() * 3600;
+  getRandomX(start = -600, end = 3600) {
+    return start + Math.random() * end;
   }
 
   getRandomCoordinate() {
