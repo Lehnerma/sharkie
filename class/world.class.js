@@ -15,6 +15,11 @@ class World {
   lastShopBuy = 0;
   coinReplenishing = false;
 
+  //* endpoint for the world.
+  worldEndX = 3600;
+  //* begin point for the world
+  worldBeginX = -700;
+
   constructor(canvas, keyboard) {
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d");
@@ -58,6 +63,7 @@ class World {
       this.checkCoinCollision();
       this.checkPoisonBottleCollision();
       this.checkShopInput();
+      this.checkEnemyBoundary();
     }, 200);
   }
 
@@ -177,6 +183,15 @@ class World {
       if (this.sharkie.isColliding(bottle) && this.bottlebar.bottleCounter < 100) {
         this.bottlebar.collectBottle();
         this.bottles.splice(index, 1);
+      }
+    });
+  }
+
+  checkEnemyBoundary() {
+    this.level.enemies.forEach((enemy) => {
+      if (enemy.x < this.worldBeginX) {
+        enemy.x = this.worldEndX + 300;
+        enemy.y = enemy.getRandomY();
       }
     });
   }

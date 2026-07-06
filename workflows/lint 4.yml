@@ -1,0 +1,35 @@
+name: Code Quality (ESLint)
+
+# Trigger: Läuft bei jedem Push auf main/master UND bei Pull Requests
+# Als Solo-Dev nützlich wenn du feature-branches verwendest
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  eslint:
+    name: ESLint - OOP & Code Quality
+    runs-on: ubuntu-latest  # GitHub stellt eine frische Ubuntu-VM bereit
+
+    steps:
+      # Schritt 1: Repository auf die VM holen (immer der erste Schritt)
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Schritt 2: Node.js installieren (ESLint braucht Node)
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Schritt 3: Dev-Dependencies aus package.json installieren
+      - name: Install dependencies
+        run: npm install
+
+      # Schritt 4: ESLint auf alle JS-Dateien loslassen
+      # --format=stylish  → lesbarer Output mit Datei + Zeilennummer
+      # Das Ergebnis siehst du im "Actions"-Tab auf GitHub
+      - name: Run ESLint
+        run: npx eslint "**/*.js" --ignore-pattern "node_modules/**" --format=stylish --config config/.eslintrc.js

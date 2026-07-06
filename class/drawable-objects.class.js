@@ -12,8 +12,10 @@ class DrawableObjects {
   coinCounter = 0;
   bottleCounter = 0;
 
-  //* endpoint for coins or bottles.
-  worldEndX = 3600
+  //* endpoint for the world.
+  worldEndX = 3600;
+  //* begin point for the world
+  worldBeginX = -700;
 
   drawObject(ctx) {
     ctx.drawImage(this.img, this.x, this.y, this.width, this.height);

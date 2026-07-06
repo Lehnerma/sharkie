@@ -1,0 +1,34 @@
+name: Performance (Lighthouse CI)
+
+# Nur auf main pushen - Performance-Check ist teurer, kein Grund bei jedem PR
+on:
+  push:
+    branches: [main, master]
+
+jobs:
+  lighthouse:
+    name: Lighthouse Performance Audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Lighthouse CI + http-server global installieren
+      # http-server: einfacher statischer Webserver für die VM
+      # @lhci/cli: Lighthouse CI Command Line Interface
+      - name: Install Lighthouse CI and http-server
+        run: npm install -g @lhci/cli http-server
+
+      # lhci autorun liest .lighthouserc.json aus:
+      # - startet http-server automatisch
+      # - öffnet dein Spiel im headless Chrome
+      # - prüft Performance, Best Practices, passive Events etc.
+      # - schlägt fehl wenn Scores unter den definierten Schwellwerten liegen
+      - name: Run Lighthouse CI
+        run: lhci autorun --config=config/.lighthouserc.json
