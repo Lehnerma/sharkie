@@ -5,7 +5,17 @@ class JellyFish extends Enemies {
 
       PURPLE: ["assets/images/2.Enemy/2_jellyfish/swim/Lila 1.png", "assets/images/2.Enemy/2_jellyfish/swim/Lila 2.png", "assets/images/2.Enemy/2_jellyfish/swim/Lila 3.png", "assets/images/2.Enemy/2_jellyfish/swim/Lila 4.png"],
 
-      GREEN: ["assets/images/2.Enemy/2_jellyfish/swim/Green 1.png", "assets/images/2.Enemy/2_jellyfish/swim/Green 2.png", "assets/images/2.Enemy/2_jellyfish/swim/Green 3.png", "assets/images/2.Enemy/2_jellyfish/swim/green4.png"],
+      GREEN: [
+        "assets/images/2.Enemy/2_jellyfish/swim/Green 1.png",
+        "assets/images/2.Enemy/2_jellyfish/swim/Green 2.png",
+        "assets/images/2.Enemy/2_jellyfish/swim/Green 3.png",
+        "assets/images/2.Enemy/2_jellyfish/swim/Green 4.png",
+        "assets/images/2.Enemy/2_jellyfish/swim/Green 5.png",
+        "assets/images/2.Enemy/2_jellyfish/swim/Green 6.png",
+        "assets/images/2.Enemy/2_jellyfish/swim/Green 7.png",
+        "assets/images/2.Enemy/2_jellyfish/swim/Green 8.png",
+        "assets/images/2.Enemy/2_jellyfish/swim/Green 9.png",
+      ],
 
       PINK: ["assets/images/2.Enemy/2_jellyfish/swim/Pink 1.png", "assets/images/2.Enemy/2_jellyfish/swim/Pink 2.png", "assets/images/2.Enemy/2_jellyfish/swim/Pink 3.png", "assets/images/2.Enemy/2_jellyfish/swim/Pink 4.png"],
     },
