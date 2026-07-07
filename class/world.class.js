@@ -97,7 +97,7 @@ class World {
   buyHeal() {
     if (this.coinbar.coinCounter >= 10 && this.sharkie.health < 100) {
       this.coinbar.coinCounter -= 100;
-      
+
       this.coinbar.renderCoinbar(this.coinbar.coinCounter);
       this.sharkie.health = Math.min(100, this.sharkie.health + 50);
       this.healthbar.renderHealthbar(this.sharkie.health);
@@ -192,7 +192,7 @@ class World {
   checkEnemyBoundary() {
     this.level.enemies.forEach((enemy) => {
       if (enemy.x < this.worldBeginX) {
-        enemy.x = this.worldEndX + 300;
+        enemy.x = this.worldEndX + 800;
         enemy.y = enemy.getRandomY();
       }
     });
