@@ -97,6 +97,7 @@ class World {
   buyHeal() {
     if (this.coinbar.coinCounter >= 10 && this.sharkie.health < 100) {
       this.coinbar.coinCounter -= 100;
+      
       this.coinbar.renderCoinbar(this.coinbar.coinCounter);
       this.sharkie.health = Math.min(100, this.sharkie.health + 50);
       this.healthbar.renderHealthbar(this.sharkie.health);
@@ -107,6 +108,7 @@ class World {
   buyBottles() {
     if (this.coinbar.coinCounter >= 10 && this.bottlebar.bottleCounter < 100) {
       this.coinbar.coinCounter -= 100;
+
       this.coinbar.renderCoinbar(this.coinbar.coinCounter);
       this.bottlebar.bottleCounter = Math.min(100, this.bottlebar.bottleCounter + 50);
       this.bottlebar.renderBottle(this.bottlebar.bottleCounter);
