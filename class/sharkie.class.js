@@ -140,18 +140,7 @@ class Sharkie extends MoveableObjects {
   }
 
   animateSharkie() {
-    setInterval(() => {
-      if (this.isDead()) {
-        this.moveDead();
-      } else {
-        for (let key in this.movements) {
-          if (this.world.keyboard[key] && !this.isAttacking) {
-            this.movements[key]();
-          }
-        }
-      }
-      this.world.camera_x = -this.x + 100; // distance for the camera
-    }, 1000 / 60);
+    setInterval(() => this.updateMovement(), 1000 / 60);
 
     setInterval(() => {
       if (this.isDead()) {
@@ -184,6 +173,36 @@ class Sharkie extends MoveableObjects {
         this.moving = false;
       }
     }, 150);
+  }
+
+  /**
+   * runs every frame: a dead sharkie moves on its own, otherwise the
+   * keyboard controls him. the camera follows him in both cases.
+   */
+  updateMovement() {
+    if (this.isDead()) {
+      this.moveDead();
+    } else {
+      this.moveByKeyboard();
+    }
+    this.updateCamera();
+  }
+
+  /**
+   * moves sharkie according to the currently pressed keys,
+   * as long as he is not attacking.
+   */
+  moveByKeyboard() {
+    for (let key in this.movements) {
+      if (this.world.keyboard[key] && !this.isAttacking) {
+        this.movements[key]();
+      }
+    }
+  }
+
+  /** keeps the camera centered on sharkie. */
+  updateCamera() {
+    this.world.camera_x = -this.x + 100;
   }
 
   setOffset() {
