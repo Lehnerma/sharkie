@@ -4,6 +4,7 @@ class Sharkie extends MoveableObjects {
   bubbleShotTimestamp;
   poison = false;
   lastHitType;
+  deadFrame = 0;
 
 
   IDLE = {
@@ -140,9 +141,13 @@ class Sharkie extends MoveableObjects {
 
   animateSharkie() {
     setInterval(() => {
-      for (let key in this.movements) {
-        if (this.world.keyboard[key] && !this.isAttacking) {
-          this.movements[key]();
+      if (this.isDead()) {
+        this.moveDead();
+      } else {
+        for (let key in this.movements) {
+          if (this.world.keyboard[key] && !this.isAttacking) {
+            this.movements[key]();
+          }
         }
       }
       this.world.camera_x = -this.x + 100; // distance for the camera
@@ -150,7 +155,7 @@ class Sharkie extends MoveableObjects {
 
     setInterval(() => {
       if (this.isDead()) {
-        this.animate(this.DEAD.POISON);
+        this.playDead(this.DEAD[this.lastHitType]);
       } else if (this.isAttacking) {
         this.playAttack(this.ATTACK.FIN_SLAP, () => this.finishFinSlap());
       } else if (this.isAttackingBubble) {
@@ -207,6 +212,39 @@ class Sharkie extends MoveableObjects {
     this.loadImages(this.SWIM.SWIM_3);
     this.loadImages(this.ATTACK.FIN_SLAP);
     this.loadImages(this.ATTACK.BUBBLE);
+  }
+
+  /**
+   * plays the dead animation exactly once and freezes on the last frame.
+   * the animation type (POISON / ELECTRO) is chosen via lastHitType.
+   * @param {string[]} images - image paths of the dead animation
+   */
+  playDead(images) {
+    this.img = this.imgCache[images[this.deadFrame]];
+    if (this.deadFrame < images.length - 1) {
+      this.deadFrame++;
+    }
+  }
+
+  /**
+   * moves sharkie while dead based on the last hit type. a poisoned sharkie
+   * floats up through the top of the screen (strong negative gravityY), an
+   * electrocuted sharkie sinks down to the ground (y = 300) and stays there.
+   */
+  moveDead() {
+    this.moving = true; // disables the ambient gravity so death controls the movement
+    if (this.lastHitType === "POISON") {
+      if (this.deadFrame >= this.DEAD.POISON.length - 1) {
+        this.gravityY -= 0.2; // accelerate upwards step by step, like applyGravity in reverse
+        this.y += this.gravityY;
+      }
+    } else if (this.lastHitType === "ELECTRO") {
+      if (this.y < 250) {
+        this.y += 4;
+      } else {
+        this.y = 250;
+      }
+    }
   }
 
   finishFinSlap() {
