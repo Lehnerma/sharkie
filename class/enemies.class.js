@@ -37,6 +37,15 @@ class Enemies extends MoveableObjects {
   }
 
   /**
+   * reacts to being hit by a sharkie bubble.
+   * the default behavior is a normal defeat; subclasses can override it
+   * for special bubble-trapped animations.
+   */
+  hitByBubble() {
+    this.defeat();
+  }
+
+  /**
    * plays the dead frames exactly once and then holds the last frame.
    * @param {string[]} images - image paths of the dead animation
    */

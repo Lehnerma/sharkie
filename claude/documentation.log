@@ -9,3 +9,23 @@
 **Q:** Readability-Refactor animateSharkie 60fps-Loop | **A:** verschachtelte Inline-Logik in benannte Methoden ausgelagert: updateMovement() (Frame-Takt: moveDead vs moveByKeyboard + updateCamera), moveByKeyboard() (Tasten-Loop, nur wenn nicht attacking), updateCamera() (camera_x = -x+100); je kurzer JSDoc
 
 **Q:** Getestet? | **A:** headless Chrome via playwright-core (channel chrome) + python http.server; Tod ueber world.sharkie.lastHitType + health=0 getriggert; POISON nur Poisoned-Frames, y 200 -> negativ (verschwindet oben); ELECTRO nur Electro_shock-Frames, y -> 250 fixiert; node --check ok
+
+**Q:** Wie soll die Pufferfish-Defeat-Animation aussehen? | **A:** Dead1 = aufgeblasen mit X-Auge, Dead2 = kippt, Dead3 = entlüftet + flach treibend (nach Proposal GIFs)
+
+**Q:** Welcher State-Wechsel war nötig für Defeat? | **A:** Neuer `DEAD`-State (analog zu `TRANSITION` bei Sharkie), einmalige Animation die auf letztem Frame einfriert
+
+**Q:** Wann wird `isDefeated` gesetzt? | **A:** Sofort in `defeat()`, nicht erst am Animation-Ende — verhindert weitere Treffer während Animation läuft
+
+**Q:** Wie funktioniert das Hochtreiben nach Hit? | **A:** `floatAway()` wird erst nach Animation-Ende aufgerufen (`deadFrame >= DEAD.length - 1`), treibt kontinuierlich hoch, markiert `readyToRemove` bei `y < -height`
+
+**Q:** Wo wurde das Timing angepasst? | **A:** Hit → sofort `DEAD`-State → Animation läuft (~200ms bei 3 Frames) → erst danach beginnt `y` zu ändern (Hochtreiben)
+
+**Q:** Bug in level1.js gefunden? | **A:** Doppeltes Komma in Enemy-Array-Initializer erzeugt undefined-Loch — `forEach` ignoriert, `.find()` fällt durch
+
+**Q:** Sharkie-Kollisionsbox für Hit-Test? | **A:** `offset.top = 90`, Puffer-Höhe 60px — richtige Positionierung nötig um zu treffen
+
+**Q:** Wird sterbender Fisch noch verletzend? | **A:** Nein, `isDefeated` sofort nach `defeat()` gesetzt, `checkEnemyCollision` prüft es vorher ab
+
+**Q:** Wo wird Enemy aus Level entfernt? | **A:** Nach Aufsteigen auf `y < -height` wird `readyToRemove = true`, nächster Tick entfernt ihn aus `level.enemies`
+
+**Q:** JellyFish nutzt auch `defeatAnimation`? | **A:** Hat `canDirectHit = false`, wird nie getroffen, dessen `defeat()` praktisch ungenutzt — Basis-Implementierung ausreichend

@@ -60,6 +60,8 @@ class World {
   helperFunction() {
     setInterval(() => {
       this.checkEnemyCollision();
+      this.checkBubbleCollision();
+      this.removeBubbles();
       this.checkCoinCollision();
       this.checkPoisonBottleCollision();
       this.checkShopInput();
@@ -159,6 +161,35 @@ class World {
     });
   }
 
+  /**
+   * checks whether any active bubble collides with an enemy.
+   * on a hit the enemy reacts via hitByBubble() and the bubble is removed.
+   */
+  checkBubbleCollision() {
+    this.bubbles.forEach((bubble, bubbleIndex) => {
+      if (bubble.readyToRemove) return;
+      this.level.enemies.forEach((enemy) => {
+        if (!enemy.isDefeated && bubble.isColliding(enemy) && !enemy.canDirectHit) {
+          enemy.hitByBubble();
+          bubble.readyToRemove = true;
+        }
+      });
+      this.level.endboss.forEach((boss) => {
+        if (!boss.isDefeated && bubble.isColliding(boss)) {
+          boss.hitByBubble();
+          bubble.readyToRemove = true;
+        }
+      });
+    });
+  }
+
+  /**
+   * removes bubbles that have hit an enemy or travelled too far.
+   */
+  removeBubbles() {
+    this.bubbles = this.bubbles.filter((bubble) => !bubble.readyToRemove);
+  }
+
   getLastHitTypeSharkie(enemy) {
     if (enemy instanceof JellyFish) {
       this.sharkie.lastHitType = "ELECTRO";
@@ -197,9 +228,6 @@ class World {
   }
 
   deleteBubble() {
-    this.bubbles.forEach((bubble, index) => {
-      if (bubble.x) this.bubbles.splice(index, 1);
-      console.log("delete bubble");
-    });
+    this.bubbles = [];
   }
 }

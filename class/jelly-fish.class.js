@@ -53,13 +53,34 @@ class JellyFish extends Enemies {
   }
 
   animateJellyfisch() {
-    this.playAnimation(this.MOVES.SWIM[this.color], 180);
+    this.animationImages();
     setInterval(() => {
-      this.x -= this.speedX;
+      if (this.animationState === "DEAD") {
+        this.floatAway(this.MOVES.DEAD[this.color]);
+      } else {
+        this.x -= this.speedX;
+      }
     }, 1000 / 60);
   }
 
+  animationImages() {
+    setInterval(() => {
+      if (this.animationState === "DEAD") {
+        this.defeatAnimation(this.MOVES.DEAD[this.color]);
+      } else {
+        this.animate(this.MOVES.SWIM[this.color]);
+      }
+    }, 180);
+  }
+
+  /**
+   * a jelly fish defeated by a bubble plays its dead animation once
+   * and then floats out of the screen.
+   */
   defeat() {
-    this.defeatAnimation(this.MOVES.DEAD[this.color]);
+    if (this.isDefeated) return;
+    this.isDefeated = true;
+    this.animationState = "DEAD";
+    this.defeatFrame = 0;
   }
 }

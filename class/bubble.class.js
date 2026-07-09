@@ -12,6 +12,8 @@ class Bubble extends MoveableObjects {
     this.loadImage(this.BUBBLE[0]);
     this.x = x;
     this.y = y;
+    this.startX = x;
+    this.readyToRemove = false;
     this.bubbleAttack(x, y, poison);
   }
 
@@ -25,6 +27,17 @@ class Bubble extends MoveableObjects {
         this.animate(this.BUBBLE);
       }
       this.x += this.speedX;
+      this.checkMaxDistance();
     }, 1000 / 60);
+  }
+
+  /**
+   * marks the bubble for removal once it has travelled far enough
+   * off the visible screen.
+   */
+  checkMaxDistance() {
+    if (this.x - this.startX > 800) {
+      this.readyToRemove = true;
+    }
   }
 }

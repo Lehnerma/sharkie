@@ -46,6 +46,9 @@ class Endboss extends MoveableObjects {
     this.x = 2000;
     this.y = -20;
     this.health = 100;
+    this.hurtFrame = 0;
+    this.isHurt = false;
+    this.isDefeated = false;
 
     this.preloadImages();
 
@@ -61,6 +64,42 @@ class Endboss extends MoveableObjects {
   }
 
   animation() {
-    this.playAnimation(this.MOVES.FLOATING);
+    setInterval(() => {
+      if (this.isDefeated) {
+        this.animate(this.MOVES.DEAD);
+      } else if (this.isHurt) {
+        this.playHurtAnimation();
+      } else {
+        this.animate(this.MOVES.FLOATING);
+      }
+    }, 100);
+  }
+
+  /**
+   * plays the hurt frames once, then returns the endboss to floating.
+   */
+  playHurtAnimation() {
+    this.img = this.imgCache[this.MOVES.HURT[this.hurtFrame]];
+    if (this.hurtFrame < this.MOVES.HURT.length - 1) {
+      this.hurtFrame++;
+    } else {
+      this.isHurt = false;
+      this.hurtFrame = 0;
+    }
+  }
+
+  /**
+   * the endboss takes damage from a bubble and briefly shows its hurt animation.
+   */
+  hitByBubble() {
+    if (this.isDefeated) return;
+    this.health -= 20;
+    this.isHurt = true;
+    this.hurtFrame = 0;
+    if (this.health <= 0) {
+      this.health = 0;
+      this.isHurt = false;
+      this.isDefeated = true;
+    }
   }
 }
