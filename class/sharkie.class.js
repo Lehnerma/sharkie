@@ -294,8 +294,8 @@ class Sharkie extends MoveableObjects {
   bubbleShootTimer() {
     setTimeout(() => {
       this.isBubbleShoot = true;
-      this.world.deleteBubble();
-    }, 2000);
+      //this.world.deleteBubble();
+    }, 500);
   }
 
 
