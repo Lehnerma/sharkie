@@ -1,0 +1,80 @@
+## Sharkie Game - Documentation Log
+
+Store questions and concise answers here for future reference.
+
+---
+
+### Format:
+**Q:** [Your question]
+**A:** [Short, concise answer]
+
+---
+
+**Q:** Wie nehme ich in Background.class.js die width/height vom canvas, oder muss das hardcoded sein?
+**A:** Nicht hardcoden! Übergib sie über den constructor. Background constructor sollte width und height als Parameter akzeptieren und speichern. Dann übergibst du beim Erstellen in level1.js: `new Background(canvas.width, canvas.height)`
+
+**Q:** Kann ich getElementById einfach global nutzen um Canvas-Dimensionen zu greifen?
+**A:** Technisch ja, aber Timing-Problem: level1.js lädt VOR init(). Better: Canvas-Dimensionen über Parameter durchreichen → saubere OOP. init() → World (kennt Canvas) → World gibt Dimensionen an Level.
+
+**Q:** Übergebe ich Canvas-Dimensionen in World.class an Level als Parameter?
+**A:** Ja! Datenfluss: init() → World(canvas) → World hat canvas.width/height → World übergeben an Level(width, height) → Level übergeben an Background(width, height). World empfängt canvas, gibt Dimensionen weiter.
+
+**Q:** Wie übergeben/erstelle ich Background mit canvas-Dimensionen?
+**A:** Background constructor nimmt width/height an. Level constructor empfängt canvasWidth/canvasHeight. World erstellt Level mit: `new Level(enemies, background_objects, canvas.width, canvas.height)`. Dann Level nutzt diese um Background-Objekte zu setzen.
+
+**Q:** Soll ich Background-Objekte in level1.js oder World erstellen?
+**A:** In level1.js! Bessere Separation of Concerns—World kümmert sich um Rendering, Level um Daten. Aber: Wie bekommt level1.js die Canvas-Dimensionen? Option: level1.js wird eine Funktion `createLevel(width, height)` statt eine direkte Instanz.
+
+**Q:** Erstelle mir createLevel Funktion in level1.js
+**A:** level1.js bekommt `createLevel(canvasWidth, canvasHeight)` Funktion die Background-Objekte mit Dimensionen erstellt und Level zurückgibt. World.constructor ruft auf: `this.level = createLevel(canvas.width, canvas.height)`
+
+**Q:** Kann createLevel nicht in Level.class.js als static method sein?
+**A:** Ja! Besser! Static method in Level.class.js: `static createLevel(canvasWidth, canvasHeight) { ... }`. Dann World ruft auf: `Level.createLevel(canvas.width, canvas.height)`. Besseres OOP—Level kümmert sich um sich selbst (Factory Pattern).
+
+**Q:** Wie zeichne ich Background und lagere ihn in level1.js aus?
+**A:** World.draw() muss `this.addObjectsToMap(this.level.background_objects)` aufrufen. Background-Daten (Image, Position) gehören in level1.js als `level1Data` Objekt. Level.createLevel(canvasWidth, canvasHeight, levelData) nutzt diese Daten statt hardcoded. So: Level kümmert sich um Struktur, level1.js um Konfiguration.
+
+**Q:** Was waren die Fehler in Level, World, level1?
+**A:** Level.createLevel: nicht static, map() fehlte return, Constructor/return mismatched. World: level = new Level(canvas.width) vor canvas existiert, createLevel() nie aufgerufen. Lösung: createLevel static, map mit return, World erstellt Level im constructor mit Level.createLevel(canvas.width, canvas.height, level1Data).
+
+**Q:** Wieso wirft drawImage einen Fehler "Argument 1 could not be converted"?
+**A:** Das Bild wird asynchron geladen (loadImage setzt nur src). Wenn drawObject() aufgerufen wird, bevor das Bild fertig ist, ist this.img undefined/nicht ready. Lösung: Das Image muss vorgeladen sein, bevor drawObject() aufgerufen wird. Das Image-Objekt hat ein `onload`-Event, oder Bilder vor dem Rendering vorrücken.
+
+**Q:** Wie verhindere/erlaube ich diagonales Wandern in animateSharkie()?
+**A:** Mit `if/else if` wird NUR EINE Bewegung pro Frame ausgeführt → verhindert Diagonales. Mit mehreren `if` (ohne else) können mehrere Tasten gleichzeitig aktiv sein → erlaubt Diagonales. Entscheidung: Was willst du? Dann Code-Struktur anpassen.
+
+**Q:** Wie mache ich animateSharkie() übersichtlicher mit vielen Richtungen?
+**A:** Statt if/else if für jede Richtung: Ein Movements-Objekt erstellen, das Tastatur-Keys auf Methoden abbildet. Dann in einer Schleife durchlaufen: `for (let key in movements) { if (this.world.keyboard[key]) movements[key].call(this); }`. DRY-er und erweiterbar.
+
+**Q:** Soll ich das movements-Objekt in MoveableObjects speichern?
+**A:** Ja, sinnvoll — aber mit Vorbehalt. movements-Objekt in MoveableObjects: `movements = { RIGHT: () => this.moveRight(), LEFT: () => this.moveLeft(), ... }`. Vorteil: alle Subklassen (Sharkie, Enemies) haben Zugriff. ABER: MoveableObjects kennt kein keyboard — das gehört zur World. Die Keyboard-Abfrage bleibt in Sharkie. Trennung: movements-Zuordnung in MoveableObjects, Keyboard-Logik in Sharkie.
+
+**Q:** Warum funktioniert `constructor(color = this.getRandomColor())` nicht?
+**A:** Default-Parameter werden ausgewertet bevor `this` existiert (vor super()). Zwei Lösungen: 1) `static getRandomColor()` → Aufruf als `constructor(color = JellyFish.getRandomColor())` — kein this nötig, sauberste Lösung. 2) Im Constructor body nach super(): `color = color || this.getRandomColor()`. Option 1 bevorzugen — static passt wenn die Methode nichts mit einer konkreten Instanz zu tun hat (wie Level.createLevel()).
+
+**Q:** Warum ist die Collision-Box so groß und wie verkleinere ich sie sinnvoll?
+**A:** Sprite-Bilder haben transparente Ränder — die Box umschließt das ganze Bild inkl. leerem Bereich. Lösung: collisionOffset-Objekt mit {top, bottom, left, right} in DrawableObjects deklarieren, in Sharkie/JellyFish mit konkreten Werten befüllen. drawBorderCollision() nutzt dann: x + offset.left, y + offset.top, width - left - right, height - top - bottom. Dieselben Offsets später auch in isColliding() verwenden!
+
+**Q:** Wie implementiere ich isColliding() mit Offset korrekt?
+**A:** AABB Pattern in MoveableObjects: `isColliding(mo) { return this.x + this.collisionOffset.left < mo.x + mo.width - mo.collisionOffset.right && this.x + this.width - this.collisionOffset.right > mo.x + mo.collisionOffset.left && this.y + this.collisionOffset.top < mo.y + mo.height - mo.collisionOffset.bottom && this.y + this.height - this.collisionOffset.bottom > mo.y + mo.collisionOffset.top; }` Aufruf in World: `if (this.sharkie.isColliding(enemy)) { ... }`
+
+**Q:** Häufige Fehler bei Property-Umbenennung (z.B. levelBoundary)?
+**A:** Wenn eine Property von separaten Werten (levelBoundaryLeft) zu einem Objekt (levelBoundary.left) umgebaut wird, ALLE Verwendungsstellen anpassen — auch in Methoden wie moveRight(), moveLeft() etc. Tippfehler (collisionOffset vs collisonOffset) führen zu "Cannot set properties of undefined". Doppelte Methodendefinitionen (isColliding 2x) → JS nimmt immer die letzte, erste wird ignoriert.
+
+**Q:** Wie baue ich LONG_IDLE so aus, dass Intro einmal spielt und dann Sleep-Animation loopt?
+**A:**for-Schleife funktioniert nicht — Animationen laufen asynchron über setInterval. Besser: State Machine Pattern. 1) Zwei Arrays: LONG_IDLE_INTRO (Frames 1-9) und LONG_IDLE_SLEEP (Frames 10-14). 2) Boolean: isSleeping = false. 3) In animate() prüfen: wenn currentImage >= INTRO.length → isSleeping = true → auf Sleep-Array umschalten (der dann endlos loopt via %). Klassisches Game-Dev Pattern.
+
+**Q:** Wie spiele ich eine Angriffs-Animation einmal ab (playAttack)?
+**A:** Kein eigenes setInterval in playAttack — der äußere setInterval in animateSharkie übernimmt das Timing. playAttack() rückt pro Aufruf einen Frame weiter via attackFrame++. isAttacking-Flag verhindert Neustart während Animation läuft. In animateSharkie: `else if (this.isAttacking)` VOR der Tastaturabfrage setzen, damit die Animation auch bei losgelassener Taste durchläuft. Abbruchbedingung: `attackFrame >= images.length - 1` → isAttacking = false, attackFrame = 0.
+
+**Q:** Wie verhindere ich Bewegung während Sharkie angreift?
+**A:** In animateSharkie() im ersten setInterval (Bewegungs-Loop): `if (this.world.keyboard[key] && !this.isAttacking)` — Bewegung wird blockiert solange isAttacking true ist.
+
+**Q:** Wie füge ich Enemy-Schaden und Death-Animation ein?
+**A:** 1) health in Enemies-Basisklasse definieren (this.health = 20). 2) hit(hitpoints) in MoveableObjects mit Parameter für variable Stärke. 3) In checkCollision() in World: wenn isColliding && isAttacking → enemy.hit(20). 4) defeat()-Methode in jeder Enemy-Klasse: ruft defeatAnimation(this.MOVES.DEAD[this.color]) auf — World kennt so den Typ nicht. 5) defeatAnimation() in Enemies: frame-für-frame wie playAttack, am Ende readyToRemove = true setzen. 6) splice(index, 1) erst wenn readyToRemove true ist.
+
+**Q:** Warum kein pop() sondern splice() beim Enemy entfernen?
+**A:** pop() entfernt immer das LETZTE Element im Array — nicht den getroffenen Enemy. splice(index, 1) entfernt genau ein Element an der richtigen Position. Index kommt vom forEach-Callback: `enemies.forEach((enemy, index) => ...)`.
+
+**Q:** Wie vermeide ich typ-spezifische Abfragen in World (instanceof PufferFish etc.)?
+**A:** defeat()-Methode in jeder Unterklasse definieren die intern this.MOVES.DEAD[this.color] kennt. World ruft nur enemy.defeat() auf — Polymorphismus. Alternativ: defeat() in Enemies-Basisklasse wenn alle Subklassen dieselbe MOVES-Struktur haben.
