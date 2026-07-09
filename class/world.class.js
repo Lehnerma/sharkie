@@ -147,13 +147,11 @@ class World {
 
   checkEnemyCollision() {
     this.level.enemies.forEach((enemy, index) => {
-      if (this.sharkie.isColliding(enemy) && this.sharkie.isAttacking && !enemy.isDefeated && enemy.canDirectHit) {
-        enemy.hit(20);
+      if (enemy.readyToRemove) {
+        this.level.enemies.splice(index, 1);
+      } else if (this.sharkie.isColliding(enemy) && this.sharkie.isAttacking && enemy.canDirectHit && !enemy.isDefeated) {
         enemy.defeat();
-        if (enemy.isDead() && enemy.readyToRemove) {
-          this.level.enemies.splice(index, 1);
-        }
-      } else if (this.sharkie.isColliding(enemy)) {
+      } else if (this.sharkie.isColliding(enemy) && !enemy.isDefeated) {
         this.getLastHitTypeSharkie(enemy);
         this.sharkie.hit();
         this.healthbar.renderHealthbar(this.sharkie.health);

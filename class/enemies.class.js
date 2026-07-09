@@ -5,9 +5,10 @@ class Enemies extends MoveableObjects {
   readyToRemove = false;
   isDefeated = false;
   canDirectHit;
-  world; // over this we can get the information about sharkie. 
+  world; // over this we can get the information about sharkie.
   animationState = "SWIM";
   animationFrame = 0;
+  deadSpeedY = 2.5; // upward drift while the enemy is defeated
 
   constructor() {
     super();
@@ -24,16 +25,39 @@ class Enemies extends MoveableObjects {
     return colors[randomNumber];
   }
 
+  /**
+   * marks the enemy as defeated and switches it into its dying animation.
+   * guarded so it only triggers once (a dying enemy can't be hit again).
+   */
+  defeat() {
+    if (this.isDefeated) return;
+    this.isDefeated = true;
+    this.animationState = "DEAD";
+    this.defeatFrame = 0;
+  }
+
+  /**
+   * plays the dead frames exactly once and then holds the last frame.
+   * @param {string[]} images - image paths of the dead animation
+   */
   defeatAnimation(images) {
-    let path = images[this.defeatFrame];
-    this.setTimestamp();
-    this.img = this.imgCache[path];
+    this.img = this.imgCache[images[this.defeatFrame]];
     if (this.defeatFrame < images.length - 1) {
       this.defeatFrame++;
-    } else {
+    }
+  }
+
+  /**
+   * lets a defeated enemy drift up out of the screen and flags it for
+   * removal once it has fully left the top edge. only starts once the
+   * dead animation passed in has fully played through.
+   * @param {string[]} images - image paths of the dead animation
+   */
+  floatAway(images) {
+    if (this.defeatFrame < images.length - 1) return;
+    this.y -= this.deadSpeedY;
+    if (this.y < -this.height) {
       this.readyToRemove = true;
-      this.isDefeated = true;
-      this.defeatFrame = 0;
     }
   }
 }
