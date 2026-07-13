@@ -39,7 +39,7 @@ class DrawableObjects {
   }
 
   drawBorderCollision(ctx) {
-    if (this instanceof Sharkie || this instanceof JellyFish || this instanceof PufferFish) {
+    if (this instanceof Sharkie || this instanceof JellyFish || this instanceof PufferFish || this instanceof Endboss) {
       ctx.beginPath();
       ctx.lineWidth = "1";
       ctx.strokeStyle = "red";

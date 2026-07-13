@@ -44,3 +44,21 @@
 **Q:** Endboss nur mit Giftblase treffbar | **A:** Bubble speichert jetzt this.poison=poison (war nur bubbleAttack-Param); checkBubbleCollision Endboss-Zweig um `&& bubble.poison` erweitert; normale Blase durchfliegt ohne Schaden
 
 **Q:** Getestet? | **A:** node-Harness: Klassen mit gestubbtem Image/setInterval geladen, 11 Asserts (Position, Introduce-Trigger/1x/kein-Retrigger, bubble.poison-Flag, Collision-Gating) alle gruen; node --check ok
+
+**Q:** Endboss nur sichtbar nach Introduce | **A:** world.addEndbossToMap() zeichnet Boss nur wenn boss.hasIntroduced; vorher komplett unsichtbar; erscheint exakt beim Introduce-Trigger (sharkie.x >= 3650)
+
+**Q:** Boss-Kampfverhalten nach Introduce | **A:** Zustandsautomat: distanceToSharkie() > attackRange(200) -> swimTowardsSharkie (chase), <= 200 -> playAttack(MOVES.ATTACK); canFight() = world && hasIntroduced && !isIntroducing && !isDefeated
+
+**Q:** Zwei Loops im Endboss? | **A:** animation() 100ms (Frame-Cycling: dead/hurt/introduce/attack/floating), movement() 60fps (nur x-Bewegung beim Chase); Bewegung getrennt damit sie nicht bei 10fps ruckelt
+
+**Q:** Chase-Richtung/Facing | **A:** swimTowardsSharkie: sharkie.x < boss.x -> x-=speedX(2), otherDirection=false (Boss-Sprite schaut per Default nach links); sharkie kommt von links -> Boss schwimmt rechts nach links
+
+**Q:** Wie/wann Schaden am Sharkie? | **A:** finishAttack() (Callback am Ende jeder Attack-Swing ~600ms): wenn noch in Range -> sharkie.hit() (5hp), lastHitType=POISON, renderHealthbar; Timing an Animation gekoppelt statt jeder Tick
+
+**Q:** Getestet? | **A:** node-Harness, 17 Asserts: config(speedX/attackRange/x), kein Kampf vor Introduce, chase bewegt x nach links, Range-Schwelle exakt bei 200 (199 in/201 out/200 in), finishAttack Schaden nur in Range, defeated stoppt Kampf; node --check ok
+
+**Q:** Pause zwischen Endboss-Angriffen | **A:** attackCooldown=1500ms + lastAttack-Timestamp; attackReady() = now-lastAttack >= cooldown; attackSharkie() attackiert nur wenn isAttacking (laufender Swing) ODER attackReady, sonst FLOATING (Pause)
+
+**Q:** Wann wird lastAttack gesetzt | **A:** in finishAttack() (Ende jeder Attack-Animation): isAttacking=false + lastAttack=now; danach ~1.5s FLOATING bis attackReady wieder true; erster Angriff sofort (lastAttack=0)
+
+**Q:** Getestet Cooldown | **A:** node-Harness mit Mock-Uhr (global.Date stub, kontrollierbares NOW), 13 Asserts: 1. Swing sofort+5dmg, +500ms/+1400ms kein Angriff (floating, 0 dmg), +1600ms wieder Angriff +5dmg; cooldown im 1-2s-Bereich

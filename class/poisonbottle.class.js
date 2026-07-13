@@ -30,8 +30,8 @@ class Poisonbottle extends MoveableObjects {
     this.preloadImages();
     this.width = 40;
     this.height = 50;
-    this.getRandomX(this.worldEndX);
-    this.getRandomY();
+    this.x = this.getRandomX(this.worldBeginX, this.worldEndX);
+    this.y = this.getRandomY();
     this.run();
   }
 
