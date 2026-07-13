@@ -56,7 +56,7 @@ class Endboss extends MoveableObjects {
     this.speedX = 1;
     this.speedY = 3;
     this.yFollowFactor = 0.08;
-    this.attackRange = 200;
+    this.attackRange = 180;
     this.attackCooldown = 1500;
     this.lastAttack = 0;
     this.attackLunge = 50;
@@ -111,9 +111,9 @@ class Endboss extends MoveableObjects {
   }
 
   /**
-   * begins one attack swing and lunges 20px towards sharkie so their collision
-   * borders overlap during the strike. the lunge is reverted in finishAttack,
-   * so repeated attacks do not drift the boss into sharkie.
+   * begins one attack swing and lunges attackLunge px towards sharkie so their
+   * collision borders overlap during the strike. the lunge is reverted in
+   * finishAttack, so the jab itself does not drift the boss into sharkie.
    */
   startAttack() {
     this.isAttacking = true;
@@ -199,8 +199,8 @@ class Endboss extends MoveableObjects {
   }
 
   /**
-   * called at the end of each attack swing: if sharkie is still in range the
-   * hit connects and he takes damage.
+   * called at the end of each attack swing: reverts the lunge, then deals
+   * damage if sharkie is still in range.
    */
   finishAttack() {
     this.isAttacking = false;

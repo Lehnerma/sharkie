@@ -63,6 +63,7 @@ class World {
   helperFunction() {
     setInterval(() => {
       this.checkEnemyCollision();
+      this.checkEndbossCollision();
       this.checkBubbleCollision();
       this.removeBubbles();
       this.checkCoinCollision();
@@ -169,6 +170,20 @@ class World {
         enemy.defeat();
       } else if (this.sharkie.isColliding(enemy) && !enemy.isDefeated) {
         this.getLastHitTypeSharkie(enemy);
+        this.sharkie.hit();
+        this.healthbar.renderHealthbar(this.sharkie.health);
+      }
+    });
+  }
+
+  /**
+   * hurts sharkie while he is in direct body contact with an introduced,
+   * still-living endboss.
+   */
+  checkEndbossCollision() {
+    this.level.endboss.forEach((boss) => {
+      if (boss.hasIntroduced && !boss.isDefeated && this.sharkie.isColliding(boss)) {
+        this.sharkie.lastHitType = "POISON";
         this.sharkie.hit();
         this.healthbar.renderHealthbar(this.sharkie.health);
       }
