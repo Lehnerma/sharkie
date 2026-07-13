@@ -29,3 +29,6 @@
 **Q:** Wo wird Enemy aus Level entfernt? | **A:** Nach Aufsteigen auf `y < -height` wird `readyToRemove = true`, nächster Tick entfernt ihn aus `level.enemies`
 
 **Q:** JellyFish nutzt auch `defeatAnimation`? | **A:** Hat `canDirectHit = false`, wird nie getroffen, dessen `defeat()` praktisch ungenutzt — Basis-Implementierung ausreichend
+
+**Q:** Bubble fliegt in beide Richtungen? | **A:** ja, `otherDirection` je nach Blickrichtung von Sharkie; Spawn-Position `bubbleX` links/rechts je nach Direction gesetzt
+**Q:** checkMaxDistance() bei negativer Richtung? | **A:** nutzt Math.abs() damit Max-Distanz-Prüfung auch bei negativer otherDirection funktioniert
