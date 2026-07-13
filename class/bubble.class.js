@@ -8,6 +8,7 @@ class Bubble extends MoveableObjects {
     this.height = 30;
     this.speedX = 4;
     this.otherDirection = otherDirection;
+    this.poison = poison;
     this.loadImages(this.BUBBLE);
     this.loadImages(this.POISON_BUBBLE);
     this.loadImage(this.BUBBLE[0]);

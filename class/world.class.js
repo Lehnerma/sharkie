@@ -35,6 +35,9 @@ class World {
     this.level.enemies.forEach((enemy) => {
       enemy.world = this;
     });
+    this.level.endboss.forEach((boss) => {
+      boss.world = this;
+    });
   }
 
   draw() {
@@ -42,7 +45,7 @@ class World {
     this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.level.backgrounds);
     this.addToMap(this.sharkie);
-    this.addObjectsToMap(this.level.endboss);
+    this.addEndbossToMap();
     this.addObjectsToMap(this.level.enemies);
     this.addObjectsToMap(this.coins);
     this.addObjectsToMap(this.bottles);
@@ -135,6 +138,17 @@ class World {
     });
   }
 
+  /**
+   * draws the endboss only once it has been introduced, so it stays hidden
+   * off-screen until sharkie reaches the boss arena and the introduce
+   * animation kicks in.
+   */
+  addEndbossToMap() {
+    this.level.endboss.forEach((boss) => {
+      if (boss.hasIntroduced) this.addToMap(boss);
+    });
+  }
+
   flipImage(mo) {
     this.ctx.save();
     this.ctx.translate(mo.width, 0);
@@ -175,7 +189,7 @@ class World {
         }
       });
       this.level.endboss.forEach((boss) => {
-        if (!boss.isDefeated && bubble.isColliding(boss)) {
+        if (!boss.isDefeated && bubble.isColliding(boss) && bubble.poison) {
           boss.hitByBubble();
           bubble.readyToRemove = true;
         }

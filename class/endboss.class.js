@@ -43,12 +43,15 @@ class Endboss extends MoveableObjects {
     this.collisionOffset.bottom = 100;
     this.collisionOffset.right = 20;
     this.collisionOffset.left = 20;
-    this.x = 2000;
+    this.x = 3900;
     this.y = -20;
     this.health = 100;
     this.hurtFrame = 0;
     this.isHurt = false;
     this.isDefeated = false;
+    this.isIntroducing = false;
+    this.hasIntroduced = false;
+    this.introduceFrame = 0;
 
     this.preloadImages();
 
@@ -65,14 +68,44 @@ class Endboss extends MoveableObjects {
 
   animation() {
     setInterval(() => {
+      this.checkIntroduce();
       if (this.isDefeated) {
         this.animate(this.MOVES.DEAD);
       } else if (this.isHurt) {
         this.playHurtAnimation();
+      } else if (this.isIntroducing) {
+        this.playIntroduceAnimation();
       } else {
         this.animate(this.MOVES.FLOATING);
       }
     }, 100);
+  }
+
+  /**
+   * triggers the introduce animation once, as soon as sharkie reaches the
+   * boss arena (x >= 3650). runs only a single time; afterwards the boss
+   * returns to its floating animation.
+   */
+  checkIntroduce() {
+    if (this.hasIntroduced || !this.world) return;
+    if (this.world.sharkie.x >= 3650) {
+      this.isIntroducing = true;
+      this.hasIntroduced = true;
+      this.introduceFrame = 0;
+    }
+  }
+
+  /**
+   * plays the introduce frames once and then hands control back to the
+   * floating animation.
+   */
+  playIntroduceAnimation() {
+    this.img = this.imgCache[this.MOVES.INTRODUCE[this.introduceFrame]];
+    if (this.introduceFrame < this.MOVES.INTRODUCE.length - 1) {
+      this.introduceFrame++;
+    } else {
+      this.isIntroducing = false;
+    }
   }
 
   /**

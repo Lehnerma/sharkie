@@ -32,3 +32,15 @@
 
 **Q:** Bubble fliegt in beide Richtungen? | **A:** ja, `otherDirection` je nach Blickrichtung von Sharkie; Spawn-Position `bubbleX` links/rechts je nach Direction gesetzt
 **Q:** checkMaxDistance() bei negativer Richtung? | **A:** nutzt Math.abs() damit Max-Distanz-Prüfung auch bei negativer otherDirection funktioniert
+
+**Q:** Wo steht der Endboss jetzt? | **A:** x=3700 (Level-Ende), vorher 2000; y=-20; in level.endboss (nicht level.enemies)
+
+**Q:** Wie wird die Introduce-Animation getriggert? | **A:** checkIntroduce() im 100ms animation()-Loop; wenn world.sharkie.x >= 3500 -> isIntroducing=true, hasIntroduced=true; einmalig (hasIntroduced-Guard), retriggert nicht
+
+**Q:** Wie spielt Introduce genau 1x? | **A:** playIntroduceAnimation() mit introduceFrame-Zaehler (Muster wie playHurtAnimation/playDead); nach letztem Frame isIntroducing=false -> faellt zurueck auf FLOATING (else-Branch)
+
+**Q:** Warum brauchte Endboss world? | **A:** setWorld() setzte world nur auf sharkie+enemies, NICHT auf endboss; erweitert um level.endboss.forEach(boss=>boss.world=this); checkIntroduce hat !this.world-Guard (Loop startet vor setWorld)
+
+**Q:** Endboss nur mit Giftblase treffbar | **A:** Bubble speichert jetzt this.poison=poison (war nur bubbleAttack-Param); checkBubbleCollision Endboss-Zweig um `&& bubble.poison` erweitert; normale Blase durchfliegt ohne Schaden
+
+**Q:** Getestet? | **A:** node-Harness: Klassen mit gestubbtem Image/setInterval geladen, 11 Asserts (Position, Introduce-Trigger/1x/kein-Retrigger, bubble.poison-Flag, Collision-Gating) alle gruen; node --check ok
