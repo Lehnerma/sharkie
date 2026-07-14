@@ -55,7 +55,7 @@ class Endboss extends MoveableObjects {
     this.deadFrame = 0;
     this.speedX = 1;
     this.speedY = 3;
-    this.yFollowFactor = 0.08;
+    this.yFollowFactor = 0.05;
     this.attackRange = 180;
     this.attackCooldown = 1500;
     this.lastAttack = 0;
