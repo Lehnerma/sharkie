@@ -7,7 +7,7 @@ class World {
   keyboard;
   ctx;
   level = level1;
-  cameraX;
+  camera_x = 0;
   healthbar = new Healthbar();
   coinbar = new Coinbar();
   bottlebar = new Bottlebar();
@@ -15,6 +15,8 @@ class World {
   world_end = 3700;
   lastShopBuy = 0;
   coinReplenishing = false;
+  gameOver = false;
+  gameWon = false;
 
   //* endpoint for the world.
   worldEndX = 3600;
@@ -72,6 +74,7 @@ class World {
       this.checkPoisonBottleCollision();
       this.checkShopInput();
       this.checkEnemyBoundary();
+      this.checkGameOver();
     }, 200);
   }
 
@@ -273,5 +276,20 @@ class World {
 
   deleteBubble() {
     this.bubbles = [];
+  }
+
+  checkGameOver() {
+    if (this.gameOver) return;
+    if(this.sharkie.deathAnimationDone){
+      this.gameOver = true;
+      this.gameWon = false;
+      console.log('loos');
+      
+    } else if(this.level.endboss.some(boss => boss.deathAnimationDone)){
+      this.gameOver = false;
+      this.gameWon = true;
+      console.log('won');
+      
+    }
   }
 }

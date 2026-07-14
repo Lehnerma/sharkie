@@ -5,6 +5,7 @@ class Sharkie extends MoveableObjects {
   poison = false;
   lastHitType;
   deadFrame = 0;
+  
 
 
   IDLE = {
@@ -242,6 +243,8 @@ class Sharkie extends MoveableObjects {
     this.img = this.imgCache[images[this.deadFrame]];
     if (this.deadFrame < images.length - 1) {
       this.deadFrame++;
+    } else {
+      this.deathAnimationDone = true;
     }
   }
 

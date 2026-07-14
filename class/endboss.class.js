@@ -248,6 +248,8 @@ class Endboss extends MoveableObjects {
     this.img = this.imgCache[this.MOVES.DEAD[this.deadFrame]];
     if (this.deadFrame < this.MOVES.DEAD.length - 1) {
       this.deadFrame++;
+    } else {
+      this.deathAnimationDone = true;
     }
   }
 

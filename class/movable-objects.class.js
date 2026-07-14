@@ -13,6 +13,8 @@ class MoveableObjects extends DrawableObjects {
   health;
   isBubbleShoot = true;
 
+  deathAnimationDone = false
+
   constructor() {
     super();
   }

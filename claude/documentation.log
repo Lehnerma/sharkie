@@ -62,3 +62,41 @@
 **Q:** Wann wird lastAttack gesetzt | **A:** in finishAttack() (Ende jeder Attack-Animation): isAttacking=false + lastAttack=now; danach ~1.5s FLOATING bis attackReady wieder true; erster Angriff sofort (lastAttack=0)
 
 **Q:** Getestet Cooldown | **A:** node-Harness mit Mock-Uhr (global.Date stub, kontrollierbares NOW), 13 Asserts: 1. Swing sofort+5dmg, +500ms/+1400ms kein Angriff (floating, 0 dmg), +1600ms wieder Angriff +5dmg; cooldown im 1-2s-Bereich
+
+**Q:** Wo wird der Endboss positioniert? **A:** x=3700 am Ende des Levels
+
+**Q:** Wann wird die Introduce-Animation des Endboss gelöst? **A:** Bei Sharkie-Position x≥3650, einmalig
+
+**Q:** Wann ist der Endboss sichtbar? **A:** Nur wenn hasIntroduced=true, unsichtbar davor
+
+**Q:** Welche Blasen treffen den Endboss? **A:** Nur Gift-Blasen (poison=true)
+
+**Q:** Wie kämpft der Endboss nach Introduce? **A:** Chase bei Abstand >attackRange, Attack bei ≤attackRange
+
+**Q:** Was ist attackRange für den Endboss? **A:** 100px
+
+**Q:** Wie lange pausiert der Endboss zwischen Angriffen? **A:** attackCooldown=1500ms (1,5 Sekunden)
+
+**Q:** Welche Schäden verursacht der Endboss? **A:** −5 HP pro Attack + −5 HP pro Körperkollision-Tick
+
+**Q:** Wie schnell schwimmt der Endboss horizontal? **A:** speedX=1px/Frame
+
+**Q:** Minimale X-Position des Endboss? **A:** minX=0 (nicht weiter nach links)
+
+**Q:** Wie folgt der Endboss Sharkie vertikal? **A:** speedY=3, yFollowFactor=0.08 (Easing), minY=-100, maxY=100
+
+**Q:** Wie wird Sharkie im Endboss zentriert? **A:** yOffset=-100 (Boss-Mitte = Sharkie-Mitte)
+
+**Q:** Wie nah stößt der Boss beim Angriff vor? **A:** attackLunge=50px rein, revertiert danach (kein Drift)
+
+**Q:** Wie wird die Dead-Animation abgespielt? **A:** Einmalig durchlaufen, auf letztem Frame einfrieren
+
+**Q:** Was passiert, wenn Sharkie besiegt wird? **A:** Endboss friert ein (stoppt Kampf+Bewegung), kopiert nicht die Aufstiegs-Animation
+
+**Q:** Wie wird die Endboss-Healthbar dargestellt? **A:** Canvas-gezeichnet, mittig oben, stufenlos, Farbe grün→orange→rot
+
+**Q:** Welche Klasse implementiert die Endboss-Healthbar? **A:** Endbossbar extends DrawableObjects
+
+**Q:** Wann wird die Endboss-Healthbar sichtbar? **A:** Nur wenn Boss eingeführt (hasIntroduced=true)
+
+**Q:** Wurde world auf dem Endboss gesetzt? **A:** Ja, notwendig für Positions-Tracking von Sharkie in Methoden wie checkIntroduce()
