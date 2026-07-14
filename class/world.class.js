@@ -11,6 +11,7 @@ class World {
   healthbar = new Healthbar();
   coinbar = new Coinbar();
   bottlebar = new Bottlebar();
+  endbossbar = new Endbossbar();
   world_end = 3700;
   lastShopBuy = 0;
   coinReplenishing = false;
@@ -54,6 +55,7 @@ class World {
     this.addToMap(this.healthbar);
     this.addToMap(this.coinbar);
     this.addToMap(this.bottlebar);
+    this.drawEndbossbar();
 
     requestAnimationFrame(() => {
       this.draw();
@@ -147,6 +149,19 @@ class World {
   addEndbossToMap() {
     this.level.endboss.forEach((boss) => {
       if (boss.hasIntroduced) this.addToMap(boss);
+    });
+  }
+
+  /**
+   * draws the screen-fixed boss healthbar once the endboss has appeared and is
+   * still alive, mirroring the boss's current health.
+   */
+  drawEndbossbar() {
+    this.level.endboss.forEach((boss) => {
+      if (boss.hasIntroduced && !boss.isDefeated) {
+        this.endbossbar.setHealth(boss.health);
+        this.addToMap(this.endbossbar);
+      }
     });
   }
 
