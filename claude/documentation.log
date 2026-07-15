@@ -120,3 +120,45 @@
 **Q:** Welche Bildpfade für Endscreen (Game Over / You Win)? **A:** Game Over: `assets/images/6.Botones/Tittles/Game Over/Recurso 9.png`; You win: `assets/images/6.Botones/Tittles/You win/Recurso 19.png` (beide als Array, später animierbar).
 
 **Q:** Wo muss endscreen.class.js in index.html eingebunden werden? **A:** Vor world.class.js (Zeile 26), weil World das Script instantiiert — Vanilla-JS Reihenfolge-Abhängigkeit.
+
+**Q:** Welcher Stand war in der CLAUDE.md dokumentiert vs. aktual vorhanden? | **A:** CLAUDE.md hinkte massiv hinterher — beschrieb leere Stubs, aber Spiel war weitgehend fertig implementiert (Endboss, Kollision, Shop, Kamera aktiv)
+
+**Q:** Ist `camera_x` ein Bug? | **A:** Kein Funktionsbug (Sharkie setzt es zur Laufzeit), aber Code-Smell: deklariertes `cameraX` wird nie genutzt — besser `camera_x = 0` initialisieren
+
+**Q:** Wird `main_bg.png` verwendet? | **A:** Nein, nur totes Asset — `level1.js` lädt nur die Parallax-Layer aus `assets/images/3. Background/Layers/`
+
+**Q:** Soll man `draw()` beenden für Endscreen? | **A:** Nein, falscher Ansatz — `draw()` ist das, was den Endscreen malt; nicht Loop stoppen, sondern Spiel-Logik einfrieren
+
+**Q:** Wie funktioniert die Architektur mit zwei Engines? | **A:** Getrennt: `draw()` für Rendering (60 fps via `requestAnimationFrame`), `helperFunction()` für Logik (200 ms Tick via `setInterval`)
+
+**Q:** Wo gehört Game-Over-Prüfung hin? | **A:** In den 200 ms Logik-Tick (`helperFunction`), nicht in `draw()` — dort gehört nur Rendering
+
+**Q:** Wann soll Endscreen erscheinen — direkt bei `isDead()` oder nach Sterbe-Animation? | **A:** Nach Sterbe-Animation — über `deathAnimationDone` Flag in `playDead()` setzen, damit Timing gratis kommt
+
+**Q:** Warum `deathAnimationDone` statt `isDead()` abfragen? | **A:** Kapselung (jede Klasse kennt ihr Wissen), Timing gratis, idempotent — Flag im `playDead` `else`-Zweig setzen
+
+**Q:** Wie prüft man `endboss.deathAnimationDone` wenn es ein Array ist? | **A:** Mit `.some()` nicht `forEach` — `some` liefert `true` wenn mindestens ein Boss die Bedingung erfüllt
+
+**Q:** Wann nutzt man `forEach` vs. `some` vs. `every`? | **A:** `forEach` für Seiteneffekte/gibt nichts zurück; `some` für „gibt es mindestens einen…?"; `every` für „erfüllen alle…?"
+
+**Q:** Von welcher Klasse sollte `Endscreen` erben? | **A:** `DrawableObjects`, nicht `Statusbar` — minimale Basis nutzen, nicht ungenutzte Logik mit sich schleppen
+
+**Q:** Warum funktioniert `this.img = this.GAME_OVER[0]` nicht? | **A:** `GAME_OVER[0]` ist nur Pfad-String, nicht Image-Objekt — muss `this.imgCache[path]` sein
+
+**Q:** Wo wird `Endscreen` in `World` instanziiert? | **A:** Bei anderen Feldern oben (~Zeile 14): `endscreen = new Endscreen()`
+
+**Q:** Wann aufrufen: `setResult()` in `draw()` oder in `checkGameOver()`? | **A:** In `checkGameOver()` wo Flags gesetzt werden — einmalige Entscheidung gehört dahin, nicht in 60 fps Loop
+
+**Q:** Wo im `draw()` wird Endscreen gezeichnet? | **A:** Nach `translate(-camera_x)` am Ende, vor `requestAnimationFrame` — im Screen-Space wie HUD-Bars
+
+**Q:** Wie friert man Spiel-Logik ein? | **A:** Guard-Klausel ganz oben in `helperFunction`: `if (this.gameOver) return;` — stoppt Kollisionen und Spawns
+
+**Q:** Warum bewegen sich Gegner noch unter Endscreen? | **A:** `helperFunction`-Guard stoppt World-Logik, aber Sharkie/Gegner haben eigene Intervale — optional zusätzlich Guards dort einfügen
+
+**Q:** Wie wird Hintergrund beim Endscreen ausgeblendet? | **A:** `if (gameOver) { addToMap(endscreen); return; }` — skipt normales World-Rendering vor dem Zeichnen
+
+**Q:** Sollte „Try Again"-Button auf Canvas oder als HTML sein? | **A:** HTML-Button — Browser macht Click-Detection, Hover, Tastatur gratis; Canvas-Button ist fehleranfällig und aufwändig
+
+**Q:** Was passiert wenn man `new World()` für Restart aufruft? | **A:** Alte Intervale laufen weiter, neue werden obendrauf gelegt — Geister-Kollisionen, doppelte Bewegung
+
+**Q:** Wie sollte Neustart implementiert werden? | **A:** Pragmatisch: `location.reload()` — garantiert sauber; später optional: Interval-IDs speichern und `clearInterval`en

@@ -1,6 +1,6 @@
 class Endscreen extends DrawableObjects {
   GAME_OVER = ["assets/images/6.Botones/Tittles/GameOver/gameover.png"];
-  GAME_WIN = ["assets/images/6.Botones/Tittles/game_win/full_win.png"];
+  GAME_WIN = ["assets/images/6.Botones/Tittles/game_win/win.png"];
 
   constructor() {
     super();

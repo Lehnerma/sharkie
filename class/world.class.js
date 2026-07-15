@@ -12,16 +12,16 @@ class World {
   coinbar = new Coinbar();
   bottlebar = new Bottlebar();
   endbossbar = new Endbossbar();
+  endscreen = new Endscreen();
   world_end = 3700;
   lastShopBuy = 0;
   coinReplenishing = false;
   gameOver = false;
   gameWon = false;
-
-  //* endpoint for the world.
-  worldEndX = 3600;
   //* begin point for the world
   worldBeginX = -700;
+  //* endpoint for the world.
+  worldEndX = 3600;
 
   constructor(canvas, keyboard) {
     this.canvas = canvas;
@@ -47,6 +47,16 @@ class World {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); //reset the canvas
     this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.level.backgrounds);
+
+    if (this.isGameEnded) {
+      this.ctx.translate(-this.camera_x, 0); // reset of the camera position for sharkie
+      this.addToMap(this.endscreen);
+      requestAnimationFrame(() => {
+        this.draw();
+      });
+      return;
+    }
+
     this.addToMap(this.sharkie);
     this.addEndbossToMap();
     this.addObjectsToMap(this.level.enemies);
@@ -66,6 +76,7 @@ class World {
 
   helperFunction() {
     setInterval(() => {
+      if (this.isGameEnded) return; // block the up coming functions if game over or won
       this.checkEnemyCollision();
       this.checkEndbossCollision();
       this.checkBubbleCollision();
@@ -280,16 +291,20 @@ class World {
 
   checkGameOver() {
     if (this.gameOver) return;
-    if(this.sharkie.deathAnimationDone){
+    if (this.sharkie.deathAnimationDone) {
       this.gameOver = true;
       this.gameWon = false;
-      console.log('loos');
-      
-    } else if(this.level.endboss.some(boss => boss.deathAnimationDone)){
+      this.endscreen.setResult(false);
+      console.log("loos");
+    } else if (this.level.endboss.some((boss) => boss.deathAnimationDone)) {
       this.gameOver = false;
       this.gameWon = true;
-      console.log('won');
-      
+      this.endscreen.setResult(true);
+      console.log("won");
     }
+  }
+
+  get isGameEnded() {
+    return this.gameOver || this.gameWon;
   }
 }
