@@ -11,7 +11,8 @@ class DrawableObjects {
 
   coinCounter = 0;
   bottleCounter = 0;
-
+  canvasWidth = 720;
+  canvasHeight= 460
   //* endpoint for the world.
   worldEndX = 3600;
   //* begin point for the world

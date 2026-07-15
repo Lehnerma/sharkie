@@ -295,12 +295,10 @@ class World {
       this.gameOver = true;
       this.gameWon = false;
       this.endscreen.setResult(false);
-      console.log("loos");
     } else if (this.level.endboss.some((boss) => boss.deathAnimationDone)) {
       this.gameOver = false;
       this.gameWon = true;
       this.endscreen.setResult(true);
-      console.log("won");
     }
   }
 

@@ -6,10 +6,10 @@ class Endscreen extends DrawableObjects {
     super();
     this.loadImages(this.GAME_OVER);
     this.loadImages(this.GAME_WIN);
-    this.x = 0;
-    this.y = 0;
-    this.height = 400;
-    this.width = 400;
+    this.height = 150;
+    this.width = 450;
+    this.x = (this.canvasWidth - this.width) / 2;
+    this.y = (this.canvasHeight - this.height) / 2;
   }
 
   setResult(win) {
