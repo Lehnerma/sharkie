@@ -100,3 +100,23 @@
 **Q:** Wann wird die Endboss-Healthbar sichtbar? **A:** Nur wenn Boss eingeführt (hasIntroduced=true)
 
 **Q:** Wurde world auf dem Endboss gesetzt? **A:** Ja, notwendig für Positions-Tracking von Sharkie in Methoden wie checkIntroduce()
+
+**Q:** Wie aktuell war CLAUDE.md beim Start dieser Session? **A:** Massiv veraltet — beschrieb leere Stubs, aber Endboss, Health-Bar, Collision, Shop, Kamera waren bereits implementiert.
+
+**Q:** Welche zwei Bugs wurden untersucht? **A:** (1) Background-Fehler durch gelöscht markiertes `main_bg.png` — FALSCH ALARM, Datei wird nie referenziert; (2) `camera_x` vs `cameraX` Mismatch — behoben durch Deklaration `camera_x = 0`.
+
+**Q:** Warum nicht einfach draw()-Loop stoppen für Endscreen? **A:** Draw() ist das, das den Endscreen malt — stoppen würde Rendering zerstören; echte Logik (Gegner, Kollision) läuft über setInterval. Flag muss *was* gezeichnet wird umschalten, nicht *ob* gezeichnet wird.
+
+**Q:** Welche Zustandsfelder braucht World für Endscreen-Logik? **A:** `gameOver = false` und `gameWon = false` zur Unterscheidung Sieg/Niederlage.
+
+**Q:** Wo gehört checkGameOver() im Render-Zyklus hin? **A:** In `helperFunction()` (200 ms Logik-Tick), nicht in draw() — konsistent mit bestehendem Spiel-Tick-Muster.
+
+**Q:** Warum deathAnimationDone-Flag statt isDead() abfragen? **A:** Kapselung (Sharkie/Endboss kennen eigene Sterbe-Animation), Timing gratis (Endscreen erscheint erst nach Animation), idempotent (Flag bleibt stabil).
+
+**Q:** Wie prüft man, ob ein Boss im Array deathAnimationDone hat? **A:** `.some(boss => boss.deathAnimationDone)` nicht forEach — some gibt Boolean zurück, robust gegen leeres/großes Array.
+
+**Q:** Welche Basisklasse für Endscreen-Klasse? **A:** DrawableObjects (nicht Statusbar) — minimale Basis, bringt `loadImages`/`imgCache`/`drawObject` mit, keine ungenutzte Prozent-Logik.
+
+**Q:** Welche Bildpfade für Endscreen (Game Over / You Win)? **A:** Game Over: `assets/images/6.Botones/Tittles/Game Over/Recurso 9.png`; You win: `assets/images/6.Botones/Tittles/You win/Recurso 19.png` (beide als Array, später animierbar).
+
+**Q:** Wo muss endscreen.class.js in index.html eingebunden werden? **A:** Vor world.class.js (Zeile 26), weil World das Script instantiiert — Vanilla-JS Reihenfolge-Abhängigkeit.
