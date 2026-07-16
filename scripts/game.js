@@ -21,6 +21,7 @@ const keyMap = {
 function init() {
   canvas = document.getElementById("canvas");
   world = new World(canvas, keyboard);
+  setTryAgainBtn();
 }
 
 window.addEventListener("keydown", (e) => {
@@ -40,3 +41,13 @@ window.addEventListener("keyup", (e) => {
     keyboard[pressedKey] = false;
   }
 });
+
+function showTryAgainBtn() {
+  document.getElementById("again_btn").classList.remove("hidden");
+  console.log("hidden");
+}
+
+const setTryAgainBtn = () => {
+  const btn = document.getElementById("try_again");
+  btn.addEventListener("click", () => location.reload());
+};

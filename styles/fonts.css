@@ -1,0 +1,11 @@
+@font-face {
+  font-family: 'Luckiest Guy';
+  src: url('../assets/images/5.Font/LuckiestGuy-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+h1,
+.btn--main {
+  font-family: 'Luckiest Guy', cursive;
+}

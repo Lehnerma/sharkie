@@ -213,7 +213,7 @@ class World {
     this.level.endboss.forEach((boss) => {
       if (boss.hasIntroduced && !boss.isDefeated && this.sharkie.isColliding(boss)) {
         this.sharkie.lastHitType = "POISON";
-        this.sharkie.hit();
+        this.sharkie.hit(20);
         this.healthbar.renderHealthbar(this.sharkie.health);
       }
     });
@@ -290,7 +290,7 @@ class World {
   }
 
   checkGameOver() {
-    if (this.gameOver) return;
+    if (this.isGameEnded) return;
     if (this.sharkie.deathAnimationDone) {
       this.gameOver = true;
       this.gameWon = false;
@@ -299,6 +299,9 @@ class World {
       this.gameOver = false;
       this.gameWon = true;
       this.endscreen.setResult(true);
+    }
+    if (this.isGameEnded) {
+      showTryAgainBtn();
     }
   }
 

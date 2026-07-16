@@ -29,10 +29,26 @@
     <script src="level/level1.js"></script>
     <script src="scripts/game.js"></script>
 
+    <link rel="stylesheet" href="styles/fonts.css" />
     <link rel="stylesheet" href="styles/style.css" />
   </head>
   <body onload="init()">
-    <h1>Sharkie</h1>
-    <canvas id="canvas" width="720" height="460"></canvas>
+    <header>
+      <h1>Sharkie</h1>
+    </header>
+
+    <main>
+      <article class="main-content">
+        <canvas id="canvas" width="720" height="460"></canvas>
+        <div class="wrapper-absolute hidden" id="again_btn">
+          <button id="try_again" class="btn--main">
+            <img class="btn--img" src="assets/images/6.Botones/Try again/Recurso 17.png" alt="Try again" />
+          </button>
+        </div>
+      </article>
+    </main>
+    <footer>
+      <p>das ist ein test</p>
+    </footer>
   </body>
 </html>
