@@ -44,7 +44,6 @@ window.addEventListener("keyup", (e) => {
 
 function showTryAgainBtn() {
   document.getElementById("again_btn").classList.remove("hidden");
-  console.log("hidden");
 }
 
 const setTryAgainBtn = () => {
