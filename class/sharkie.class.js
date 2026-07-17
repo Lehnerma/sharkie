@@ -279,7 +279,7 @@ class Sharkie extends MoveableObjects {
   }
 
   playLongIdle() {
-    if (this.currentImage <= this.IDLE.LONG_IDLE_INTRO) {
+    if (this.currentImage <= this.IDLE.LONG_IDLE_INTRO.length) {
       this.animate(this.IDLE.LONG_IDLE_INTRO);
     } else {
       this.animate(this.IDLE.LONG_IDLE_SLEEP);

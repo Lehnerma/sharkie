@@ -162,3 +162,33 @@
 **Q:** Was passiert wenn man `new World()` für Restart aufruft? | **A:** Alte Intervale laufen weiter, neue werden obendrauf gelegt — Geister-Kollisionen, doppelte Bewegung
 
 **Q:** Wie sollte Neustart implementiert werden? | **A:** Pragmatisch: `location.reload()` — garantiert sauber; später optional: Interval-IDs speichern und `clearInterval`en
+
+**Q:** Wie verhindert man exponentielles Wachstum von `requestAnimationFrame` in `draw()`? | **A:** Guard-Clause Pattern mit `return` nach dem Endscreen-Block statt durchfallender `if` — garantiert genau ein rAF pro Durchlauf.
+
+**Q:** Wann nutzt man einen Getter statt ein drittes Flag? | **A:** Wenn zwei Bool-Flags kombiniert werden (`gameOver || gameWon`) — Getter verhindert State Drift und zentralisiert die Regel.
+
+**Q:** Welche Reihenfolge haben Transformationen im Canvas? | **A:** Welt-Raum-Objekte (backgrounds) zwischen `translate(camera_x)` und `translate(-camera_x)` packen, Screen-Raum-Objekte (endscreen, HUD) NACH `translate(-camera_x)`.
+
+**Q:** Wie testet man Positions-Parameter live im Canvas? | **A:** `world.endscreen.x = 160` direkt in der Browser-Console ändern und visuell ertasten statt Werte im Code hardcoden — kein Reload nötig.
+
+**Q:** Zentrierung: feste Zahlen oder Formel? | **A:** Formel `x = (canvasWidth - width) / 2` statt `x = 160` — selbstdokumentierend und wartbar bei Größenänderungen.
+
+**Q:** Wie lagert man ein HTML-Overlay exakt über einen Canvas? | **A:** Parent-Container mit `position: relative` als Anker, Overlay mit `position: absolute; inset: 0` — so positioniert sich das Overlay relativ zum Canvas, nicht am Viewport.
+
+**Q:** Welche CSS-Property nutzt man statt einzelner `top`/`bottom`/`left`/`right`? | **A:** `inset: 0` — Kurzschrift für alle vier Properties gleichzeitig.
+
+**Q:** Wie trennt man Aussehen von Verhalten? | **A:** Overlay mit `hidden`-Klasse initialisieren, JS entfernt nur die Klasse — CSS definiert `display: none`, JS ist nur Schalter.
+
+**Q:** Wie verhindert man, dass eine Funktion zweimal hintereinander aufgerufen wird? | **A:** Den Aufruf an die Zustandsänderung koppeln (mit `if (this.isGameEnded)` nach dem Block) statt an Code-Position — der Zustand selbst ist der Schalter.
+
+**Q:** Globale Funktion von Klassen-Methode unterschied? | **A:** Freie Funktion in game.js: `showTryAgainBtn()` aufrufen (nicht `this.showTryAgainBtn()`) — `this` verweist nur auf Objekte, nicht auf Globals.
+
+**Q:** Guard Clause Pattern — wann nutzen? | **A:** Bedingung am Anfang prüfen und früh raus (`return`) — hält den Main-Pfad flach statt Sonderfälle verschachtelt einzubauen.
+
+**Q:** Tick-Guard bei mehreren Bool-Flags? | **A:** `if (this.isGameEnded) return;` am Anfang von `checkGameOver()` — verhindert zu spät feuernde Logik nach dem Game-Over.
+
+**Q:** Schneller Reset für MVP vs. aufgeräumter Reset? | **A:** `location.reload()` zum Start (garantiert sauberer Zustand), später eigenes State-Reset implementieren — nicht übertechnisieren am Anfang.
+
+**Q:** Flexbox-Tipp für geppinnte absolute Elemente? | **A:** `padding-bottom` auf dem Flex-Container nutzen statt `margin-bottom` auf dem gepinnten Element — letzeres verhält sich unerwartet.
+
+**Q:** Console-Test ohne durchspielen? | **A:** `world.gameOver = true; world.checkGameOver()` in der Console aufrufen — sofort visueller Feedback ohne Spielablauf.

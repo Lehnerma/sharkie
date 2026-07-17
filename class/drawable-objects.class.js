@@ -12,7 +12,7 @@ class DrawableObjects {
   coinCounter = 0;
   bottleCounter = 0;
   canvasWidth = 720;
-  canvasHeight= 460
+  canvasHeight = 460;
   //* endpoint for the world.
   worldEndX = 3600;
   //* begin point for the world
@@ -54,7 +54,7 @@ class DrawableObjects {
   }
 
   getRandomX(start = -600, end = 3600) {
-    return start + Math.random() * end;
+    return start + Math.random() * (end - start);
   }
 
   getRandomCoordinate() {

@@ -117,7 +117,7 @@ class World {
   }
 
   buyHeal() {
-    if (this.coinbar.coinCounter >= 10 && this.sharkie.health < 100) {
+    if (this.coinbar.coinCounter >= 99 && this.sharkie.health < 100) {
       this.coinbar.coinCounter -= 100;
 
       this.coinbar.renderCoinbar(this.coinbar.coinCounter);
@@ -128,7 +128,7 @@ class World {
   }
 
   buyBottles() {
-    if (this.coinbar.coinCounter >= 10 && this.bottlebar.bottleCounter < 100) {
+    if (this.coinbar.coinCounter >= 99 && this.bottlebar.bottleCounter < 100) {
       this.coinbar.coinCounter -= 100;
 
       this.coinbar.renderCoinbar(this.coinbar.coinCounter);
