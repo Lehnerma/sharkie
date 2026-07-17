@@ -321,13 +321,11 @@ class Sharkie extends MoveableObjects {
 
   checkPoison() {
     if (this.world.bottlebar.bottleCounter > 0) {
-      console.log(`poisonbottle counter: ${this.world.bottlebar.bottleCounter}`);
       this.poison = true;
       this.world.bottlebar.bottleCounter -= 10;
       this.world.bottlebar.renderBottle(this.world.bottlebar.bottleCounter);
     } else {
       this.poison = false;
-      console.log(`poisonbottle counter: ${this.world.bottlebar.bottleCounter}`);
     }
   }
 }

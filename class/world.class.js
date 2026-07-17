@@ -251,10 +251,8 @@ class World {
   getLastHitTypeSharkie(enemy) {
     if (enemy instanceof JellyFish) {
       this.sharkie.lastHitType = "ELECTRO";
-      console.log("hit by a jellyfish");
     } else {
       this.sharkie.lastHitType = "POISON";
-      console.log("hit by a pufferfish");
     }
   }
 
