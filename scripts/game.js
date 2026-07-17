@@ -20,22 +20,26 @@ const keyMap = {
 
 function init() {
   canvas = document.getElementById("canvas");
-  world = new World(canvas, keyboard);
-  setTryAgainBtn();
+  //world = new World(canvas, keyboard);
+  initEventlistener();
+}
+
+function initEventlistener() {
+  const START_BTN = document.getElementById("game_start");
+  const TRY_Again_BTN = document.getElementById("again_btn");
+
+  START_BTN.addEventListener("click", () => createWorld());
+  TRY_Again_BTN.addEventListener("click", () => location.reload());
 }
 
 window.addEventListener("keydown", (e) => {
-  // console.log(`key  code: ${e.code}`); // logs out the key codes for the btns
   const pressedKey = keyMap[e.code];
-  // console.log(pressedKey);
-
   if (pressedKey) {
     keyboard[pressedKey] = true;
   }
 });
 
 window.addEventListener("keyup", (e) => {
-  // console.log(`key  code: ${e.code}`); // logs out the key codes for the btns
   const pressedKey = keyMap[e.code];
   if (pressedKey) {
     keyboard[pressedKey] = false;
@@ -46,7 +50,15 @@ function showTryAgainBtn() {
   document.getElementById("again_btn").classList.remove("hidden");
 }
 
-const setTryAgainBtn = () => {
-  const btn = document.getElementById("try_again");
-  btn.addEventListener("click", () => location.reload());
-};
+function createWorld() {
+  showCanvas();
+  world = new World(canvas, keyboard);
+}
+
+function hideCanvas() {
+  canvas.classList.add("hidden");
+}
+
+function showCanvas() {
+  canvas.classList.remove("hidden");
+}

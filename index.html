@@ -39,13 +39,28 @@
 
     <main>
       <article class="main-content">
-        <canvas id="canvas" width="720" height="460"></canvas>
-        <div class="wrapper-absolute hidden" id="again_btn">
-          <button id="try_again" class="btn--main">
+        <div class="canvas-wrapper" id="canvas_wrapper">
+          <canvas id="canvas" width="720" height="460"></canvas>
+        </div>
+        
+        <section class="wrapper-absolute startscreen">
+          <button class="btn--main" id="game_start">
+            <img class="btn--img btn--start" src="assets/images/6.Botones/Start/3.png" alt="Start" />
+          </button>
+          <button class="btn--main">Description</button>
+        </section>
+
+        <section class="wrapper-absolute hidden" id="again_btn">
+          <button id="try_again" class="btn--secondary">
             <img class="btn--img" src="assets/images/6.Botones/Try again/Recurso 17.png" alt="Try again" />
           </button>
-        </div>
+        </section>
       </article>
+      <aside>
+        <button class="btn--main">
+          <img class="btn--img" src="assets/images/6.Botones/Full Screen/Mesa de trabajo 6.png" alt="Fullscreen" />
+        </button>
+      </aside>
     </main>
     <footer>
       <p>das ist ein test</p>

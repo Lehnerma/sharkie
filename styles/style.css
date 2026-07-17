@@ -29,6 +29,15 @@ h1 {
   width: 720px;
 }
 
+.canvas-wrapper {
+  width: 720px;
+  height: 460px;
+  background-image: url("../assets/images/3. Background/Dark/1.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
 .wrapper-absolute {
   position: absolute;
   inset: 0;
@@ -43,7 +52,7 @@ canvas {
   background-color: rgba(1, 10, 18, 0.72);
 }
 
-.btn--main {
+.btn--main, .btn--secondary {
   cursor: pointer;
   border: none;
   background: none;
@@ -68,6 +77,10 @@ canvas {
 
 .btn--main:active .btn--img {
   transform: scale(1);
+}
+
+.btn--start{
+  width: 200px;
 }
 
 .hidden{
