@@ -192,3 +192,29 @@
 **Q:** Flexbox-Tipp für geppinnte absolute Elemente? | **A:** `padding-bottom` auf dem Flex-Container nutzen statt `margin-bottom` auf dem gepinnten Element — letzeres verhält sich unerwartet.
 
 **Q:** Console-Test ohne durchspielen? | **A:** `world.gameOver = true; world.checkGameOver()` in der Console aufrufen — sofort visueller Feedback ohne Spielablauf.
+
+**Q:** Code auf Fehler prüfen? | **A:** 2 kritische Bugs (Shop-Kosten, Long-Idle-Array-Vergleich) + 6 Code Smells gefunden
+
+**Q:** buyHeal()/buyBottles() Bedingung vs. Abzug? | **A:** Bedingung `>= 10`, aber `-= 100` wird gezogen → Inconsistenz, zwei mögliche Lösungen
+
+**Q:** playLongIdle() Animation läuft nicht? | **A:** Zahl wird mit Array verglichen statt `.length` → echten Funktionsfehler behebt
+
+**Q:** splice() während forEach()? | **A:** Indizes verschieben sich, überspringt nächste Elemente → besser rückwärts iterieren oder filter()
+
+**Q:** getRandomX(start, end)? | **A:** `end` ist Bereichsbreite nicht Endpunkt, kann Werte > end liefern → Name irreführend
+
+**Q:** isMoving() Semantik? | **A:** Gibt `!this.moving` zurück, Name invertiert zur Logik
+
+**Q:** Poisonbottle Image-Handling ineffizient? | **A:** preloadImages() nur DARK, renderBottles() lädt neue Image-Objekte jedes Frame
+
+**Q:** Gegner in level1.js auskommentiert? | **A:** Puffer/Jellyfish auskommentiert, nur Endboss aktiv → Absicht unklar
+
+**Q:** Debug-Logs im Code? | **A:** sharkie.class.js + world.class.js haben noch console.log-Statements
+
+**Q:** Platzhaltertext im HTML? | **A:** index.html:51 `<p>das ist ein test</p>` im Footer
+
+**Q:** Poisonbottle-Fix: Wie gelöst? | **A:** preloadImages() lädt Bilder mit Typ/Richtung in Cache, renderBottles() greift gecacht zu
+
+**Q:** drawImage TypeError nach Poisonbottle-Fix? | **A:** this.img undefined bis renderBottles()-Tick, preloadImages() setzt Startbild sofort
+
+**Q:** Wie wurde drawImage-Fehler behoben? | **A:** preloadImages() setzt sofort gültiges Startbild (ANIMATION→erster Frame, DARK/LIGHT→statisches Bild)
