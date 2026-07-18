@@ -25,18 +25,16 @@ h1 {
 
 .game-title {
   position: absolute;
-  top: 50%;
+  top: 30%;
   left: 50%;
   transform: translate(-50%, -50%);
-z-index: 1;
-  transition:
-    top 1s ease 0.5s;
+  z-index: 1;
+  transition: top 1s ease 0.5s;
   pointer-events: none;
 }
 
 .game-title.animate-up {
   top: -120px;
-
 }
 
 .main-content {
@@ -67,31 +65,16 @@ z-index: 1;
 .wrapper-absolute {
   position: absolute;
   inset: 0;
+}
 
+.start-section {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
-  margin-bottom: 2rem;
-}
-
-.start-section button {
-  transition:
-    transform 1s ease,
-    opacity 1s ease;
-}
-
-.start-section.fade-out button {
-  transform: translateY(-80px);
-  opacity: 0;
-}
-
-.start-section.fade-out {
-  pointer-events: none;
 }
 
 canvas {
   position: relative;
-
   opacity: 0;
   transition: opacity 1.5s ease 1s;
 }
@@ -100,35 +83,13 @@ canvas.fade-in {
   opacity: 1;
 }
 
-.btn--main,
-.btn--secondary {
-  cursor: pointer;
-  border: none;
-  background: none;
-}
-
-.btn--img {
-  width: 250px;
-  aspect-ratio: 4/1;
-  border-radius: 16px;
-  transition:
-    transform 125ms ease,
-    box-shadow 125ms ease;
-}
-
-.btn--img:hover {
-  transform: scale(1.05);
-  box-shadow:
-    0 0 20px rgba(5, 52, 90, 0.6),
-    0 0 20px rgba(2, 17, 31, 0.4);
-}
-
-.btn--main:active .btn--img {
-  transform: scale(1);
-}
-
-.btn--start {
-  width: 200px;
+.wrapper-subarea {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 0.75rem;
+    padding-bottom: 0.5rem;
 }
 
 .hidden {

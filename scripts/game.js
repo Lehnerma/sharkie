@@ -56,6 +56,7 @@ function createWorld() {
   showCanvas();
   initWorld();
   fadeOutStartscreen();
+  fadeOutSubarea();
   animateTitleUp();
   fadeOutBackground();
   fadeInCanvas();
@@ -78,6 +79,13 @@ function fadeOutStartscreen() {
   const startSection = document.querySelector(".start-section");
   if (startSection) {
     startSection.classList.add("fade-out");
+  }
+}
+
+function fadeOutSubarea() {
+  const subarea = document.querySelector(".wrapper-subarea");
+  if (subarea) {
+    subarea.classList.add("fade-out");
   }
 }
 

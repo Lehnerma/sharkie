@@ -31,6 +31,7 @@
     <script src="scripts/game.js"></script>
 
     <link rel="stylesheet" href="styles/fonts.css" />
+    <link rel="stylesheet" href="styles/buttons.css" />
     <link rel="stylesheet" href="styles/style.css" />
   </head>
   <body onload="init()">
@@ -45,9 +46,15 @@
         </div>
 
         <section class="wrapper-absolute start-section">
-          <button class="btn--main" id="game_start">
+          <button class="btn--main btn--start" id="game_start">
             <img class="btn--img btn--start" src="assets/images/6.Botones/Start/3.png" alt="Start" />
           </button>
+        </section>
+
+        <section class="wrapper-absolute wrapper-subarea">
+          <button class="btn--dialog">Description</button>
+          <button class="btn--dialog">Key Settings</button>
+          <button class="btn--dialog">Sound</button>
         </section>
 
         <section class="wrapper-absolute hidden" id="again_btn">
