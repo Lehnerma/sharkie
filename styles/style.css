@@ -7,7 +7,7 @@
 
 body {
   display: grid;
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: 200px 1fr 200px;
   min-height: 100vh;
   justify-items: center;
 
@@ -74,18 +74,18 @@ z-index: 1;
   margin-bottom: 2rem;
 }
 
-.startscreen button {
+.start-section button {
   transition:
     transform 1s ease,
     opacity 1s ease;
 }
 
-.startscreen.fade-out button {
+.start-section.fade-out button {
   transform: translateY(-80px);
   opacity: 0;
 }
 
-.startscreen.fade-out {
+.start-section.fade-out {
   pointer-events: none;
 }
 

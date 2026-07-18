@@ -27,9 +27,11 @@ function init() {
 function initEventlistener() {
   const START_BTN = document.getElementById("game_start");
   const TRY_Again_BTN = document.getElementById("again_btn");
+  const FULLSCREEN_BTN = document.getElementById("btn_fullscreen");
 
   START_BTN.addEventListener("click", () => createWorld());
   TRY_Again_BTN.addEventListener("click", () => location.reload());
+  FULLSCREEN_BTN.addEventListener("click", () => toggleFullscreen());
 }
 
 window.addEventListener("keydown", (e) => {
@@ -57,6 +59,7 @@ function createWorld() {
   animateTitleUp();
   fadeOutBackground();
   fadeInCanvas();
+  showFullscreenButton();
   hideStartscreenAfterDelay();
 }
 
@@ -72,9 +75,9 @@ function animateTitleUp() {
 }
 
 function fadeOutStartscreen() {
-  const startscreen = document.querySelector(".startscreen");
-  if (startscreen) {
-    startscreen.classList.add("fade-out");
+  const startSection = document.querySelector(".start-section");
+  if (startSection) {
+    startSection.classList.add("fade-out");
   }
 }
 
@@ -96,9 +99,9 @@ function hideStartscreenAfterDelay() {
 }
 
 function hideStartscreen() {
-  const startscreen = document.querySelector(".startscreen");
-  if (startscreen) {
-    startscreen.classList.add("hidden");
+  const startSection = document.querySelector(".start-section");
+  if (startSection) {
+    startSection.classList.add("hidden");
   }
 }
 
@@ -108,4 +111,28 @@ function hideCanvas() {
 
 function showCanvas() {
   canvas.classList.remove("hidden");
+}
+
+function showFullscreenButton() {
+  const fullscreenBtn = document.getElementById("btn_fullscreen");
+  if (fullscreenBtn) {
+    fullscreenBtn.classList.remove("hidden");
+  }
+}
+
+function hideFullscreenButton() {
+  const fullscreenBtn = document.getElementById("btn_fullscreen");
+  if (fullscreenBtn) {
+    fullscreenBtn.classList.add("hidden");
+  }
+}
+
+function toggleFullscreen() {
+  const fullscreenElement = document.fullscreenElement;
+
+  if (fullscreenElement) {
+    document.exitFullscreen();
+  } else {
+    canvas.requestFullscreen();
+  }
 }
