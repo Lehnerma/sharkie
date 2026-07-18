@@ -224,6 +224,7 @@ class Endboss extends MoveableObjects {
       this.isIntroducing = true;
       this.hasIntroduced = true;
       this.introduceFrame = 0;
+      playBossAppearSound();
     }
   }
 

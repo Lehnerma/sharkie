@@ -163,6 +163,7 @@ class Sharkie extends MoveableObjects {
       } else if (this.world.keyboard.E) {
         this.isAttacking = true;
         this.addDistanceForSlap();
+        playFinSlapSound();
         this.playAttack(this.ATTACK.FIN_SLAP, () => this.finishFinSlap());
       } else if (this.world.keyboard.SPACE && this.isBubbleShoot) {
         this.isAttackingBubble = true;

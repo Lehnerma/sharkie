@@ -123,6 +123,7 @@ class World {
       this.coinbar.renderCoinbar(this.coinbar.coinCounter);
       this.sharkie.health = Math.min(100, this.sharkie.health + 50);
       this.healthbar.renderHealthbar(this.sharkie.health);
+      playHealingSound();
       this.lastShopBuy = new Date().getTime();
     }
   }
@@ -198,8 +199,14 @@ class World {
       } else if (this.sharkie.isColliding(enemy) && this.sharkie.isAttacking && enemy.canDirectHit && !enemy.isDefeated) {
         enemy.defeat();
       } else if (this.sharkie.isColliding(enemy) && !enemy.isDefeated) {
+        const wasHurt = this.sharkie.isHurt();
         this.getLastHitTypeSharkie(enemy);
         this.sharkie.hit();
+        if (!wasHurt && this.sharkie.lastHitType === "ELECTRO") {
+          playElectricHitSound();
+        } else if (!wasHurt && this.sharkie.lastHitType === "POISON") {
+          playPoisonHitSharkieSound();
+        }
         this.healthbar.renderHealthbar(this.sharkie.health);
       }
     });
@@ -235,6 +242,7 @@ class World {
       this.level.endboss.forEach((boss) => {
         if (!boss.isDefeated && bubble.isColliding(boss) && bubble.poison) {
           boss.hitByBubble();
+          playPoisonHitEndbossSound();
           bubble.readyToRemove = true;
         }
       });
@@ -260,6 +268,7 @@ class World {
     this.coins.forEach((coin, index) => {
       if (this.sharkie.isColliding(coin) && this.coinbar.coinCounter < 100) {
         this.coinbar.collectCoin();
+        playCoinCollectSound();
         this.coins.splice(index, 1);
       }
     });
@@ -269,6 +278,7 @@ class World {
     this.bottles.forEach((bottle, index) => {
       if (this.sharkie.isColliding(bottle) && this.bottlebar.bottleCounter < 100) {
         this.bottlebar.collectBottle();
+        playBottleCollectSound();
         this.bottles.splice(index, 1);
       }
     });
@@ -293,10 +303,14 @@ class World {
       this.gameOver = true;
       this.gameWon = false;
       this.endscreen.setResult(false);
+      stopBackgroundMusic();
+      playGameOverSound();
     } else if (this.level.endboss.some((boss) => boss.deathAnimationDone)) {
       this.gameOver = false;
       this.gameWon = true;
       this.endscreen.setResult(true);
+      stopBackgroundMusic();
+      playGameWonSound();
     }
     if (this.isGameEnded) {
       showTryAgainBtn();
