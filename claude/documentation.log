@@ -218,3 +218,41 @@
 **Q:** drawImage TypeError nach Poisonbottle-Fix? | **A:** this.img undefined bis renderBottles()-Tick, preloadImages() setzt Startbild sofort
 
 **Q:** Wie wurde drawImage-Fehler behoben? | **A:** preloadImages() setzt sofort gültiges Startbild (ANIMATION→erster Frame, DARK/LIGHT→statisches Bild)
+
+**Q:** Projektstruktur? | **A:** Vanilla JS + Canvas + OOP, kein Build-Step; index.html lädt alle Klassen der Reihe nach; init() startet World; zwei Render-Ebenen: Canvas für Spielobjekte, HTML-Overlay für Buttons.
+
+**Q:** Button-Muster im Projekt? | **A:** HTML-Overlay mit position: absolute über Canvas; Try-again-Button als Referenz (.wrapper-absolute + .btn--main mit .hidden); klickbar per addEventListener.
+
+**Q:** Endscreen-Implementierung? | **A:** Canvas-gerendert; endscreen.class.js extends DrawableObjects.
+
+**Q:** Start-Buttons-Asset? | **A:** 6.Botones/Start/1–4.png (416×135).
+
+**Q:** Fullscreen-Asset? | **A:** 6.Botones/Full Screen/Mesa de trabajo 6–9.png (587×136).
+
+**Q:** Key-Assets vorhanden? | **A:** 6.Botones/Key/ → arrow keys.png, D key.png, Space Bar key.png; Titles: Move title.png, Attack tittle.png; Instructions 1/2.png (1920×1080 Vollbild).
+
+**Q:** Musik-Button-Asset? | **A:** Nicht vorhanden; keine Audio-Dateien im Projekt.
+
+**Q:** Overlay vs Canvas für Start-Buttons? | **A:** Overlay empfohlen; HTML-Buttons einfacher zu klicken als Canvas-Koordinaten berechnen.
+
+**Q:** Start-Ablauf aktuell? | **A:** init() erzeugt sofort World → Spiel läuft ab body onload.
+
+**Q:** Gewünschter Start-Ablauf? | **A:** init() zeigt Startscreen + verdrahtet Button-Listener; Start-Button-Click ruft startGame() auf (erzeugt World + versteckt Startscreen).
+
+**Q:** HTML-Wrapper für Startscreen? | **A:** id="start_screen" in .main-content; .wrapper-absolute Pattern wiederverwenden; position: absolute; inset: 0.
+
+**Q:** Hintergrundbild Startscreen? | **A:** CSS background-image oder <img>; CSS empfohlen bei Deko-Hintergrund.
+
+**Q:** Button-Struktur Startscreen? | **A:** Vier Buttons (Start, Description, Music, Fullscreen); je <button class="btn--main"><img class="btn--img"></button>; jeder mit eigener id für addEventListener.
+
+**Q:** Fullscreen-Button-Platzierung? | **A:** Immer sichtbar; evtl. außerhalb start_screen-Wrapper, damit nicht verschwindet.
+
+**Q:** init() Umstrukturierung? | **A:** Trennung "Seite geladen" von "Spiel starten"; init() = Startscreen sichtbar + Listener; neue Funktion startGame() = World erzeugen.
+
+**Q:** Start-Button-Handler? | **A:** Startscreen ausblenden (.hidden) + startGame() aufrufen.
+
+**Q:** canvas/world Globale? | **A:** Bleiben global; startGame() erzeugt sie später.
+
+**Q:** Musik-Button heute? | **A:** Entscheidung offen: echte Audio-Datei + new Audio() oder nur Toggle-Button + isMuted-Flag als Platzhalter.
+
+**Q:** Key-Description? | **A:** Entscheidung offen: eigenes Overlay oder Part der Description; Instructions 1/2.png evtl. direkt nutzbar.
