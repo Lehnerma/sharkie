@@ -2,6 +2,19 @@ let canvas;
 let keyboard = new Keyboard();
 let world;
 
+const BACKGROUND_MUSIC = new Audio("assets/sound/background_music.mp3");
+BACKGROUND_MUSIC.loop = true;
+BACKGROUND_MUSIC.volume = 0.5;
+
+const SWIM_SOUND = new Audio("assets/sound/swim_sharkie2.mp3");
+SWIM_SOUND.loop = true;
+SWIM_SOUND.volume = 0.5;
+
+const BUBBLE_SOUND = new Audio("assets/sound/bubble.mp3");
+BUBBLE_SOUND.volume = 0.5;
+
+const MOVEMENT_KEYS = ["UP", "DOWN", "LEFT", "RIGHT", "W", "A", "S", "D"];
+
 const keyMap = {
   Space: "SPACE",
   ArrowDown: "DOWN",
@@ -38,6 +51,7 @@ window.addEventListener("keydown", (e) => {
   const pressedKey = keyMap[e.code];
   if (pressedKey) {
     keyboard[pressedKey] = true;
+    updateSwimSound();
   }
 });
 
@@ -45,8 +59,19 @@ window.addEventListener("keyup", (e) => {
   const pressedKey = keyMap[e.code];
   if (pressedKey) {
     keyboard[pressedKey] = false;
+    updateSwimSound();
   }
 });
+
+function updateSwimSound() {
+  if (!world) return;
+  const isMoving = MOVEMENT_KEYS.some((key) => keyboard[key]);
+  if (isMoving) {
+    SWIM_SOUND.play();
+  } else {
+    SWIM_SOUND.pause();
+  }
+}
 
 function showTryAgainBtn() {
   document.getElementById("again_btn").classList.remove("hidden");
@@ -55,6 +80,7 @@ function showTryAgainBtn() {
 function createWorld() {
   showCanvas();
   initWorld();
+  playBackgroundMusic();
   fadeOutStartscreen();
   fadeOutSubarea();
   animateTitleUp();
@@ -62,6 +88,16 @@ function createWorld() {
   fadeInCanvas();
   showFullscreenButton();
   hideStartscreenAfterDelay();
+}
+
+function playBackgroundMusic() {
+  BACKGROUND_MUSIC.currentTime = 0;
+  BACKGROUND_MUSIC.play();
+}
+
+function playBubbleSound() {
+  BUBBLE_SOUND.currentTime = 0;
+  BUBBLE_SOUND.play();
 }
 
 function initWorld() {

@@ -308,6 +308,7 @@ class Sharkie extends MoveableObjects {
     let newBubble = new Bubble(bubbleX, this.y + 110, this.poison, this.otherDirection);
     this.isBubbleShoot = false;
     this.world.bubbles.push(newBubble);
+    playBubbleSound();
     this.bubbleShootTimer();
   }
 
