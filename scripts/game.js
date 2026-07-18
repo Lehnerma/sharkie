@@ -52,7 +52,54 @@ function showTryAgainBtn() {
 
 function createWorld() {
   showCanvas();
+  initWorld();
+  fadeOutStartscreen();
+  animateTitleUp();
+  fadeOutBackground();
+  fadeInCanvas();
+  hideStartscreenAfterDelay();
+}
+
+function initWorld() {
   world = new World(canvas, keyboard);
+}
+
+function animateTitleUp() {
+  const title = document.querySelector(".game-title");
+  if (title) {
+    title.classList.add("animate-up");
+  }
+}
+
+function fadeOutStartscreen() {
+  const startscreen = document.querySelector(".startscreen");
+  if (startscreen) {
+    startscreen.classList.add("fade-out");
+  }
+}
+
+function fadeOutBackground() {
+  const background = document.querySelector(".background-layer");
+  if (background) {
+    background.classList.add("fade-out");
+  }
+}
+
+function fadeInCanvas() {
+  canvas.classList.add("fade-in");
+}
+
+function hideStartscreenAfterDelay() {
+  setTimeout(() => {
+    hideStartscreen();
+  }, 2500);
+}
+
+function hideStartscreen() {
+  const startscreen = document.querySelector(".startscreen");
+  if (startscreen) {
+    startscreen.classList.add("hidden");
+  }
 }
 
 function hideCanvas() {

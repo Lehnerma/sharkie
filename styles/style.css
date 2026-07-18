@@ -21,7 +21,22 @@ main {
 h1 {
   color: white;
   font-size: 5rem;
-  margin: 1rem;
+}
+
+.game-title {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+z-index: 1;
+  transition:
+    top 1s ease 0.5s;
+  pointer-events: none;
+}
+
+.game-title.animate-up {
+  top: -120px;
+
 }
 
 .main-content {
@@ -30,12 +45,23 @@ h1 {
 }
 
 .canvas-wrapper {
+  position: relative;
   width: 720px;
   height: 460px;
+}
+
+.background-layer {
+  position: absolute;
+  inset: 0;
   background-image: url("../assets/images/3. Background/Dark/1.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  transition: opacity 1.5s ease 1s;
+}
+
+.background-layer.fade-out {
+  opacity: 0;
 }
 
 .wrapper-absolute {
@@ -48,21 +74,43 @@ h1 {
   margin-bottom: 2rem;
 }
 
-canvas {
-  background-color: rgba(1, 10, 18, 0.72);
+.startscreen button {
+  transition:
+    transform 1s ease,
+    opacity 1s ease;
 }
 
-.btn--main, .btn--secondary {
+.startscreen.fade-out button {
+  transform: translateY(-80px);
+  opacity: 0;
+}
+
+.startscreen.fade-out {
+  pointer-events: none;
+}
+
+canvas {
+  position: relative;
+
+  opacity: 0;
+  transition: opacity 1.5s ease 1s;
+}
+
+canvas.fade-in {
+  opacity: 1;
+}
+
+.btn--main,
+.btn--secondary {
   cursor: pointer;
   border: none;
   background: none;
-
 }
 
 .btn--img {
   width: 250px;
   aspect-ratio: 4/1;
-    border-radius: 16px;
+  border-radius: 16px;
   transition:
     transform 125ms ease,
     box-shadow 125ms ease;
@@ -79,20 +127,20 @@ canvas {
   transform: scale(1);
 }
 
-.btn--start{
+.btn--start {
   width: 200px;
 }
 
-.hidden{
-    display: none;
+.hidden {
+  display: none;
 }
 
-.flex-center{
+.flex-center {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.mar-m{
+.mar-m {
   margin: 1rem;
 }
