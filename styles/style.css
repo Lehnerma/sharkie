@@ -75,7 +75,7 @@ h1 {
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  padding-bottom: 2rem;
+  /* padding-bottom: 2rem; */
 }
 
 .start-section {
