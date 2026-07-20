@@ -143,6 +143,7 @@ class MoveableObjects extends DrawableObjects {
 
   applyGravity() {
     setInterval(() => {
+      if (this.world?.isGameEnded) return; // freeze gravity once the game is over or won
       if (this.isAboveGround() && this.isMoving()) {
         this.y += this.gravityY;
       }

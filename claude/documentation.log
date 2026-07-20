@@ -432,3 +432,25 @@
 **Q:** Wie wird ein Range-Input modern gestylt? | **A:** `accent-color` statt Vendor-Prefixes (`::-webkit-slider-thumb`, `::-moz-range-thumb`). Modern Browsers: eine Zeile statt ~40 Zeilen.
 
 **Q:** Wie sieht eine Sound-Registry aus? | **A:** `SOUNDS`-Objekt mit Einträgen wie `BUBBLE: { src: "bubble.mp3", base: 0.2, group: "sfx" }`. Ersetzt 15 lose `const`-Variablen, spart 25 Zeilen Code.
+
+**Q:** `<h3>` in `<ul>` | **A:** invalides HTML
+
+**Q:** Tastenlabels | **A:** `<dl>`/`<dt>`/`<dd>` statt `<h6>`/`<ul>`
+
+**Q:** Dialog-Name a11y | **A:** `aria-labelledby="id"`
+
+**Q:** `×` a11y | **A:** `<span aria-hidden>`, Labels unterscheidbar pro Dialog
+
+**Q:** Button-Attribute | **A:** `type="button"`, `aria-haspopup="dialog"`
+
+**Q:** Output/Canvas | **A:** `for="id"`, `aria-label` + Fallback-Text
+
+**Q:** `<article class="main-content">` | **A:** `<section aria-label="Game">`
+
+**Q:** `<header>` nach Animation | **A:** entfernen; `main { grid-row: 2 }`, `footer { grid-row: 3 }`
+
+**Q:** `dd`-Größe nach `<dl>` | **A:** 1rem statt h6 ~0.67em
+
+**Q:** Sound-Dialog | **A:** `<ul>` bleibt (Formular-Controls)
+
+**Q:** Key-Dialog Struktur | **A:** zwei separate `<dl>` (Controls, Shop)
