@@ -34,6 +34,35 @@ function initEventlistener() {
   FULLSCREEN_BTN.addEventListener("click", () => toggleFullscreen());
 
   initDialogs();
+  initVolumeSliders();
+}
+
+/**
+ * connects every slider to the sound group named in data-volume. the
+ * input event fires while dragging, so the volume changes right away
+ * instead of only after releasing the slider.
+ */
+function initVolumeSliders() {
+  document.querySelectorAll("[data-volume]").forEach((slider) => {
+    const GROUP = slider.dataset.volume;
+
+    slider.value = VOLUMES[GROUP] * 100;
+    showVolumeValue(GROUP, slider.value);
+
+    slider.addEventListener("input", () => {
+      setVolume(GROUP, slider.value / 100);
+      showVolumeValue(GROUP, slider.value);
+    });
+  });
+}
+
+/**
+ * writes the current percentage next to a slider.
+ * @param {string} group - master, music or sfx
+ * @param {string} percent - slider value between 0 and 100
+ */
+function showVolumeValue(group, percent) {
+  document.querySelector(`[data-volume-value="${group}"]`).textContent = `${percent}%`;
 }
 
 /**
@@ -92,7 +121,7 @@ function showTryAgainBtn() {
 function createWorld() {
   showCanvas();
   initWorld();
-  playBackgroundMusic();
+  playSound("BACKGROUND_MUSIC");
   fadeOutStartscreen();
   fadeOutSubarea();
   animateTitleUp();

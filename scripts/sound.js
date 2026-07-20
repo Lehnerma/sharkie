@@ -1,132 +1,146 @@
-const BACKGROUND_MUSIC = new Audio("assets/sound/background_music.mp3");
-BACKGROUND_MUSIC.loop = true;
-BACKGROUND_MUSIC.volume = 0.3;
+const SOUND_PATH = "assets/sound/";
 
-const SWIM_SOUND = new Audio("assets/sound/swim_sharkie2.mp3");
-SWIM_SOUND.loop = true;
-SWIM_SOUND.volume = 0.5;
+/**
+ * every sound of the game. base is the hand tuned volume of a single
+ * sound relative to the others, group decides which slider will control
+ * it later. the ready to play Audio object is stored in audio.
+ */
+const SOUNDS = {
+  BACKGROUND_MUSIC: { file: "background_music.mp3", base: 0.3, group: "music", loop: true },
+  SWIM: { file: "swim_sharkie2.mp3", base: 0.5, group: "sfx", loop: true },
+  BUBBLE: { file: "bubble.mp3", base: 0.2, group: "sfx" },
+  BOSS_APPEAR: { file: "boss_apear.mp3", base: 0.7, group: "sfx" },
+  FIN_SLAP: { file: "fin_slap.wav", base: 0.5, group: "sfx" },
+  FIN_HIT: { file: "fin_hit.wav", base: 0.8, group: "sfx" },
+  COIN_COLLECT: { file: "coin_collect.wav", base: 0.2, group: "sfx" },
+  BOTTLE_COLLECT: { file: "bottle_collect.wav", base: 0.5, group: "sfx" },
+  ELECTRIC_HIT: { file: "electric_hit.wav", base: 0.5, group: "sfx" },
+  GAME_OVER: { file: "game_over.wav", base: 0.5, group: "sfx" },
+  GAME_WON: { file: "game_won.wav", base: 0.5, group: "sfx" },
+  POISON_HIT_SHARKIE: { file: "poison_hit_sharkie.wav", base: 0.5, group: "sfx" },
+  ENEMY_HIT: { file: "poison_hit_endboss.wav", base: 0.5, group: "sfx" },
+  HEALING: { file: "healing.wav", base: 0.5, group: "sfx" },
+  SHOP_BUYING: { file: "shop_buying.wav", base: 0.5, group: "sfx" },
+};
 
-const BUBBLE_SOUND = new Audio("assets/sound/bubble.mp3");
-BUBBLE_SOUND.volume = 0.2;
-
-const BOSS_APPEAR_SOUND = new Audio("assets/sound/boss_apear.mp3");
-BOSS_APPEAR_SOUND.volume = 0.7;
-
-const FIN_SLAP_SOUND = new Audio("assets/sound/fin_slap.wav");
-FIN_SLAP_SOUND.volume = 0.5;
-
-const FIN_HIT_SOUND = new Audio("assets/sound/fin_hit.wav");
-FIN_HIT_SOUND.volume = 0.8;
-
-const COIN_COLLECT_SOUND = new Audio("assets/sound/coin_collect.wav");
-COIN_COLLECT_SOUND.volume = 0.2;
-
-const BOTTLE_COLLECT_SOUND = new Audio("assets/sound/bottle_collect.wav");
-BOTTLE_COLLECT_SOUND.volume = 0.5;
-
-const ELECTRIC_HIT_SOUND = new Audio("assets/sound/electric_hit.wav");
-ELECTRIC_HIT_SOUND.volume = 0.5;
-
-const GAME_OVER_SOUND = new Audio("assets/sound/game_over.wav");
-GAME_OVER_SOUND.volume = 0.5;
-
-const GAME_WON_SOUND = new Audio("assets/sound/game_won.wav");
-GAME_WON_SOUND.volume = 0.5;
-
-const POISON_HIT_SHARKIE_SOUND = new Audio("assets/sound/poison_hit_sharkie.wav");
-POISON_HIT_SHARKIE_SOUND.volume = 0.5;
-
-const ENEMY_HIT_SOUND = new Audio("assets/sound/poison_hit_endboss.wav");
-ENEMY_HIT_SOUND.volume = 0.5;
-
-const HEALING_SOUND = new Audio("assets/sound/healing.wav");
-HEALING_SOUND.volume = 0.5;
-
-const SHOP_BUYING_SOUND = new Audio("assets/sound/shop_buying.wav");
-SHOP_BUYING_SOUND.volume = 0.5;
+/** volume of every group, multiplied on top of the base volume. */
+const VOLUMES = {
+  master: 1,
+  music: 1,
+  sfx: 1,
+};
 
 const MOVEMENT_KEYS = ["UP", "DOWN", "LEFT", "RIGHT", "W", "A", "S", "D"];
 
+const VOLUME_STORAGE_KEY = "sharkie_volumes";
+
+loadVolumes();
+createSounds();
+
+/**
+ * restores the volumes of the last visit. a broken storage entry is
+ * ignored on purpose, because a thrown error here would stop the whole
+ * script and the game would never start.
+ */
+function loadVolumes() {
+  try {
+    const STORED = localStorage.getItem(VOLUME_STORAGE_KEY);
+    if (STORED) {
+      Object.assign(VOLUMES, JSON.parse(STORED));
+    }
+  } catch (error) {
+    console.warn("Stored volumes could not be read:", error);
+  }
+}
+
+/**
+ * keeps the volumes for the next visit, the try again button reloads
+ * the page and would reset them otherwise.
+ */
+function saveVolumes() {
+  localStorage.setItem(VOLUME_STORAGE_KEY, JSON.stringify(VOLUMES));
+}
+
+/**
+ * sets the volume of one group and applies it to every sound at once.
+ * @param {string} group - master, music or sfx
+ * @param {number} value - volume between 0 and 1
+ */
+function setVolume(group, value) {
+  VOLUMES[group] = value;
+  applyAllVolumes();
+  saveVolumes();
+}
+
+/**
+ * builds the Audio object for every entry in SOUNDS and applies
+ * its starting volume.
+ */
+function createSounds() {
+  for (let name in SOUNDS) {
+    const SOUND = SOUNDS[name];
+    SOUND.audio = new Audio(SOUND_PATH + SOUND.file);
+    SOUND.audio.loop = SOUND.loop || false;
+    applyVolume(SOUND);
+  }
+}
+
+/**
+ * the browser only knows one absolute volume per audio element, so the
+ * base volume, its group and the master volume have to be multiplied
+ * by hand every time one of them changes.
+ * @param {Object} sound - an entry of SOUNDS
+ */
+function applyVolume(sound) {
+  sound.audio.volume = sound.base * VOLUMES[sound.group] * VOLUMES.master;
+}
+
+/**
+ * recalculates the volume of every sound, used after a slider moved.
+ */
+function applyAllVolumes() {
+  for (let name in SOUNDS) {
+    applyVolume(SOUNDS[name]);
+  }
+}
+
+/**
+ * plays a sound from the beginning, so it can be retriggered while it
+ * is still running.
+ * @param {string} name - key of the sound in SOUNDS
+ */
+function playSound(name) {
+  SOUNDS[name].audio.currentTime = 0;
+  SOUNDS[name].audio.play();
+}
+
+/**
+ * continues a sound where it stopped instead of restarting it. needed
+ * for looping sounds that would stutter on a restart.
+ * @param {string} name - key of the sound in SOUNDS
+ */
+function resumeSound(name) {
+  SOUNDS[name].audio.play();
+}
+
+/**
+ * stops a sound and keeps its current position.
+ * @param {string} name - key of the sound in SOUNDS
+ */
+function stopSound(name) {
+  SOUNDS[name].audio.pause();
+}
+
+/**
+ * starts the swim sound while a movement key is held down and stops it
+ * as soon as all of them are released.
+ */
 function updateSwimSound() {
   if (!world) return;
   const isMoving = MOVEMENT_KEYS.some((key) => keyboard[key]);
   if (isMoving) {
-    SWIM_SOUND.play();
+    resumeSound("SWIM");
   } else {
-    SWIM_SOUND.pause();
+    stopSound("SWIM");
   }
-}
-
-function playBackgroundMusic() {
-  BACKGROUND_MUSIC.currentTime = 0;
-  BACKGROUND_MUSIC.play();
-}
-
-function stopBackgroundMusic() {
-  BACKGROUND_MUSIC.pause();
-}
-
-function playBubbleSound() {
-  BUBBLE_SOUND.currentTime = 0;
-  BUBBLE_SOUND.play();
-}
-
-function playBossAppearSound() {
-  BOSS_APPEAR_SOUND.currentTime = 0;
-  BOSS_APPEAR_SOUND.play();
-}
-
-function playFinSlapSound() {
-  FIN_SLAP_SOUND.currentTime = 0;
-  FIN_SLAP_SOUND.play();
-}
-
-function playFinHitSound() {
-  FIN_HIT_SOUND.currentTime = 0;
-  FIN_HIT_SOUND.play();
-}
-
-function playCoinCollectSound() {
-  COIN_COLLECT_SOUND.currentTime = 0;
-  COIN_COLLECT_SOUND.play();
-}
-
-function playBottleCollectSound() {
-  BOTTLE_COLLECT_SOUND.currentTime = 0;
-  BOTTLE_COLLECT_SOUND.play();
-}
-
-function playElectricHitSound() {
-  ELECTRIC_HIT_SOUND.currentTime = 0;
-  ELECTRIC_HIT_SOUND.play();
-}
-
-function playGameOverSound() {
-  GAME_OVER_SOUND.currentTime = 0;
-  GAME_OVER_SOUND.play();
-}
-
-function playGameWonSound() {
-  GAME_WON_SOUND.currentTime = 0;
-  GAME_WON_SOUND.play();
-}
-
-function playPoisonHitSharkieSound() {
-  POISON_HIT_SHARKIE_SOUND.currentTime = 0;
-  POISON_HIT_SHARKIE_SOUND.play();
-}
-
-function playEnemyHitSound() {
-  ENEMY_HIT_SOUND.currentTime = 0;
-  ENEMY_HIT_SOUND.play();
-}
-
-function playHealingSound() {
-  HEALING_SOUND.currentTime = 0;
-  HEALING_SOUND.play();
-}
-
-function playShopBuyingSound() {
-  SHOP_BUYING_SOUND.currentTime = 0;
-  SHOP_BUYING_SOUND.play();
 }

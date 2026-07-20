@@ -76,6 +76,12 @@
 }
 
 .btn--close {
+  /* the times glyph sits in its own aria-hidden span so screen readers
+     only announce the aria-label, so it needs centering of its own */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
   width: 2rem;
   height: 2rem;
   cursor: pointer;

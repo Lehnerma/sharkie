@@ -358,3 +358,77 @@
 **Q:** Fin-Hit-Sound auslösen bei? | **A:** Vorletzte Fin-Slap-Animations-Frame (Index 6 von 8), animationsgebunden statt kollisionsgebunden
 
 **Q:** Fin-Slap-Sound-Synchronisation umsetzen? | **A:** Helper `playFinSlapAttack()` in `sharkie.class.js` prüft vor Render ob `attackFrame === 6`, spielt Sound einmal pro Attacke-Zyklus
+
+**Q:** Fin Slap auf `I` oder `E`? | **A:** `E` bleibt (keyMap `KeyE`, `sharkie.class.js`), Dialog dokumentiert Ist-Zustand; kein `KeyI` im keyMap
+
+**Q:** Dialog ohne Framework? | **A:** Natives `<dialog>` + `showModal()`; Escape kommt gratis, kein eigener Listener
+
+**Q:** Dialog schliessen ausserhalb? | **A:** Backdrop-Klick meldet `e.target === dialog`, Inhalt meldet Kindelement; `.dialog` braucht `padding: 0`, Inhalt in `.dialog__content`
+
+**Q:** Dialog nicht zentriert? | **A:** `* { margin: 0 }` killt das UA-`margin: auto`; modales dialog ist `position: fixed` + `inset: 0` + `margin: auto` -> `margin: auto` gezielt zuruecksetzen
+
+**Q:** Dialoge wiederverwendbar verdrahten? | **A:** `data-dialog="<id>"` oeffnet, `data-dialog-close` schliesst via `closest("dialog")`; `initDialogs()` sammelt alle -> neuer Dialog = nur Markup
+
+**Q:** Wiederverwendbare Dialog-Klassen? | **A:** `.dialog`, `.dialog__content`, `__header`, `__title`, `__subtitle`, `__text`, `__list`, `__row`, `.key`; Modifier `.dialog--wide`
+
+**Q:** Lautstaerke-Gruppen sinnvoll? | **A:** Ja; Master/Music/SFX empfohlen statt feiner (Enemies unscharf: `electric_hit` vs `poison_hit_endboss`)
+
+**Q:** Warum Sound-Refactor noetig? | **A:** `audio.volume` ist absolut, nicht multiplikativ; Basiswerte muessen separat bleiben -> Registry statt 15 loser `const`
+
+**Q:** Volume-Formel? | **A:** `element.volume = base * VOLUMES[group] * VOLUMES.master`, per `applyVolume()` / `applyAllVolumes()` neu berechnet
+
+**Q:** Sound-Registry-Aufbau? | **A:** `SOUNDS = { NAME: { file, base, group, loop, audio } }`; `createSounds()` baut Audio-Objekte; `playSound(name)` ersetzt 15 `playXySound()`
+
+**Q:** `playSound` vs `resumeSound`? | **A:** `playSound` setzt `currentTime = 0` (Retrigger); Loop-Sounds wie Swim wuerden dadurch stottern -> `resumeSound()` ohne Reset
+
+**Q:** `ENEMY_HIT` -> `poison_hit_endboss.wav`? | **A:** Namens-Mismatch bewusst belassen, kein Teil des Refactors
+
+**Q:** Volume-Persistenz? | **A:** `localStorage` Key `sharkie_volumes`; noetig weil Try-Again `location.reload()` macht
+
+**Q:** `loadVolumes()` Reihenfolge? | **A:** Vor `createSounds()`, sonst starten Audio-Objekte mit Defaults
+
+**Q:** Warum try/catch bei loadVolumes? | **A:** Kaputtes JSON wuerde beim Skript-Laden werfen und das ganze Spiel blockieren; Setting darf nie Start verhindern
+
+**Q:** Slider-Event `input` oder `change`? | **A:** `input` = live beim Ziehen (Regler); `change` = erst beim Loslassen (fuer Test-Sound, Issue #16)
+
+**Q:** Range-Input stylen? | **A:** `accent-color` statt `::-webkit-slider-thumb` / `::-moz-range-thumb`; eine Zeile statt ~40
+
+**Q:** Slider-Wertebereich? | **A:** Input 0-100 (ganze Prozent), `audio.volume` 0-1; Umrechnung in `initVolumeSliders()`
+
+**Q:** iOS-Safari-Einschraenkung? | **A:** `audio.volume` dort read-only, Regler wirkungslos; nur Hardware-Tasten
+
+**Q:** Offene Sound-Issues? | **A:** #15 Mute-Button (User selbst), #16 Test-Sound beim SFX-Regler (angelegt)
+
+**Q:** Warum zeigt Key Descriptions die Fin Slap auf I statt auf E? | **A:** Fin Slap liegt im Code auf E (KeyE in game.js:12), nicht auf I. KeyI existiert nicht.
+
+**Q:** Warum ist der Dialog nicht zentriert? | **A:** Der `* { margin: 0 }` Reset in style.css:3 überschreibt das native `margin: auto` des Browsers. Modales `<dialog>` vom Browser so: `position: fixed + inset: 0 + margin: auto` — kein transform nötig.
+
+**Q:** Wie funktioniert der Backdrop-Klick bei Dialogen? | **A:** Klick auf abgedunkelten Bereich meldet `<dialog>` selbst als e.target, Klick auf Inhalt meldet Kindelement. Darum `<dialog>` mit `padding: 0` und Inhalt in `.dialog__content`.
+
+**Q:** Wie werden neue Dialoge verdrahtet? | **A:** `data-dialog="xyz_dialog"` auf Button öffnet Dialog, `data-dialog-close` schließt Dialog via `closest("dialog")`. Backdrop-Klick und Escape automatisch für alle `<dialog>` auf der Seite.
+
+**Q:** Welche wiederverwendbaren Dialog-Klassen gibt es? | **A:** `.dialog`, `.dialog__content`, `.dialog__header`, `.dialog__title`, `.dialog__subtitle`, `.dialog__text`, `.dialog__list`, `.dialog__row`, `.key`, `.dialog--wide` (für breitere Dialoge), `max-height: 85vh + overflow-y: auto`.
+
+**Q:** Wie war die Sound-Struktur vorher und nachher? | **A:** Vorher: 15 lose `const`-Variablen. Nachher: `SOUNDS`-Objekt mit `src`, `base`, `group`, `loop` pro Sound. Reduziert auf 108 Zeilen (vorher 133), neue Sounds: eine Zeile in Registry statt Variable + Funktion.
+
+**Q:** Wie funktioniert die Volume-Berechnung? | **A:** `element.volume = basis × gruppe × master`. Audio.volume ist absolut (nicht multiplikativ). Basiswerte müssen separat in Registry gespeichert bleiben.
+
+**Q:** Was sind die empfohlenen Sound-Gruppen? | **A:** **Master, Music, SFX** (nicht Master, Enemies, Music, SFX, ...). Weniger Gruppen, weil 4–5 Slider nie angefasst werden und „Enemies" als Kategorie unscharf ist.
+
+**Q:** Warum gibt es playSound() und resumeSound()? | **A:** `playSound()` setzt `currentTime = 0` für neuen Trigger (Bubble-Spam). Beim Schwimm-Sound (Loop) würde das stottern. Darum `resumeSound()` für Swimming (spielt weiter ohne Reset).
+
+**Q:** Wann muss loadVolumes() laufen? | **A:** **Vor** `createSounds()`. Sonst werden Audio-Objekte mit Standardlautstärke gebaut, springen erst beim ersten Reglerzug auf gespeicherte Werte.
+
+**Q:** Wie wird localStorage für Volume-Einstellungen gemacht? | **A:** `loadVolumes()` / `saveVolumes()` mit `try/catch`. Defekter JSON-Eintrag wird verworfen statt zu crashen — Sound-Setting darf nie das Spiel blockieren.
+
+**Q:** iOS Safari und audio.volume? | **A:** Ignoriert `audio.volume` komplett (read-only). Nutzer regelt nur über Hardware-Tasten. Beim iPhone-Test nicht wundern.
+
+**Q:** input vs. change Event beim Range-Slider? | **A:** `input` für Live-Feedback beim Ziehen. `change` erst beim Loslassen. Test-Sound beim SFX-Regler braucht `change` (sonst feuert Sound bei jedem Pixel).
+
+**Q:** Wie wird der Slider-Wert konvertiert? | **A:** Range-Input: 0–100 (ganzzahlig, UI-freundlich). `audio.volume`: 0–1. Umrechnung an Grenze in `initVolumeSliders()`.
+
+**Q:** Welcher Sound heißt ENEMY_HIT und wo liegt die Datei? | **A:** `ENEMY_HIT` zeigt auf `poison_hit_endboss.wav`. Variablenname und Dateiname waren schon vorher uneinheitlich. Beim Refactor gelassen.
+
+**Q:** Wie wird ein Range-Input modern gestylt? | **A:** `accent-color` statt Vendor-Prefixes (`::-webkit-slider-thumb`, `::-moz-range-thumb`). Modern Browsers: eine Zeile statt ~40 Zeilen.
+
+**Q:** Wie sieht eine Sound-Registry aus? | **A:** `SOUNDS`-Objekt mit Einträgen wie `BUBBLE: { src: "bubble.mp3", base: 0.2, group: "sfx" }`. Ersetzt 15 lose `const`-Variablen, spart 25 Zeilen Code.

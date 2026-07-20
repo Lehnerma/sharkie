@@ -135,7 +135,7 @@ class World {
       this.coinbar.renderCoinbar(this.coinbar.coinCounter);
       this.sharkie.health = Math.min(100, this.sharkie.health + 50);
       this.healthbar.renderHealthbar(this.sharkie.health);
-      playHealingSound();
+      playSound("HEALING");
       this.lastShopBuy = new Date().getTime();
     }
   }
@@ -147,7 +147,7 @@ class World {
       this.coinbar.renderCoinbar(this.coinbar.coinCounter);
       this.bottlebar.bottleCounter = Math.min(100, this.bottlebar.bottleCounter + 50);
       this.bottlebar.renderBottle(this.bottlebar.bottleCounter);
-      playShopBuyingSound();
+      playSound("SHOP_BUYING");
       this.lastShopBuy = new Date().getTime();
     }
   }
@@ -216,9 +216,9 @@ class World {
         this.getLastHitTypeSharkie(enemy);
         this.sharkie.hit();
         if (!wasHurt && this.sharkie.lastHitType === "ELECTRO") {
-          playElectricHitSound();
+          playSound("ELECTRIC_HIT");
         } else if (!wasHurt && this.sharkie.lastHitType === "POISON") {
-          playPoisonHitSharkieSound();
+          playSound("POISON_HIT_SHARKIE");
         }
         this.healthbar.renderHealthbar(this.sharkie.health);
       }
@@ -249,14 +249,14 @@ class World {
       this.level.enemies.forEach((enemy) => {
         if (!enemy.isDefeated && bubble.isColliding(enemy) && !enemy.canDirectHit) {
           enemy.hitByBubble();
-          playEnemyHitSound();
+          playSound("ENEMY_HIT");
           bubble.readyToRemove = true;
         }
       });
       this.level.endboss.forEach((boss) => {
         if (!boss.isDefeated && bubble.isColliding(boss) && bubble.poison) {
           boss.hitByBubble();
-          playEnemyHitSound();
+          playSound("ENEMY_HIT");
           bubble.readyToRemove = true;
         }
       });
@@ -282,7 +282,7 @@ class World {
     this.coins.forEach((coin, index) => {
       if (this.sharkie.isColliding(coin) && this.coinbar.coinCounter < 100) {
         this.coinbar.collectCoin();
-        playCoinCollectSound();
+        playSound("COIN_COLLECT");
         this.coins.splice(index, 1);
       }
     });
@@ -292,7 +292,7 @@ class World {
     this.bottles.forEach((bottle, index) => {
       if (this.sharkie.isColliding(bottle) && this.bottlebar.bottleCounter < 100) {
         this.bottlebar.collectBottle();
-        playBottleCollectSound();
+        playSound("BOTTLE_COLLECT");
         this.bottles.splice(index, 1);
       }
     });
@@ -317,14 +317,14 @@ class World {
       this.gameOver = true;
       this.gameWon = false;
       this.endscreen.setResult(false);
-      stopBackgroundMusic();
-      playGameOverSound();
+      stopSound("BACKGROUND_MUSIC");
+      playSound("GAME_OVER");
     } else if (this.level.endboss.some((boss) => boss.deathAnimationDone)) {
       this.gameOver = false;
       this.gameWon = true;
       this.endscreen.setResult(true);
-      stopBackgroundMusic();
-      playGameWonSound();
+      stopSound("BACKGROUND_MUSIC");
+      playSound("GAME_WON");
     }
     if (this.isGameEnded) {
       showTryAgainBtn();

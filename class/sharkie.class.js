@@ -163,7 +163,7 @@ class Sharkie extends MoveableObjects {
       } else if (this.world.keyboard.E) {
         this.isAttacking = true;
         this.addDistanceForSlap();
-        playFinSlapSound();
+        playSound("FIN_SLAP");
         this.playFinSlapAttack();
       } else if (this.world.keyboard.SPACE && this.isBubbleShoot) {
         this.isAttackingBubble = true;
@@ -277,7 +277,7 @@ class Sharkie extends MoveableObjects {
    */
   playFinSlapAttack() {
     if (this.attackFrame === this.ATTACK.FIN_SLAP.length - 2) {
-      playFinHitSound();
+      playSound("FIN_HIT");
     }
     this.playAttack(this.ATTACK.FIN_SLAP, () => this.finishFinSlap());
   }
@@ -321,7 +321,7 @@ class Sharkie extends MoveableObjects {
     let newBubble = new Bubble(bubbleX, this.y + 110, this.poison, this.otherDirection);
     this.isBubbleShoot = false;
     this.world.bubbles.push(newBubble);
-    playBubbleSound();
+    playSound("BUBBLE");
     this.bubbleShootTimer();
   }
 
