@@ -16,6 +16,7 @@ class World {
   world_end = 3700;
   lastShopBuy = 0;
   coinReplenishing = false;
+  bottleReplenishing = false;
   gameOver = false;
   gameWon = false;
   //* begin point for the world
@@ -106,6 +107,17 @@ class World {
     }
   }
 
+  addBottlesToWorld() {
+    if (this.bottles.length < 5) this.bottleReplenishing = true;
+    if (this.bottleReplenishing) {
+      if (this.bottles.length < 11) {
+        this.bottles.push(new Poisonbottle());
+      } else {
+        this.bottleReplenishing = false;
+      }
+    }
+  }
+
   checkShopInput() {
     const now = new Date().getTime();
     if (now - this.lastShopBuy < 5000) return;
@@ -135,6 +147,7 @@ class World {
       this.coinbar.renderCoinbar(this.coinbar.coinCounter);
       this.bottlebar.bottleCounter = Math.min(100, this.bottlebar.bottleCounter + 50);
       this.bottlebar.renderBottle(this.bottlebar.bottleCounter);
+      playShopBuyingSound();
       this.lastShopBuy = new Date().getTime();
     }
   }
@@ -236,13 +249,14 @@ class World {
       this.level.enemies.forEach((enemy) => {
         if (!enemy.isDefeated && bubble.isColliding(enemy) && !enemy.canDirectHit) {
           enemy.hitByBubble();
+          playEnemyHitSound();
           bubble.readyToRemove = true;
         }
       });
       this.level.endboss.forEach((boss) => {
         if (!boss.isDefeated && bubble.isColliding(boss) && bubble.poison) {
           boss.hitByBubble();
-          playPoisonHitEndbossSound();
+          playEnemyHitSound();
           bubble.readyToRemove = true;
         }
       });

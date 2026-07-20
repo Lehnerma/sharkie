@@ -256,3 +256,95 @@
 **Q:** Musik-Button heute? | **A:** Entscheidung offen: echte Audio-Datei + new Audio() oder nur Toggle-Button + isMuted-Flag als Platzhalter.
 
 **Q:** Key-Description? | **A:** Entscheidung offen: eigenes Overlay oder Part der Description; Instructions 1/2.png evtl. direkt nutzbar.
+
+**Q:** Wie wird Hintergrundmusik beim Spielstart eingebaut? | **A:** Audio-Objekt in game.js, `loop = true`, `volume = 0.2`, in `createWorld()` ausgelöst (kein Autoplay-Problem)
+
+**Q:** Wie soll Swim-Sound funktionieren? | **A:** Loop solange Bewegungstaste gedrückt, `updateSwimSound()` in keydown/keyup, prüft alle Tasten parallel
+
+**Q:** Pattern für Sounds bei schnellen Wiederholungen? | **A:** `currentTime = 0` vor `play()` setzen (nicht-Loop-Sounds)
+
+**Q:** Wo wird Bubble-Sound ausgelöst? | **A:** In `bubbleShoot()` (`sharkie.class.js`), genau beim Erzeugen der Bubble
+
+**Q:** Wann spielt Boss-Appear-Sound? | **A:** In `checkIntroduce()`, wenn `hasIntroduced = true` gesetzt wird (garantiert einmalig)
+
+**Q:** Muster für Hit-Sounds, die bei jedem Collision-Tick (200ms) neu feuern? | **A:** Gate auf `!wasHurt` + `lastHitType === "TYPE"` (Sharkie war vorher nicht verletzt)
+
+**Q:** Wie werden Fin-Slap und Collect-Sounds strukturiert? | **A:** Einmal-Events (`isAttacking = true` start, Coins/Flaschen entfernt nach Sammeln)
+
+**Q:** Wann wurde Sound-Code ausgelagert? | **A:** Separate `scripts/sound.js` mit allen Audio-Objekten, `MOVEMENT_KEYS`, Play-Funktionen. In `index.html` vor `game.js` geladen
+
+**Q:** Was bleibt in `game.js` nach Refactoring? | **A:** Nur noch die Aufrufe (`updateSwimSound()`, `playBackgroundMusic()` etc.), globale `world`/`keyboard` erreichbar für `sound.js`
+
+**Q:** Wie stoppen Musik und Sound-Sammlung? | **A:** `stopBackgroundMusic()` in `checkGameOver()` vor End-Sounds (Game-Over/Won)
+
+**Q:** Poison-Hit für Sharkie vs. Puffer-Fish? | **A:** `lastHitType === "POISON"` in `checkEnemyCollision()` (nicht Endboss-Kontakt)
+
+**Q:** Poison-Hit am Boss? | **A:** `playPoisonHitEndbossSound()` in `checkBubbleCollision()` bei Gift-Bubble-Treffer
+
+**Q:** Healing-Sound? | **A:** In `buyHeal()` ausgelöst, durch Cooldown/Bedingungen automatisch gegated
+
+**Q:** Sound-Reihenfolge bei Spielende? | **A:** Musik pausiert → End-Sound (Game-Over/Won) spielt sauber ohne Überlagerung
+
+**Q:** Vorbereitung für Mute-Button? | **A:** Alle 10 Sounds zentral in `sound.js` → `toggleMute()`-Funktion über Array leicht umsetzbar (Issue #15)
+
+**Q:** Tech-Stack des Projekts? | **A:** Vanilla JS + Canvas + OOP, kein Build-Step, index.html lädt Klassen, init() startet World
+
+**Q:** Wie funktioniert Rendering? | **A:** Spielobjekte im Canvas, Buttons als HTML-Overlay über Canvas
+
+**Q:** Try-again-Button Pattern? | **A:** .wrapper-absolute + .btn--main in HTML, .hidden-Klasse zum Verstecken, showTryAgainBtn() zum Einblenden
+
+**Q:** Endscreen-Rendering? | **A:** Canvas-gerendert via endscreen.class.js extends DrawableObjects
+
+**Q:** Verfügbare Button-Assets? | **A:** Start (416×135), Fullscreen (587×136), Keys-Assets, Titel-Assets für Steuerung
+
+**Q:** Fertige Instruction-Screens? | **A:** Instructions 1.png + 2.png (1920×1080) als vollständige Overlays nutzbar
+
+**Q:** Musik-Feature verfügbar? | **A:** Nein, braucht eigenes Icon (Emoji/SVG) und Audio-Datei
+
+**Q:** Overlay oder Canvas für Start-Buttons? | **A:** Overlay — einfacher für Click-Handling, wie Try-again-Pattern
+
+**Q:** Wann World instanziieren? | **A:** Nicht in init(), erst nach Start-Button-Click in eigenständiger startGame()-Funktion
+
+**Q:** Music-Scope heute? | **A:** Optional — entweder vollständig integrieren oder nur Toggle-Button + isMuted-Flag
+
+**Q:** Key-Description-Format? | **A:** Abhängig von Instructions-Bildern — eigenständig oder Teil von Description
+
+**Q:** Startscreen-Position in HTML? | **A:** In <article class="main-content">, als position: absolute Overlay wie .wrapper-absolute
+
+**Q:** Fullscreen-Button-Placement? | **A:** Außerhalb Startscreen-Wrapper, da immer sichtbar sein soll
+
+**Q:** Button-HTML-Struktur? | **A:** <button class="btn--main"><img class="btn--img" …></button> mit eigenen ids, wie Try-again-Button
+
+**Q:** init() vs. startGame() Aufteilung? | **A:** init() = UI vorbereiten, startGame() = World erzeugen + Startscreen verstecken
+
+**Q:** Startscreen-Visibility-Toggle? | **A:** Mit .hidden-Klasse, bereits im Projekt etabliert
+
+**Q:** Globale canvas/world Variablen nach Verzögerung? | **A:** Bleiben unverändert, passt zusammen
+
+**Q:** Implementierungsreihenfolge? | **A:** Schritt 1 HTML-Gerüst (damit ids existieren), dann Schritt 2 init()-Umbau
+
+**Q:** Projektstruktur für Startscreen? | **A:** Vanilla JS + Canvas + OOP, kein Build-Step, index.html lädt sequenziell alle Klassen
+
+**Q:** Wo werden UI-Elemente gerendert? | **A:** Spielobjekte im Canvas, Buttons als HTML-Overlay (.wrapper-absolute) über dem Canvas
+
+**Q:** Was soll Startscreen enthalten? | **A:** Startscreen-UI, Start Button, Description Button, Music Button, Fullscreen Button (immer sichtbar), Key Description
+
+**Q:** Welche Assets sind verfügbar? | **A:** Start-Buttons (6.Botones/Start/1-4.png), Fullscreen (6.Botones/Full Screen/.png), Key-Assets (arrow keys, D key, Space Bar), Instructions 1+2.png (1920×1080)
+
+**Q:** Problem mit Music-Button? | **A:** Keine Musik-Button-Assets und keine Audio-Dateien im Projekt vorhanden
+
+**Q:** UI-Pattern für Startscreen-Buttons? | **A:** HTML-Overlay nach Try-again-Button-Vorbild, position: absolute, inset: 0 für Wrapper
+
+**Q:** Wie ändert sich der Startablauf? | **A:** init() soll nur Seite laden, startGame() erzeugt World erst beim Start-Button-Click
+
+**Q:** HTML-Struktur Startscreen? | **A:** Wrapper mit id (z.B. start_screen) in .main-content, vier Buttons mit id, Hintergrundbild per CSS background-image
+
+**Q:** Fullscreen-Button-Platzierung? | **A:** Überlegung ob im Startscreen-Wrapper oder separates Element, weil Button immer sichtbar sein soll
+
+**Q:** Music-Button-Implementierung heute? | **A:** Entweder echte Audio einbinden oder nur Toggle-Button + isMuted-Flag bauen
+
+**Q:** Arbeitsverlauf? | **A:** Erst Schritt 1 (HTML-Gerüst), dann Schritt 2 (init() umbauen, Listener verdrahten)
+
+**Q:** Wie hidden-State handhaben? | **A:** .hidden CSS-Klasse zum Aus-/Einblenden des Startscreens
+
+**Q:** Global canvas/world Variablen? | **A:** Bleiben global, startGame() erzeugt sie erst später beim Start-Button-Click

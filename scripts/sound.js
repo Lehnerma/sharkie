@@ -15,6 +15,9 @@ BOSS_APPEAR_SOUND.volume = 0.7;
 const FIN_SLAP_SOUND = new Audio("assets/sound/fin_slap.wav");
 FIN_SLAP_SOUND.volume = 0.5;
 
+const FIN_HIT_SOUND = new Audio("assets/sound/fin_hit.wav");
+FIN_HIT_SOUND.volume = 0.8;
+
 const COIN_COLLECT_SOUND = new Audio("assets/sound/coin_collect.wav");
 COIN_COLLECT_SOUND.volume = 0.2;
 
@@ -33,11 +36,14 @@ GAME_WON_SOUND.volume = 0.5;
 const POISON_HIT_SHARKIE_SOUND = new Audio("assets/sound/poison_hit_sharkie.wav");
 POISON_HIT_SHARKIE_SOUND.volume = 0.5;
 
-const POISON_HIT_ENDBOSS_SOUND = new Audio("assets/sound/poison_hit_endboss.wav");
-POISON_HIT_ENDBOSS_SOUND.volume = 0.5;
+const ENEMY_HIT_SOUND = new Audio("assets/sound/poison_hit_endboss.wav");
+ENEMY_HIT_SOUND.volume = 0.5;
 
 const HEALING_SOUND = new Audio("assets/sound/healing.wav");
 HEALING_SOUND.volume = 0.5;
+
+const SHOP_BUYING_SOUND = new Audio("assets/sound/shop_buying.wav");
+SHOP_BUYING_SOUND.volume = 0.5;
 
 const MOVEMENT_KEYS = ["UP", "DOWN", "LEFT", "RIGHT", "W", "A", "S", "D"];
 
@@ -75,6 +81,11 @@ function playFinSlapSound() {
   FIN_SLAP_SOUND.play();
 }
 
+function playFinHitSound() {
+  FIN_HIT_SOUND.currentTime = 0;
+  FIN_HIT_SOUND.play();
+}
+
 function playCoinCollectSound() {
   COIN_COLLECT_SOUND.currentTime = 0;
   COIN_COLLECT_SOUND.play();
@@ -105,12 +116,17 @@ function playPoisonHitSharkieSound() {
   POISON_HIT_SHARKIE_SOUND.play();
 }
 
-function playPoisonHitEndbossSound() {
-  POISON_HIT_ENDBOSS_SOUND.currentTime = 0;
-  POISON_HIT_ENDBOSS_SOUND.play();
+function playEnemyHitSound() {
+  ENEMY_HIT_SOUND.currentTime = 0;
+  ENEMY_HIT_SOUND.play();
 }
 
 function playHealingSound() {
   HEALING_SOUND.currentTime = 0;
   HEALING_SOUND.play();
+}
+
+function playShopBuyingSound() {
+  SHOP_BUYING_SOUND.currentTime = 0;
+  SHOP_BUYING_SOUND.play();
 }

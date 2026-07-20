@@ -147,7 +147,7 @@ class Sharkie extends MoveableObjects {
       if (this.isDead()) {
         this.playDead(this.DEAD[this.lastHitType]);
       } else if (this.isAttacking) {
-        this.playAttack(this.ATTACK.FIN_SLAP, () => this.finishFinSlap());
+        this.playFinSlapAttack();
       } else if (this.isAttackingBubble) {
         this.playAttack(this.ATTACK.BUBBLE, () => this.finishBubbleAttackAnimation());
       } else if (this.isHurt()) {
@@ -164,7 +164,7 @@ class Sharkie extends MoveableObjects {
         this.isAttacking = true;
         this.addDistanceForSlap();
         playFinSlapSound();
-        this.playAttack(this.ATTACK.FIN_SLAP, () => this.finishFinSlap());
+        this.playFinSlapAttack();
       } else if (this.world.keyboard.SPACE && this.isBubbleShoot) {
         this.isAttackingBubble = true;
         this.playAttack(this.ATTACK.BUBBLE, () => this.finishBubbleAttackAnimation());
@@ -268,6 +268,18 @@ class Sharkie extends MoveableObjects {
         this.y = 250;
       }
     }
+  }
+
+  /**
+   * plays the fin slap animation and fires the fin hit sound once the
+   * second-to-last frame is shown, so the impact sound lines up with the
+   * strike itself.
+   */
+  playFinSlapAttack() {
+    if (this.attackFrame === this.ATTACK.FIN_SLAP.length - 2) {
+      playFinHitSound();
+    }
+    this.playAttack(this.ATTACK.FIN_SLAP, () => this.finishFinSlap());
   }
 
   finishFinSlap() {
