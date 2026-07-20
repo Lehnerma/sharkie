@@ -33,22 +33,27 @@ function initEventlistener() {
   TRY_Again_BTN.addEventListener("click", () => location.reload());
   FULLSCREEN_BTN.addEventListener("click", () => toggleFullscreen());
 
-  initKeyDialog();
+  initDialogs();
 }
 
 /**
- * wires up the key descriptions dialog. escape is handled natively
- * by showModal(), so only opening, the close button and the backdrop
- * click need their own listeners.
+ * wires up every dialog on the page. a button opens the dialog whose id
+ * it names in data-dialog, every element with data-dialog-close closes
+ * its own dialog. escape is handled natively by showModal().
  */
-function initKeyDialog() {
-  const OPEN_BTN = document.getElementById("key_descriptions");
-  const DIALOG = document.getElementById("key_dialog");
-  const CLOSE_BTN = document.getElementById("key_dialog_close");
+function initDialogs() {
+  document.querySelectorAll("[data-dialog]").forEach((btn) => {
+    const DIALOG = document.getElementById(btn.dataset.dialog);
+    btn.addEventListener("click", () => DIALOG.showModal());
+  });
 
-  OPEN_BTN.addEventListener("click", () => DIALOG.showModal());
-  CLOSE_BTN.addEventListener("click", () => DIALOG.close());
-  DIALOG.addEventListener("click", (e) => closeOnBackdropClick(e, DIALOG));
+  document.querySelectorAll("[data-dialog-close]").forEach((btn) => {
+    btn.addEventListener("click", () => btn.closest("dialog").close());
+  });
+
+  document.querySelectorAll("dialog").forEach((dialog) => {
+    dialog.addEventListener("click", (e) => closeOnBackdropClick(e, dialog));
+  });
 }
 
 /**
