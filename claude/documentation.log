@@ -348,3 +348,13 @@
 **Q:** Wie hidden-State handhaben? | **A:** .hidden CSS-Klasse zum Aus-/Einblenden des Startscreens
 
 **Q:** Global canvas/world Variablen? | **A:** Bleiben global, startGame() erzeugt sie erst später beim Start-Button-Click
+
+**Q:** `playPoisonHitEndbossSound()` umbenennen? | **A:** In `playEnemyHitSound()` für alle Gegner-Treffer (Jellyfish + Endboss)
+
+**Q:** Wann wird Enemy-Hit-Sound gespielt? | **A:** Bei Jellyfish/Endboss-Treffern in `checkBubbleCollision()`; nur `!canDirectHit` (Pufferfish ausgenommen)
+
+**Q:** Shop-Buying-Sound implementierung? | **A:** `playShopBuyingSound()` in `buyBottles()` bei erfolgreichem Kauf (genug Coins, Bottlebar unter Max)
+
+**Q:** Fin-Hit-Sound auslösen bei? | **A:** Vorletzte Fin-Slap-Animations-Frame (Index 6 von 8), animationsgebunden statt kollisionsgebunden
+
+**Q:** Fin-Slap-Sound-Synchronisation umsetzen? | **A:** Helper `playFinSlapAttack()` in `sharkie.class.js` prüft vor Render ob `attackFrame === 6`, spielt Sound einmal pro Attacke-Zyklus

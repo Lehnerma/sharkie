@@ -54,7 +54,7 @@
 
         <section class="wrapper-absolute wrapper-subarea">
           <button class="btn--dialog">Description</button>
-          <button class="btn--dialog">Key Settings</button>
+          <button class="btn--dialog" id="key_descriptions">Key Descriptions</button>
           <button class="btn--dialog">Sound</button>
         </section>
 
@@ -64,6 +64,39 @@
           </button>
         </section>
       </article>
+
+      <dialog class="dialog" id="key_dialog">
+        <div class="dialog__content">
+          <div class="dialog__header">
+            <h2 class="dialog__title">Key Descriptions</h2>
+            <button class="btn--close" id="key_dialog_close" aria-label="Close">&times;</button>
+          </div>
+
+          <ul class="dialog__list">
+            <li class="dialog__row">
+              <span class="dialog__keys">
+                <kbd class="key">W</kbd>
+                <kbd class="key">A</kbd>
+                <kbd class="key">S</kbd>
+                <kbd class="key">D</kbd>
+              </span>
+              <span class="dialog__action">Move</span>
+            </li>
+            <li class="dialog__row">
+              <span class="dialog__keys">
+                <kbd class="key">E</kbd>
+              </span>
+              <span class="dialog__action">Fin Slap</span>
+            </li>
+            <li class="dialog__row">
+              <span class="dialog__keys">
+                <kbd class="key key--wide">Space</kbd>
+              </span>
+              <span class="dialog__action">Bubble Attack</span>
+            </li>
+          </ul>
+        </div>
+      </dialog>
     </main>
     <footer>
       <aside class="flex-center mar-m" id="fullscreen_aside">

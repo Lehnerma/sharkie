@@ -32,6 +32,36 @@ function initEventlistener() {
   START_BTN.addEventListener("click", () => createWorld());
   TRY_Again_BTN.addEventListener("click", () => location.reload());
   FULLSCREEN_BTN.addEventListener("click", () => toggleFullscreen());
+
+  initKeyDialog();
+}
+
+/**
+ * wires up the key descriptions dialog. escape is handled natively
+ * by showModal(), so only opening, the close button and the backdrop
+ * click need their own listeners.
+ */
+function initKeyDialog() {
+  const OPEN_BTN = document.getElementById("key_descriptions");
+  const DIALOG = document.getElementById("key_dialog");
+  const CLOSE_BTN = document.getElementById("key_dialog_close");
+
+  OPEN_BTN.addEventListener("click", () => DIALOG.showModal());
+  CLOSE_BTN.addEventListener("click", () => DIALOG.close());
+  DIALOG.addEventListener("click", (e) => closeOnBackdropClick(e, DIALOG));
+}
+
+/**
+ * closes the dialog when the click happened outside of its content.
+ * a click on the backdrop reports the dialog itself as event target,
+ * a click inside reports one of the child elements.
+ * @param {MouseEvent} e - the click event
+ * @param {HTMLDialogElement} dialog - the dialog to close
+ */
+function closeOnBackdropClick(e, dialog) {
+  if (e.target === dialog) {
+    dialog.close();
+  }
 }
 
 window.addEventListener("keydown", (e) => {
