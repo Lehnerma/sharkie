@@ -149,6 +149,50 @@ function stopSound(name) {
   SOUNDS[name].audio.pause();
 }
 
+/** remembers the master volume from before muting, so unmute can restore it. */
+let masterVolumeBeforeMute = 1;
+
+/**
+ * whether the game is currently muted. muting simply pulls the master
+ * volume down to zero, so a master of exactly 0 means muted.
+ * @returns {boolean}
+ */
+function isMuted() {
+  return VOLUMES.master === 0;
+}
+
+/**
+ * mutes everything by setting the master volume to zero. the previous
+ * value is kept so unmute can bring it back. on purpose this is not
+ * persisted, a fresh page load always starts with sound on.
+ */
+function muteSound() {
+  masterVolumeBeforeMute = VOLUMES.master || 1;
+  VOLUMES.master = 0;
+  applyAllVolumes();
+}
+
+/**
+ * restores the master volume from before muting and restarts the
+ * background music from the beginning.
+ */
+function unmuteSound() {
+  VOLUMES.master = masterVolumeBeforeMute;
+  applyAllVolumes();
+  playSound("BACKGROUND_MUSIC");
+}
+
+/**
+ * flips between muted and unmuted, used by the mute button.
+ */
+function toggleMute() {
+  if (isMuted()) {
+    unmuteSound();
+  } else {
+    muteSound();
+  }
+}
+
 /**
  * starts the swim sound while a movement key is held down and stops it
  * as soon as all of them are released.

@@ -35,6 +35,47 @@ function initEventlistener() {
 
   initDialogs();
   initVolumeSliders();
+  initMuteButton();
+}
+
+const MUTE_ICON = "assets/icons/mute.svg";
+const SOUND_ICON = "assets/icons/sound.svg";
+
+/**
+ * wires the mute button to the sound module. every click toggles the
+ * mute state and refreshes button and master slider to match.
+ */
+function initMuteButton() {
+  const MUTE_BTN = document.getElementById("mute_toggle");
+  MUTE_BTN.addEventListener("click", () => {
+    toggleMute();
+    updateMuteButton();
+    syncMasterSlider();
+  });
+  updateMuteButton();
+}
+
+/**
+ * shows the current mute state on the button: the crossed out icon and a
+ * pressed state while muted, the speaker icon while sound is on.
+ */
+function updateMuteButton() {
+  const MUTE_BTN = document.getElementById("mute_toggle");
+  const muted = isMuted();
+  MUTE_BTN.setAttribute("aria-pressed", String(muted));
+  MUTE_BTN.setAttribute("aria-label", muted ? "Unmute sound" : "Mute sound");
+  MUTE_BTN.querySelector("img").src = muted ? MUTE_ICON : SOUND_ICON;
+}
+
+/**
+ * mirrors the current master volume onto its slider and value label, so
+ * muting from the button keeps the sound dialog in sync.
+ */
+function syncMasterSlider() {
+  const SLIDER = document.getElementById("volume_master");
+  const PERCENT = Math.round(VOLUMES.master * 100);
+  SLIDER.value = PERCENT;
+  showVolumeValue("master", PERCENT);
 }
 
 /**
@@ -53,6 +94,7 @@ function initVolumeSliders() {
     slider.addEventListener("input", () => {
       setVolume(GROUP, slider.value / 100);
       showVolumeValue(GROUP, slider.value);
+      if (GROUP === "master") updateMuteButton();
     });
 
     slider.addEventListener("change", () => {
