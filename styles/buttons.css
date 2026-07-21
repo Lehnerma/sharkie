@@ -141,6 +141,38 @@
   pointer-events: none;
 }
 
+.btn--social {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.75rem;
+  height: 2.75rem;
+  padding: 0 0.75rem;
+  cursor: pointer;
+  border: none;
+  background: none;
+  text-decoration: none;
+  transition:
+    transform 75ms ease,
+    background 75ms ease;
+}
+
+.btn--social:hover {
+  transform: scale(1.1);
+}
+
+.btn--social:active {
+  transform: scale(1);
+}
+
+.btn--social img {
+  width: 1.5rem;
+  height: 1.5rem;
+  /* remove this filter if your SVG already ships in a light color */
+  filter: invert(1);
+  pointer-events: none;
+}
+
 .wrapper-subarea button {
   transition:
     transform 1s ease,
