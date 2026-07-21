@@ -34,6 +34,8 @@ const MOVEMENT_KEYS = ["UP", "DOWN", "LEFT", "RIGHT", "W", "A", "S", "D"];
 
 const VOLUME_STORAGE_KEY = "sharkie_volumes";
 
+let musicPreviewTimeout;
+
 loadVolumes();
 createSounds();
 
@@ -101,6 +103,22 @@ function applyVolume(sound) {
 function applyAllVolumes() {
   for (let name in SOUNDS) {
     applyVolume(SOUNDS[name]);
+  }
+}
+
+/**
+ * plays a short taste of a group while its slider is being adjusted, so
+ * the user can hear the new volume. sfx plays one short effect, music and
+ * master play the first ~1.5s of the background music and then stop it.
+ * @param {string} group - master, music or sfx
+ */
+function previewVolume(group) {
+  if (group === "sfx") {
+    playSound("COIN_COLLECT");
+  } else {
+    playSound("BACKGROUND_MUSIC");
+    clearTimeout(musicPreviewTimeout); // don't let overlapping previews cut each other short
+    musicPreviewTimeout = setTimeout(() => stopSound("BACKGROUND_MUSIC"), 1500);
   }
 }
 

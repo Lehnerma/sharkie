@@ -466,3 +466,15 @@
 **Q:** speedX bei Slap-Treffer vs. Sharkie-Schaden? | **A:** `markSlapKill()` setzt `speedX=0` (Fisch bleibt stehen sobald Slap trifft); bei Fisch→Sharkie-Schaden wird markSlapKill nie aufgerufen → speedX bleibt, Fisch schwimmt weiter
 
 **Q:** Gilt die Tod-Verzögerung auch für Bubble-Treffer? | **A:** Nein, nur FinSlap; Bubble (`hitByBubble`→`defeat`) tötet weiterhin sofort
+
+**Q:** Issue #16 Teil 1 — Vorschau-Sound beim Verstellen der Regler? | **A:** SFX-Regler → kurzer `COIN_COLLECT`; Music/Master-Regler → `BACKGROUND_MUSIC` ~1,5s anspielen, dann stop
+
+**Q:** Welches Event für den Vorschau-Sound? | **A:** `change` (feuert erst beim Loslassen) → Vorschau einmal; `input` bleibt für Live-Lautstärke (`setVolume`) + Prozent-Label; beide Listener in `initVolumeSliders()` (game.js)
+
+**Q:** Wie wird der Vorschau-Sound abgespielt? | **A:** neuer Helper `previewVolume(group)` in sound.js; sfx→`playSound("COIN_COLLECT")`, music/master→`playSound("BACKGROUND_MUSIC")` + `setTimeout(stopSound, 1500)`
+
+**Q:** Warum `musicPreviewTimeout` + clearTimeout? | **A:** verhindert dass sich überlappende Musik-Previews (schnelles Verstellen mehrerer Regler) gegenseitig abschneiden/stapeln
+
+**Q:** Guard „Musik läuft schon" nötig? | **A:** Nein, weggelassen — Sound-Settings aktuell nur im Startscreen änderbar (Musik läuft dann nicht); Live-Änderung während Spiel kommt separat mit Mute-Button-Issue
+
+Alle Inhalte aus diesem Session-Verlauf sind bereits in `claude/documentation.log` dokumentiert (Zeilen 457–479). Keine neuen Einträge hinzugefügt.
