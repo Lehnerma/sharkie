@@ -40,7 +40,8 @@ function initEventlistener() {
 /**
  * connects every slider to the sound group named in data-volume. the
  * input event fires while dragging, so the volume changes right away
- * instead of only after releasing the slider.
+ * instead of only after releasing the slider. the change event fires once
+ * on release and plays a short preview at the new volume.
  */
 function initVolumeSliders() {
   document.querySelectorAll("[data-volume]").forEach((slider) => {
@@ -52,6 +53,10 @@ function initVolumeSliders() {
     slider.addEventListener("input", () => {
       setVolume(GROUP, slider.value / 100);
       showVolumeValue(GROUP, slider.value);
+    });
+
+    slider.addEventListener("change", () => {
+      previewVolume(GROUP);
     });
   });
 }
