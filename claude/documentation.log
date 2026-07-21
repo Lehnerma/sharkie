@@ -478,3 +478,25 @@
 **Q:** Guard „Musik läuft schon" nötig? | **A:** Nein, weggelassen — Sound-Settings aktuell nur im Startscreen änderbar (Musik läuft dann nicht); Live-Änderung während Spiel kommt separat mit Mute-Button-Issue
 
 Alle Inhalte aus diesem Session-Verlauf sind bereits in `claude/documentation.log` dokumentiert (Zeilen 457–479). Keine neuen Einträge hinzugefügt.
+
+---
+
+## Issue #15 — Mute-Button (rechts oben im Spiel)
+
+**Q:** Mute-Mechanik — eigener Flag oder bestehendes Volume-System? | **A:** über Master: `muteSound()` merkt `masterVolumeBeforeMute` und setzt `VOLUMES.master=0`, `unmuteSound()` stellt zurück; `isMuted()` = `VOLUMES.master === 0`; alles in sound.js
+
+**Q:** Soll der Mute-Zustand persistiert werden (localStorage)? | **A:** Nein — mute/unmute rufen bewusst kein `saveVolumes()`; frischer Reload (auch „Try Again") startet immer mit Ton an
+
+**Q:** Verhalten beim Unmute? | **A:** Master zurücksetzen + `playSound("BACKGROUND_MUSIC")` → Background-Musik von vorne; SFX werden ab dann wieder normal getriggert (bei master=0 laufen sie unhörbar weiter)
+
+**Q:** Icon-Darstellung — nur mute.svg vorhanden (durchgestrichen)? | **A:** zweites Icon `assets/icons/sound.svg` erstellt (gleiche Lautsprecher-Cone wie mute.svg + 3 Schallwellen als stroke-Arcs), Button wechselt zwischen beiden
+
+**Q:** Icons sind schwarz, Button-BG dunkel — Kontrast? | **A:** `.btn--mute-icon { filter: invert(1) }` malt beide Icons weiß
+
+**Q:** Platzierung „rechts oben im Corner"? | **A:** Button in `.canvas-wrapper` (position:relative), `.btn--mute` absolut `top/right:0.5rem`, `z-index:2`; immer sichtbar (auch am Startscreen)
+
+**Q:** Trennung sound.js / game.js? | **A:** sound.js = reine Audio-/Volume-Logik (`muteSound`, `unmuteSound`, `toggleMute`, `isMuted`); game.js = DOM (`initMuteButton`, `updateMuteButton` mit aria-pressed/aria-label/Icon-Swap, `syncMasterSlider`)
+
+**Q:** a11y am Button? | **A:** `type="button"`, `aria-pressed` (true=stumm), `aria-label` wechselt „Mute sound"/„Unmute sound", Icon-`<img alt="">` (dekorativ, da Button beschriftet)
+
+**Q:** Randfall — Master-Slider manuell auf 0/hoch ziehen? | **A:** `input`-Listener ruft bei `GROUP==="master"` zusätzlich `updateMuteButton()`, damit Button-Zustand/aria ehrlich bleibt

@@ -105,6 +105,42 @@
   transform: scale(0.98);
 }
 
+.btn--mute {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  cursor: pointer;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(2, 17, 31, 0.6);
+  transition:
+    transform 75ms ease,
+    background 75ms ease;
+}
+
+.btn--mute:hover {
+  transform: scale(1.05);
+  background: rgba(2, 17, 31, 0.9);
+}
+
+.btn--mute:active {
+  transform: scale(0.98);
+}
+
+.btn--mute-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  /* the icons are black, invert paints them white for contrast on the dark button */
+  filter: invert(1);
+  pointer-events: none;
+}
+
 .wrapper-subarea button {
   transition:
     transform 1s ease,
