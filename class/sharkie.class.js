@@ -286,6 +286,9 @@ class Sharkie extends MoveableObjects {
 
   finishFinSlap() {
     this.isAttacking = false;
+    this.world.level.enemies.forEach((enemy) => {
+      if (enemy.pendingDeath) enemy.defeat(); // now that the slap ran through, play the death animation
+    });
   }
 
   finishBubbleAttackAnimation() {

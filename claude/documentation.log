@@ -454,3 +454,15 @@
 **Q:** Sound-Dialog | **A:** `<ul>` bleibt (Formular-Controls)
 
 **Q:** Key-Dialog Struktur | **A:** zwei separate `<dl>` (Controls, Shop)
+
+**Q:** Pufferfish soll nicht sofort bei Slap-Treffer sterben? | **A:** Death-Animation soll erst nach vollständig durchgelaufenem FinSlap starten (nicht mittendrin); Tod in zwei Phasen aufgeteilt
+
+**Q:** Wie Tod verzögern (zwei Phasen)? | **A:** neues Flag `pendingDeath` + Methode `markSlapKill()` in `enemies.class.js` (setzt nur `pendingDeath=true`, Fisch schwimmt weiter); `defeat()` bleibt echter Wechsel auf DEAD
+
+**Q:** Wo Slap-Treffer registrieren? | **A:** `world.checkEnemyCollision()` Slap-Branch ruft `enemy.markSlapKill()` statt `enemy.defeat()`; Hurt-Branch zusätzlich `&& !enemy.pendingDeath` damit todgeweihter Fisch Sharkie nicht mehr verletzt
+
+**Q:** Was löst den echten Tod aus (Variante A)? | **A:** `sharkie.finishFinSlap()` (Callback am letzten FinSlap-Frame via playAttack→onFinish) iteriert `world.level.enemies` und ruft `defeat()` auf alle mit `pendingDeath` — Tod exakt am letzten Slap-Frame, zentral
+
+**Q:** speedX bei Slap-Treffer vs. Sharkie-Schaden? | **A:** `markSlapKill()` setzt `speedX=0` (Fisch bleibt stehen sobald Slap trifft); bei Fisch→Sharkie-Schaden wird markSlapKill nie aufgerufen → speedX bleibt, Fisch schwimmt weiter
+
+**Q:** Gilt die Tod-Verzögerung auch für Bubble-Treffer? | **A:** Nein, nur FinSlap; Bubble (`hitByBubble`→`defeat`) tötet weiterhin sofort
