@@ -55,6 +55,7 @@ class JellyFish extends Enemies {
   animateJellyfisch() {
     this.animationImages();
     setInterval(() => {
+      if (this.world?.isGameEnded) return; // freeze the jellyfish once the game is over or won
       if (this.animationState === "DEAD") {
         this.floatAway(this.MOVES.DEAD[this.color]);
       } else {
@@ -65,6 +66,7 @@ class JellyFish extends Enemies {
 
   animationImages() {
     setInterval(() => {
+      if (this.world?.isGameEnded) return; // stop advancing frames once the game is over or won
       if (this.animationState === "DEAD") {
         this.defeatAnimation(this.MOVES.DEAD[this.color]);
       } else {

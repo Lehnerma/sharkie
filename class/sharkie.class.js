@@ -144,6 +144,7 @@ class Sharkie extends MoveableObjects {
     setInterval(() => this.updateMovement(), 1000 / 60);
 
     setInterval(() => {
+      if (this.world?.isGameEnded) return; // stop advancing frames once the game is over or won
       if (this.isDead()) {
         this.playDead(this.DEAD[this.lastHitType]);
       } else if (this.isAttacking) {
@@ -182,6 +183,7 @@ class Sharkie extends MoveableObjects {
    * keyboard controls him. the camera follows him in both cases.
    */
   updateMovement() {
+    if (this.world?.isGameEnded) return; // freeze sharkie once the game is over or won
     if (this.isDead()) {
       this.moveDead();
     } else {
@@ -319,6 +321,7 @@ class Sharkie extends MoveableObjects {
     this.checkPoison();
     const bubbleX = this.otherDirection ? this.x - 25 : this.x + 145;
     let newBubble = new Bubble(bubbleX, this.y + 110, this.poison, this.otherDirection);
+    newBubble.world = this.world; // let the bubble freeze with the rest of the world on game end
     this.isBubbleShoot = false;
     this.world.bubbles.push(newBubble);
     playSound("BUBBLE");

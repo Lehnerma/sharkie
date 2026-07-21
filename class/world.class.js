@@ -49,15 +49,6 @@ class World {
     this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.level.backgrounds);
 
-    if (this.isGameEnded) {
-      this.ctx.translate(-this.camera_x, 0); // reset of the camera position for sharkie
-      this.addToMap(this.endscreen);
-      requestAnimationFrame(() => {
-        this.draw();
-      });
-      return;
-    }
-
     this.addToMap(this.sharkie);
     this.addEndbossToMap();
     this.addObjectsToMap(this.level.enemies);
@@ -69,6 +60,10 @@ class World {
     this.addToMap(this.coinbar);
     this.addToMap(this.bottlebar);
     this.drawEndbossbar();
+
+    if (this.isGameEnded) {
+      this.addToMap(this.endscreen); // overlay the game over / win title on the frozen scene
+    }
 
     requestAnimationFrame(() => {
       this.draw();
