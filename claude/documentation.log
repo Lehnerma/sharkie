@@ -500,3 +500,41 @@ Alle Inhalte aus diesem Session-Verlauf sind bereits in `claude/documentation.lo
 **Q:** a11y am Button? | **A:** `type="button"`, `aria-pressed` (true=stumm), `aria-label` wechselt „Mute sound"/„Unmute sound", Icon-`<img alt="">` (dekorativ, da Button beschriftet)
 
 **Q:** Randfall — Master-Slider manuell auf 0/hoch ziehen? | **A:** `input`-Listener ruft bei `GROUP==="master"` zusätzlich `updateMuteButton()`, damit Button-Zustand/aria ehrlich bleibt
+
+**Q:** Sollen Subagenten (Session-Code-Reviewer, Haiku) für schnelle Übersichten eingesetzt werden? | **A:** Ja, spart Tokens beim Hauptmodell, Übersicht per Haiku vor Implementation.
+
+**Q:** Icon-Situation für Mute-Button (nur mute.svg vorhanden)? | **A:** Neues `sound.svg` (Lautsprecher "Ton an" mit Schallwellen) ergänzt; beide Icons bilden Pair für Toggle.
+
+**Q:** Wie wird Mute-Mechanik umgesetzt? Master auf 0 oder echte Audio-Stopp? | **A:** Master auf 0 (für Slider-Sync), aber beim Unmute wird Background-Musik explizit neu gestartet (erfüllt "von vorne"-Wunsch).
+
+**Q:** Wird Mute-Zustand nach Reload / "Try Again" behalten? | **A:** Nein, bewusst ohne `saveVolumes()` beim Muten. Nach Reload ist Ton immer an.
+
+**Q:** Regler-Sync: Wie verhält sich Master-Volume-Slider beim Muten? | **A:** Slider folgt Mute-Zustand, Benutzereingaben am Slider überschreiben Button-Zustand (ehrlich bleiben).
+
+**Q:** Barrierefreiheit des Mute-Buttons? | **A:** `aria-pressed` für Zustand, `aria-label` wechselt dynamisch ("Mute sound" / "Unmute sound").
+
+**Q:** Platzierung des Mute-Buttons? | **A:** Rechts oben im Corner der `canvas-wrapper`, absolut positioniert.
+
+**Q:** Code-Struktur für Mute: Audio-Logik vs. DOM? | **A:** `sound.js` = pure Audio (muteSound/unmuteSound/toggleMute/isMuted), `game.js` = DOM + Slider-Sync.
+
+**Q:** Kann Master=0 ungewollt in localStorage landen (Persistierungs-Edge-Case)? | **A:** Ja, wenn User nach Mute einen anderen Regler zieht. Issue #21 angelegt, niedrige Priorität, späteren Fix.
+
+**Q:** Live-Test des Mute-Buttons im Spiel? | **A:** Nein, nur statisch geprüft (Syntax, SVG, Icon-Render). User testet später selbst.
+
+## Checklisten-Review (Projektabgabe) → Issues #23–#28 · 2026-07-21
+
+**Q:** Basis des Reviews? | **A:** Google-Docs-Abgabecheckliste (Jump&Run / Sharkie) gegen den aktuellen Projektstand abgeglichen; nur offene Lücken erfasst (bestehende offene Issues #21, #15 ausgenommen).
+
+**Q:** Welche Lücken wurden gefunden und als Issues angelegt? | **A:**
+- #23 Restart per `location.reload()` (game.js:33) — Checklist verbietet Reload-Restart · bug
+- #24 Responsiveness/Mobile fehlt komplett (0 Media Queries, keine Touch-Buttons, keine Orientation-Meldung, Kontextmenü) — gebündelt · enhancement
+- #25 Impressum fehlt (User Story 2) · enhancement
+- #26 Dateiname-Tippfehler `keyboard.clas.js` → `keyboard.class.js` (auch index.html:13) · bug
+- #27 JSDoc unvollständig (movable-objects, jelly-fish, bubble, statusbar, drawable-objects) · documentation
+- #28 `console.warn` im Live-Code (sound.js:54) · javascript
+
+**Q:** Zuschnitt Responsiveness — 1 Issue oder mehrere? | **A:** Auf Wunsch von Max als **ein** gebündeltes Issue (#24) mit Checkliste, statt 3 Einzel-Issues.
+
+**Q:** Was wurde positiv geprüft (keine Issues nötig)? | **A:** Favicon ✅, lokale Font (Luckiest Guy via @font-face) ✅, `cursor: pointer` an Buttons ✅, keine Datei > 400 LOC (max 351) ✅, index.html korrekt benannt ✅, class-Ordner vorhanden ✅.
+
+**Q:** Nachtrag — Funktions-Audit (14-Zeilen-Regel) auch als Issue? | **A:** Ja, #29 angelegt als **bewusst letzter** Schritt (nach #23–#28), Ziel = vollständige Abdeckung aller Funktionen; noch kein Durchmessen erfolgt.
