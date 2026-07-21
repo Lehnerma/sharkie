@@ -205,8 +205,8 @@ class World {
       if (enemy.readyToRemove) {
         this.level.enemies.splice(index, 1);
       } else if (this.sharkie.isColliding(enemy) && this.sharkie.isAttacking && enemy.canDirectHit && !enemy.isDefeated) {
-        enemy.defeat();
-      } else if (this.sharkie.isColliding(enemy) && !enemy.isDefeated) {
+        enemy.markSlapKill(); // dies only once the fin slap has finished (see sharkie.finishFinSlap)
+      } else if (this.sharkie.isColliding(enemy) && !enemy.isDefeated && !enemy.pendingDeath) {
         const wasHurt = this.sharkie.isHurt();
         this.getLastHitTypeSharkie(enemy);
         this.sharkie.hit();
