@@ -454,3 +454,15 @@
 **Q:** Sound-Dialog | **A:** `<ul>` bleibt (Formular-Controls)
 
 **Q:** Key-Dialog Struktur | **A:** zwei separate `<dl>` (Controls, Shop)
+
+**Q:** Wie werden alle Game-Elemente eingefroren wenn Game Over oder Game Won? | **A:** Guard-Klausel `if (this.world?.isGameEnded) return;` in allen Interval-Loops: Sharkie (updateMovement, Animation, applyGravity), PufferFish/JellyFish (movement, animationImages), Endboss (animation, movement), Bubble (flight)
+
+**Q:** Was war das Kernproblem bei der ursprünglichen Implementierung? | **A:** Character-Intervals ignorierten GameEnded-State und liefen weiter; draw() machte early-exit und versteckte Characters komplett statt sie einzufrieren
+
+**Q:** Wie wird Sichtbarkeit nach Game-End gewährleistet? | **A:** Draw-Loop zeichnet immer die volle Scene, overlayert Game-Over/Won-Title darüber statt early-return bei GameEnded
+
+**Q:** Wie funktioniert die Game-Loop-Architektur? | **A:** World-Klasse mit requestAnimationFrame + 200ms helperFunction-Loop (Collisions, GameOver-Check); Character-Klassen laufen eigene setInterval-Loops für Movement/Animation unabhängig
+
+**Q:** Wie bekommen Bubbles den World-Reference für Freeze-Check? | **A:** In sharkie.bubbleShoot() wird newBubble.world gesetzt, damit Bubble die isGameEnded-Condition in eigenem Interval checken kann
+
+**Q:** Was bedeutet "Freeze" in diesem Projekt-Kontext? | **A:** Characters bleiben sichtbar und unbeweglich auf Screen, nicht: komplett verstecken (Differenz zur alten early-exit-Logik)
