@@ -604,3 +604,53 @@ Keine neuen Einträge — der Session-Verlauf ist bereits vollständig in `claud
 **Q:** Offene Punkte (Vorschlag)? | **A:** Phase A = fluides Layout: Canvas interne Auflösung 720×460 behalten, nur CSS skalieren (`width: min(720px,100vw)` + `aspect-ratio`, Canvas `width:100%`), body-Grid-Zeilen von starren 200px auf auto/minmax → löst Scrollbalken. Phase B = Touch-Controls: `touchstart/touchend` setzen dieselben Keyboard-Booleans, nur `<767px` sichtbar, `contextmenu` preventDefault + `touch-action:none`.
 
 **Q:** Teststand? | **A:** Statisch gebaut, Live-Test im Browser (DevTools Device-Toolbar, Handy hochkant) durch Max ausstehend.
+
+### Phase A — Fluides Layout & Canvas-Skalierung · 2026-07-22
+
+**Q:** Grundprinzip der Canvas-Skalierung? | **A:** Interne Auflösung `720×460` (width/height-Attribute = Draw-Buffer) bleibt unangetastet, Spiellogik wird nicht angefasst. Nur die CSS-Darstellung skaliert: `.main-content { width: min(720px, 100vw) }`, `.canvas-wrapper { width: 100%; aspect-ratio: 720/460 }`, `canvas { width: 100%; height: 100%; display: block }`.
+
+**Q:** Wie wird der horizontale Scrollbalken verhindert? | **A:** `body { overflow-x: hidden }` als Sicherheitsnetz + `.game-title` von fixen `5rem` auf `clamp(2.5rem, 12vw, 5rem)`, damit der Titel schmale Canvas nicht überläuft.
+
+**Q:** Problem mit den starren Grid-Zeilen? | **A:** `grid-template-rows: 200px 1fr 200px` + 460px-Canvas = 860px → vertikaler Scrollbalken auf Höhen < 860px (auch 1366×768-Laptops). Fix: `minmax(1rem, 1fr) auto minmax(1rem, 1fr)` — symmetrische, schrumpfbare Spacer halten die vertikale Zentrierung, sprengen aber keine niedrigen Viewports mehr.
+
+**Q:** Der kniffligste Fall — liegendes Handy/Tablet (breit, flach)? | **A:** Media Query `(orientation: landscape) and (max-height: 600px)`: Canvas zusätzlich über die Höhe begrenzt via `width: min(720px, 100vw, calc((100svh - 4rem) * 720/460))`. `svh` fängt die mobile Browser-Chrome ab. Titel wird ausgeblendet (kein Platz), Footer-Padding reduziert.
+
+**Q:** Warum `#fullscreen_aside` im kurzen Querformat ausgeblendet? | **A:** Das separate `<aside>` hat `margin: 1rem` (32px vertikal) und der 250px-Fullscreen-Button passt nicht in ein flaches Querformat → hätte einen vertikalen Scrollbalken erzeugt. Entscheidung: dort `display: none`.
+
+**Q:** Scroll hinter dem Orientation-Overlay? | **A:** Im Hochformat-Lock zusätzlich `body { overflow: hidden }`, sonst scrollt der Game-Inhalt hinter dem fixed Overlay.
+
+**Q:** Live getestet? | **A:** Ja, via Chrome-Automation an vier Größen geprüft (Desktop 1200×800, Tablet quer 1024×768, Handy quer 667×375, Handy hoch 414×760) — überall keine H/V-Scrollbalken, Canvas skaliert, Zentrierung intakt. Echtes Gameplay (Start gedrückt bis Level) noch nicht durchgespielt.
+
+**Q:** Offener Folgepunkt (Max' Wunsch)? | **A:** Der Orientation-Flip erscheint aktuell auch, wenn man ein Desktop-Fenster schmal & hoch zieht (portrait + <768px). Soll dort NICHT kommen → Nachgang: Touch-Device-Check via `@media (pointer: coarse)` / `(hover: none)` ergänzen, damit nur echte Touchgeräte den Hinweis sehen. Bewusst separat gehalten.
+
+**Q:** Wann wird Orientation-Lock angezeigt? | **A:** Bei `max-width: 767px` und `orientation: portrait` (kleine Geräte im Hochformat)
+
+**Q:** Warum keine starren 200px Grid-Zeilen? | **A:** Sie summieren sich (200+460+200=860px) und erzeugen Scrollbalken auf Screens unter 860px. `minmax(1rem, 1fr)` skaliert sie symmetrisch.
+
+**Q:** Wie skaliert der Canvas? | **A:** Interne Auflösung 720×460 bleibt unangetastet, nur CSS wird fluid: `width: min(720px, 100vw)`, `aspect-ratio: 720/460`
+
+**Q:** Was verhindert horizontalen Scroll? | **A:** `overflow-x: hidden` auf `body`
+
+**Q:** Wie wird die Titel-Schrift auf schmalen Screens handhabbar? | **A:** `clamp(2.5rem, 12vw, 5rem)` statt fix 5rem
+
+**Q:** Wann wird Fullscreen-Aside im Querformat ausgeblendet? | **A:** Bei `landscape` und `max-height: 600px` (flaches Handy hat kein Platz für 250px-Button)
+
+**Q:** Wie wird Body-Scrollen bei Overlay gesperrt? | **A:** CSS `overflow: hidden` auf `body`, wenn `#orientation_lock` sichtbar ist
+
+**Q:** Warum wird der Flip auf Desktop versteckt? | **A:** Mit `(pointer: coarse)` in der Media Query – nur echte Touchgeräte zeigen die Meldung, nicht schmalgezogene Desktop-Fenster
+
+**Q:** Welche Viewports wurden getestet? | **A:** Desktop 1200×800, Tablet quer 1024×768, Handy quer 667×375, Handy hoch 414×760 – alle ohne Scrollbalken
+
+**Q:** Wie orientation-lock nur auf echten Touch-Geräten, nicht auf schmalem Desktop-Fenster triggern? | **A:** `@media (max-width: 767px) and (orientation: portrait) and (pointer: coarse)` — ergänze `and (pointer: coarse)` zur bestehenden Query.
+
+**Q:** Canvas-Buttons oder HTML-Overlay für Touch-Bedienung? | **A:** HTML-Overlay mit `position: absolute` über canvas-wrapper. Canvas-Buttons: schlecht für a11y, Skalierungskomplexität, unnötiger Umbau. Keyboard-Booleans können direkt via `touchstart`/`touchend` auf echten `<button>` gesetzt werden (Phase B).
+
+**Q:** Burger-Menu für Impressum/LinkedIn/GitHub implementiert — wie? | **A:** `<button aria-expanded>` + Inline-SVG-Burger (JS togglet State), Menü als Flyout nach oben. Desktop (pointer: fine): 3 Icons inline wie bisher. Touch (pointer: coarse): Burger sichtbar, Menü auswählbar. Schließt bei Escape/Outside-Click/Auswahl. Alle Links bleiben native `<a>`.
+
+**Q:** Subagent-Review des Landscape-Fixes — Findings? | **A:** 2 nicht-blockierend: (1) short-landscape-Query hat kein `(pointer: coarse)` — aber nur Layout-Anpassung, unkritisch. (2) orientation-lock via `display:none` — vertretbar (Canvas-Game nicht SR-spielbar). Beides: so lassen.
+
+**Q:** CSS-Aufteilung von 424-Zeiler style.css? | **A:** reset.css | base.css | layout.css | canvas.css | dialog.css | footer.css | responsive.css | utilities.css | buttons.css (existierend). Sortierung je Datei: Basis → Sub-Komponenten → Varianten → Media Queries am Ende.
+
+**Q:** Link-Reihenfolge CSS in index.html? | **A:** reset → base → layout → canvas → dialog → footer → responsive → utilities → buttons. Responsive am Ende (höchste Spezifität).
+
+**Q:** Burger-Menu-Logik JS-Stil? | **A:** `initFooterMenu()` verdrahtet in `initEventlistener()`. JS flippt nur `aria-expanded`, CSS macht Sichtbarkeit (eine State-Quelle). Toggles bei Klick auf Burger, schließt bei Escape/Klick daneben/Auswahl Eintrag.

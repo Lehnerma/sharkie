@@ -1,0 +1,69 @@
+/* footer container, pinned to bottom row of body grid */
+.footer-wrapper {
+  display: flex;
+  align-items: flex-end;
+}
+
+/* navigation bar with menu toggle and social links */
+.footer-bar {
+  /* anchor for the mobile flyout that opens above the burger */
+  position: relative;
+  display: flex;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+}
+
+/* burger toggle button (hidden on desktop, visible on touch devices) */
+.footer-menu__toggle {
+  display: none;
+  height: 3rem;
+  padding: 0 0.75rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* burger icon (svg with three horizontal lines) */
+.footer-menu__icon {
+  width: 2rem;
+  height: 2rem;
+  stroke: #fff;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+/* the footer menu: sits inline on desktop, flyout on touch */
+.footer-menu {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* touch layout: menu becomes a flyout behind the burger */
+@media (pointer: coarse) {
+  .footer-menu__toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .footer-menu {
+    display: none;
+    position: absolute;
+    right: 1rem;
+    /* the footer sits at the page bottom, so the flyout opens upwards */
+    bottom: 100%;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    background: rgba(2, 17, 31, 0.95);
+    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.5);
+  }
+
+  .footer-menu__toggle[aria-expanded="true"] + .footer-menu {
+    display: flex;
+  }
+}

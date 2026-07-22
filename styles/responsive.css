@@ -1,0 +1,99 @@
+/**
+ * Orientation Lock Overlay
+ * shown only on touch devices in portrait mode with small viewport width
+ */
+
+.orientation-lock {
+  /* hidden by default; only the portrait media query below reveals it */
+  display: none;
+}
+
+.orientation-lock__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 2rem;
+  text-align: center;
+  color: #ffffff;
+}
+
+.orientation-lock__icon {
+  animation: orientation-rotate 2s ease-in-out infinite;
+}
+
+.orientation-lock__text {
+  max-width: 20rem;
+  font-size: 1.25rem;
+  line-height: 1.5;
+}
+
+@keyframes orientation-rotate {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-90deg);
+  }
+}
+
+/* disable rotation animation for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .orientation-lock__icon {
+    animation: none;
+  }
+}
+
+/* show orientation lock only on touch devices in portrait mode */
+@media (max-width: 767px) and (orientation: portrait) and (pointer: coarse) {
+  body {
+    /* the fixed overlay covers everything; stop the page behind from scrolling */
+    overflow: hidden;
+  }
+
+  .orientation-lock {
+    display: flex;
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    background-image: linear-gradient(180deg, #02111f 0%, #05345a 48%, #01070d 100%);
+  }
+}
+
+/**
+ * Short Landscape Mode
+ * for phones/tablets lying down: viewport is wide but flat, so the canvas
+ * must be capped by height to avoid vertical scrollbar. svh accounts for
+ * the mobile browser chrome.
+ */
+@media (orientation: landscape) and (max-height: 600px) {
+  body {
+    min-height: 100svh;
+    /* drop the empty top spacer row; title is hidden here anyway */
+    grid-template-rows: 0 1fr auto;
+  }
+
+  .main-content {
+    /* smallest of: native size, viewport width, and height-derived width
+       (720/460 = the aspect ratio), leaving ~4rem for the footer */
+    width: min(720px, 100vw, calc((100svh - 4rem) * 720 / 460));
+  }
+
+  .game-title {
+    /* no vertical room for the big title in a flat landscape viewport */
+    display: none;
+  }
+
+  #fullscreen_aside {
+    /* the standalone 250px fullscreen button doesn't fit a flat landscape
+       viewport and would push a vertical scrollbar */
+    display: none;
+  }
+
+  .footer-bar {
+    padding: 0.25rem 1rem;
+  }
+}

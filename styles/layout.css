@@ -1,0 +1,41 @@
+/* main content container and grid positioning */
+main {
+  /* the first grid row stays empty on purpose: the title animates up
+     into it, so main and footer are pinned to rows 2 and 3 */
+  grid-row: 2;
+  align-self: center;
+}
+
+/* the game title that slides up when the game starts */
+.game-title {
+  position: absolute;
+  /* scales with the viewport so it never overflows a narrow canvas */
+  font-size: clamp(2.5rem, 12vw, 5rem);
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  transition: top 1s ease 0.5s;
+  pointer-events: none;
+}
+
+.game-title.animate-up {
+  top: -120px;
+}
+
+/* the wrapper that holds canvas and related elements at a responsive size */
+.main-content {
+  position: relative;
+  /* fluid down to the viewport width, but never larger than the native 720px */
+  width: min(720px, 100vw);
+}
+
+/* the container for the canvas element; keeps aspect ratio while scaling */
+.canvas-wrapper {
+  position: relative;
+  /* the canvas keeps its internal 720x460 buffer; only the display box scales,
+     the aspect-ratio keeps the 720:460 shape while width follows main-content */
+  width: 100%;
+  height: auto;
+  aspect-ratio: 720 / 460;
+}

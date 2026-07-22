@@ -1,0 +1,16 @@
+/* hide elements completely from display and accessibility tree */
+.hidden {
+  display: none;
+}
+
+/* flex container with centered content */
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* medium spacing utility */
+.mar-m {
+  margin: 1rem;
+}

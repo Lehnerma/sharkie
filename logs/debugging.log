@@ -1,0 +1,12 @@
+[2026-07-22 code-reviewer-session] styles/style.css Review – Issue #24
+- L164: pointer:coarse check correct, both rules (overflow:hidden + display:flex) protected ✓
+- L350: short-landscape media query missing pointer:coarse – edge case on desktop landscape resize
+- L352-L377: CSS techniques correct (aspect-ratio, clamp, min, minmax, svh) ✓
+- L125/L171: display:none orientation-lock – removed from a11y tree; confirm if Screen Reader access needed
+
+[2026-07-22 SESSION-REVIEW] PROJECT ANALYSIS
+Projektstruktur: class/ (20 files), level/, scripts/ (game.js + sound.js), styles/ (9 CSS), assets/
+Architektur: DrawableObjects → MoveableObjects → {Sharkie, Enemies, Endboss, Bubble, etc.} + World (two engines: draw/60fps + helperFunction/200ms)
+CSS-Split: reset → base → layout → canvas → dialog → footer → responsive → utilities → buttons (saubere Separation of Concerns)
+Uncommitted: style.css deleted, 8 new CSS files untracked, index.html/game.js/buttons.css/documentation.log modified
+Findings: CSS-Aufteilung funktional sauber; buttons.css enthält .start-section Animations (sollte zu canvas.css); fonts.css noch in index.html:34; console.logs möglich; Gegner in level1.js auskommentiert; bubblebar.class.js/Bottlebar Namens-Mismatch bekannt

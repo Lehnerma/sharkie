@@ -1,0 +1,20 @@
+/* page background and grid container for the game layout */
+body {
+  display: grid;
+  /* symmetric flexible spacers keep the game vertically centered but shrink
+     on shorter viewports so the fixed rows never force a vertical scrollbar */
+  grid-template-rows: minmax(1rem, 1fr) auto minmax(1rem, 1fr);
+  min-height: 100vh;
+  justify-items: center;
+  /* a scaled-down canvas must never push a horizontal scrollbar */
+  overflow-x: hidden;
+
+  background-color: #000;
+  background-image: linear-gradient(180deg, #02111f 0%, #05345a 48%, #01070d 100%);
+}
+
+/* default heading styling */
+h1 {
+  color: white;
+  font-size: 5rem;
+}

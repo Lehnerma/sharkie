@@ -36,6 +36,59 @@ function initEventlistener() {
   initDialogs();
   initVolumeSliders();
   initMuteButton();
+  initFooterMenu();
+}
+
+/**
+ * wires the footer burger menu (touch layout only). the toggle flips its
+ * aria-expanded state and css reveals the flyout; escape, a click outside
+ * and choosing an entry close it again.
+ */
+function initFooterMenu() {
+  const TOGGLE = document.getElementById("footer_menu_toggle");
+  const MENU = document.getElementById("footer_menu");
+
+  TOGGLE.addEventListener("click", () => toggleFooterMenu(TOGGLE));
+  MENU.addEventListener("click", (e) => closeOnMenuChoice(e, TOGGLE));
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeFooterMenu(TOGGLE);
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!TOGGLE.contains(e.target) && !MENU.contains(e.target)) {
+      closeFooterMenu(TOGGLE);
+    }
+  });
+}
+
+/**
+ * toggles the menu open or closed by flipping aria-expanded on the button.
+ * @param {HTMLButtonElement} toggle - the burger toggle button
+ */
+function toggleFooterMenu(toggle) {
+  const isOpen = toggle.getAttribute("aria-expanded") === "true";
+  toggle.setAttribute("aria-expanded", String(!isOpen));
+}
+
+/**
+ * closes the footer menu if it is currently open.
+ * @param {HTMLButtonElement} toggle - the burger toggle button
+ */
+function closeFooterMenu(toggle) {
+  toggle.setAttribute("aria-expanded", "false");
+}
+
+/**
+ * closes the menu after the user activated one of its entries (a link or
+ * the impressum button), so it does not linger behind the chosen target.
+ * @param {MouseEvent} e - the click event inside the menu
+ * @param {HTMLButtonElement} toggle - the burger toggle button
+ */
+function closeOnMenuChoice(e, toggle) {
+  if (e.target.closest("a, button")) {
+    closeFooterMenu(toggle);
+  }
 }
 
 const MUTE_ICON = "assets/icons/mute.svg";

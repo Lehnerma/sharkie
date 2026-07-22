@@ -32,8 +32,15 @@
     <script src="scripts/game.js"></script>
 
     <link rel="stylesheet" href="styles/fonts.css" />
+    <link rel="stylesheet" href="styles/reset.css" />
+    <link rel="stylesheet" href="styles/base.css" />
+    <link rel="stylesheet" href="styles/layout.css" />
+    <link rel="stylesheet" href="styles/canvas.css" />
+    <link rel="stylesheet" href="styles/dialog.css" />
+    <link rel="stylesheet" href="styles/footer.css" />
+    <link rel="stylesheet" href="styles/responsive.css" />
+    <link rel="stylesheet" href="styles/utilities.css" />
     <link rel="stylesheet" href="styles/buttons.css" />
-    <link rel="stylesheet" href="styles/style.css" />
   </head>
   <body onload="init()">
     <header>
@@ -239,11 +246,27 @@
 
     <footer class="footer-wrapper">
       <nav class="footer-bar" aria-label="Rechtliches und Profile">
-        <button type="button" class="btn--social" aria-haspopup="dialog" data-dialog="impressum_dialog" title="Impressum">
-          <img src="assets/icons/impressum.svg" alt="Impressum" class="img--link" />
+        <button
+          type="button"
+          class="footer-menu__toggle"
+          id="footer_menu_toggle"
+          aria-expanded="false"
+          aria-controls="footer_menu"
+          aria-label="Menü"
+        >
+          <svg class="footer-menu__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <line x1="4" y1="7" x2="20" y2="7" />
+            <line x1="4" y1="12" x2="20" y2="12" />
+            <line x1="4" y1="17" x2="20" y2="17" />
+          </svg>
         </button>
 
-        <ul class="footer-socials">
+        <ul class="footer-menu" id="footer_menu">
+          <li>
+            <button type="button" class="btn--social" aria-haspopup="dialog" data-dialog="impressum_dialog" title="Impressum">
+              <img src="assets/icons/impressum.svg" alt="Impressum" class="img--link" />
+            </button>
+          </li>
           <li>
             <a class="btn--social" href="https://www.linkedin.com/in/maximilian-lehner-7744a2276/" target="_blank" rel="noopener" title="LinkedIn">
               <img src="assets/icons/linkedin.svg" alt="Linkedin Image" class="img--link" />
