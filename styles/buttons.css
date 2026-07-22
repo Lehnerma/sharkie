@@ -145,8 +145,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 2.75rem;
-  height: 2.75rem;
+  height: 3rem;
   padding: 0 0.75rem;
   cursor: pointer;
   border: none;
@@ -158,17 +157,16 @@
 }
 
 .btn--social:hover {
-  transform: scale(1.1);
+  transform: scale(1.2);
 }
 
 .btn--social:active {
-  transform: scale(1);
+  transform: scale(0.9);
 }
 
 .btn--social img {
-  width: 1.5rem;
-  height: 1.5rem;
-  /* remove this filter if your SVG already ships in a light color */
+  height: 2.5rem;
+  aspect-ratio: 1/1;
   filter: invert(1);
   pointer-events: none;
 }
