@@ -18,6 +18,31 @@ class DrawableObjects {
   //* begin point for the world
   worldBeginX = -700;
 
+  //* ids of every interval this object started, so they can all be cleared on restart
+  intervalIds = [];
+
+  /**
+   * starts an interval and remembers its id, so a later stopIntervals() can
+   * clear it. every game object must use this instead of the raw setInterval,
+   * otherwise its loop keeps running after a restart and piles up.
+   * @param {Function} fn - callback to run on every tick
+   * @param {number} ms - interval delay in milliseconds
+   * @returns {number} the interval id
+   */
+  setStoppableInterval(fn, ms) {
+    const id = setInterval(fn, ms);
+    this.intervalIds.push(id);
+    return id;
+  }
+
+  /**
+   * stops every interval this object started and forgets their ids.
+   */
+  stopIntervals() {
+    this.intervalIds.forEach((id) => clearInterval(id));
+    this.intervalIds = [];
+  }
+
   drawObject(ctx) {
     ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
   }

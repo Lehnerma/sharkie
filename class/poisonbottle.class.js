@@ -36,7 +36,7 @@ class Poisonbottle extends MoveableObjects {
   }
 
   run() {
-    setInterval(() => {
+    this.setStoppableInterval(() => {
       this.renderBottles();
     }, 150);
   }

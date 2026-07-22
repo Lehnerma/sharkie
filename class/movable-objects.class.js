@@ -27,7 +27,7 @@ class MoveableObjects extends DrawableObjects {
   }
 
   playAnimation(images, frames = 100) {
-    setInterval(() => {
+    this.setStoppableInterval(() => {
       this.animate(images);
     }, frames);
   }
@@ -142,7 +142,7 @@ class MoveableObjects extends DrawableObjects {
   }
 
   applyGravity() {
-    setInterval(() => {
+    this.setStoppableInterval(() => {
       if (this.world?.isGameEnded) return; // freeze gravity once the game is over or won
       if (this.isAboveGround() && this.isMoving()) {
         this.y += this.gravityY;

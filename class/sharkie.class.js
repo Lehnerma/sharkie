@@ -141,9 +141,9 @@ class Sharkie extends MoveableObjects {
   }
 
   animateSharkie() {
-    setInterval(() => this.updateMovement(), 1000 / 60);
+    this.setStoppableInterval(() => this.updateMovement(), 1000 / 60);
 
-    setInterval(() => {
+    this.setStoppableInterval(() => {
       if (this.world?.isGameEnded) return; // stop advancing frames once the game is over or won
       if (this.isDead()) {
         this.playDead(this.DEAD[this.lastHitType]);
