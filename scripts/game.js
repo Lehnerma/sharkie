@@ -30,7 +30,7 @@ function initEventlistener() {
   const FULLSCREEN_BTN = document.getElementById("btn_fullscreen");
 
   START_BTN.addEventListener("click", () => createWorld());
-  TRY_Again_BTN.addEventListener("click", () => location.reload());
+  TRY_Again_BTN.addEventListener("click", () => restartGame());
   FULLSCREEN_BTN.addEventListener("click", () => toggleFullscreen());
 
   initDialogs();
@@ -163,6 +163,24 @@ window.addEventListener("keyup", (e) => {
 
 function showTryAgainBtn() {
   document.getElementById("again_btn").classList.remove("hidden");
+}
+
+function hideTryAgainBtn() {
+  document.getElementById("again_btn").classList.add("hidden");
+}
+
+/**
+ * restarts the game without reloading the page: shuts the old world down so
+ * none of its loops keep running, hides the try again button, stops the end
+ * sounds and starts a brand new world that runs right away.
+ */
+function restartGame() {
+  world.stop();
+  hideTryAgainBtn();
+  stopSound("GAME_OVER");
+  stopSound("GAME_WON");
+  initWorld();
+  playSound("BACKGROUND_MUSIC");
 }
 
 function createWorld() {

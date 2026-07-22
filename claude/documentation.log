@@ -540,3 +540,39 @@ Alle Inhalte aus diesem Session-Verlauf sind bereits in `claude/documentation.lo
 **Q:** Nachtrag — Funktions-Audit (14-Zeilen-Regel) auch als Issue? | **A:** Ja, #29 angelegt als **bewusst letzter** Schritt (nach #23–#28), Ziel = vollständige Abdeckung aller Funktionen; noch kein Durchmessen erfolgt.
 
 Keine neuen Einträge — der Session-Verlauf ist bereits vollständig in `claude/documentation.log` dokumentiert (Zeilen 524–541).
+
+**Q:** Welche Daten gehören in ein österreichisches Impressum? | **A:** Name, geografische Adresse, E-Mail. Telefon nicht zwingend. UID/Firmenbuch entfällt bei privatem Portfolio-Projekt.
+
+**Q:** Datenschutz: Wohnadresse und Handynummer öffentlich stellen? | **A:** Rechtlich ok, aber Scraping/Indexierungsrisiko. Entscheidung getroffen: nur E-Mail verwenden.
+
+**Q:** Impressum technisch — neuer JS-Code nötig? | **A:** Nein. Bestehendes deklaratives Dialog-System: Button mit `data-dialog="impressum_dialog"` + `<dialog id="impressum_dialog">`. `initDialogs()` verknüpft automatisch.
+
+**Q:** Footer-Layout: Impressum-Button + Social Links? | **A:** Grid `grid-template-columns: 1fr auto 1fr` — Impressum mittig, Social-Buttons rechts. Genug Platz für LinkedIn/GitHub-SVGs.
+
+**Q:** HTML-Struktur des Impressums? | **A:** Semantisch mit `<address>`, `lang="de"`, nach Sound-Dialog platziert. Stylisch wie bestehende `btn--mute`/`btn--close`.
+
+**Q:** Social-Media-Buttons: Implementierung? | **A:** Button-Struktur analog bestehend, SVG-Platzhalter für manuelle URL-Anpassung durch Nutzer.
+
+**Q:** cSpell-Warnungen ignorieren? | **A:** Ja, nur deutsche Wörter im englischen Wörterbuch — kein echtes Problem.
+
+## Issue #23 — Restart ohne Page-Reload · 2026-07-22
+
+**Q:** Was war das Ziel? | **A:** `location.reload()` beim "Try Again" ersetzen. Das Spiel soll ohne Neuladen der Seite intern von vorne starten (Checkliste verbietet Reload-Restart).
+
+**Q:** Restart-Ziel — zurück zum Startscreen oder direkt neues Spiel? | **A:** Entscheidung Max: **direkt neues Spiel**. Kein Umweg über den Startscreen, das Spiel läuft sofort wieder los.
+
+**Q:** Warum ist das mehr als eine Einzeiler-Änderung? | **A:** Jedes Spielobjekt (Sharkie, Gegner, Endboss, Bubbles, Poisonbottle) startet im Konstruktor eigene `setInterval`-Loops. Bei Reload egal, bei echtem Neustart würden die alten Loops ewig weiterlaufen und sich mit jedem Restart häufen → Performance-Kollaps.
+
+**Q:** Wie werden die Loops gestoppt? | **A:** Entscheidung Max: **OOP-Weg, `stop()` pro Objekt** (statt globalem Interval-Tracker). Basisklasse `DrawableObjects` bekam `setStoppableInterval(fn, ms)` (merkt sich die id in `intervalIds`) und `stopIntervals()`. Alle `setInterval`-Aufrufe in den Objektklassen wurden auf `this.setStoppableInterval(...)` umgestellt.
+
+**Q:** Wie wird der Level-Zustand zurückgesetzt? | **A:** `level1` war eine globale `const`, die zur Laufzeit mutiert wird (Gegner-splice, Positionen, health). Umgebaut zur Factory `createLevel1()`, die bei jedem Aufruf frische Objekte liefert. World erzeugt den Level jetzt im Konstruktor via `this.level = createLevel1()`.
+
+**Q:** Wie fährt die World runter? | **A:** Neue `World.stop()`: `clearInterval` für die zwei World-Loops (`helperInterval`, `elementsInterval`), `cancelAnimationFrame(this.animationFrame)` für die Render-Schleife, plus `stopObjectIntervals()` das über alle Objekte iteriert und je `stopIntervals()` ruft.
+
+**Q:** Fallstrick beim Iterieren über die Gegner? | **A:** Das `enemies`-Array in level1.js hat ein Loch (doppeltes Komma). Beim Spread wird das zu `undefined` → mit `object?.stopIntervals()` (optional chaining) abgesichert.
+
+**Q:** Restart-Ablauf in game.js? | **A:** Neue Funktion `restartGame()`: `world.stop()` → `hideTryAgainBtn()` → `stopSound("GAME_OVER"/"GAME_WON")` → `initWorld()` (frische World) → `playSound("BACKGROUND_MUSIC")`. `TRY_Again_BTN` ruft jetzt `restartGame()` statt `location.reload()`.
+
+**Q:** Netter Nebeneffekt ohne Reload? | **A:** Sound-Einstellungen (Volumes, Mute) bleiben über den Restart erhalten, weil die Seite nicht neu lädt.
+
+**Q:** Live-getestet? | **A:** Nein, nur statisch geprüft (Syntax via `node --check` für alle 11 geänderten Dateien, Vererbungsketten verifiziert). Max testet den Restart im Browser selbst.

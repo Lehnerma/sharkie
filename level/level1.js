@@ -1,57 +1,65 @@
-const level1 = new Level(
-  [
-    new Background("assets/images/3. Background/Layers/5. Water/D2.png", -720),
-    new Background("assets/images/3. Background/Layers/4.Fondo 2/D2.png", -720),
-    new Background("assets/images/3. Background/Layers/3.Fondo 1/D2.png", -720),
-    new Background("assets/images/3. Background/Layers/2. Floor/D2.png", -720),
-    new Background("assets/images/3. Background/Layers/1. Light/2.png", -720),
+/**
+ * builds a fresh level 1. every call returns brand new enemies, endboss and
+ * backgrounds, so a restart starts from a clean state instead of the mutated
+ * objects the previous run left behind.
+ * @returns {Level} a new level 1 instance
+ */
+function createLevel1() {
+  return new Level(
+    [
+      new Background("assets/images/3. Background/Layers/5. Water/D2.png", -720),
+      new Background("assets/images/3. Background/Layers/4.Fondo 2/D2.png", -720),
+      new Background("assets/images/3. Background/Layers/3.Fondo 1/D2.png", -720),
+      new Background("assets/images/3. Background/Layers/2. Floor/D2.png", -720),
+      new Background("assets/images/3. Background/Layers/1. Light/2.png", -720),
 
-    new Background("assets/images/3. Background/Layers/5. Water/D1.png", 0),
-    new Background("assets/images/3. Background/Layers/4.Fondo 2/D1.png", 0),
-    new Background("assets/images/3. Background/Layers/3.Fondo 1/D1.png", 0),
-    new Background("assets/images/3. Background/Layers/2. Floor/D1.png", 0),
-    new Background("assets/images/3. Background/Layers/1. Light/1.png", 0),
+      new Background("assets/images/3. Background/Layers/5. Water/D1.png", 0),
+      new Background("assets/images/3. Background/Layers/4.Fondo 2/D1.png", 0),
+      new Background("assets/images/3. Background/Layers/3.Fondo 1/D1.png", 0),
+      new Background("assets/images/3. Background/Layers/2. Floor/D1.png", 0),
+      new Background("assets/images/3. Background/Layers/1. Light/1.png", 0),
 
-    new Background("assets/images/3. Background/Layers/5. Water/D2.png", 720),
-    new Background("assets/images/3. Background/Layers/4.Fondo 2/D2.png", 720),
-    new Background("assets/images/3. Background/Layers/3.Fondo 1/D2.png", 720),
-    new Background("assets/images/3. Background/Layers/2. Floor/D2.png", 720),
-    new Background("assets/images/3. Background/Layers/1. Light/2.png", 720),
+      new Background("assets/images/3. Background/Layers/5. Water/D2.png", 720),
+      new Background("assets/images/3. Background/Layers/4.Fondo 2/D2.png", 720),
+      new Background("assets/images/3. Background/Layers/3.Fondo 1/D2.png", 720),
+      new Background("assets/images/3. Background/Layers/2. Floor/D2.png", 720),
+      new Background("assets/images/3. Background/Layers/1. Light/2.png", 720),
 
-    new Background("assets/images/3. Background/Layers/5. Water/D1.png", 1440),
-    new Background("assets/images/3. Background/Layers/4.Fondo 2/D1.png", 1440),
-    new Background("assets/images/3. Background/Layers/3.Fondo 1/D1.png", 1440),
-    new Background("assets/images/3. Background/Layers/2. Floor/D1.png", 1440),
-    new Background("assets/images/3. Background/Layers/1. Light/1.png", 1440),
+      new Background("assets/images/3. Background/Layers/5. Water/D1.png", 1440),
+      new Background("assets/images/3. Background/Layers/4.Fondo 2/D1.png", 1440),
+      new Background("assets/images/3. Background/Layers/3.Fondo 1/D1.png", 1440),
+      new Background("assets/images/3. Background/Layers/2. Floor/D1.png", 1440),
+      new Background("assets/images/3. Background/Layers/1. Light/1.png", 1440),
 
-    new Background("assets/images/3. Background/Layers/5. Water/D2.png", 2160),
-    new Background("assets/images/3. Background/Layers/4.Fondo 2/D2.png", 2160),
-    new Background("assets/images/3. Background/Layers/3.Fondo 1/D2.png", 2160),
-    new Background("assets/images/3. Background/Layers/2. Floor/D2.png", 2160),
-    new Background("assets/images/3. Background/Layers/1. Light/2.png", 2160),
+      new Background("assets/images/3. Background/Layers/5. Water/D2.png", 2160),
+      new Background("assets/images/3. Background/Layers/4.Fondo 2/D2.png", 2160),
+      new Background("assets/images/3. Background/Layers/3.Fondo 1/D2.png", 2160),
+      new Background("assets/images/3. Background/Layers/2. Floor/D2.png", 2160),
+      new Background("assets/images/3. Background/Layers/1. Light/2.png", 2160),
 
-    new Background("assets/images/3. Background/Layers/5. Water/D1.png", 2880),
-    new Background("assets/images/3. Background/Layers/4.Fondo 2/D1.png", 2880),
-    new Background("assets/images/3. Background/Layers/3.Fondo 1/D1.png", 2880),
-    new Background("assets/images/3. Background/Layers/2. Floor/D1.png", 2880),
-    new Background("assets/images/3. Background/Layers/1. Light/1.png", 2880),
+      new Background("assets/images/3. Background/Layers/5. Water/D1.png", 2880),
+      new Background("assets/images/3. Background/Layers/4.Fondo 2/D1.png", 2880),
+      new Background("assets/images/3. Background/Layers/3.Fondo 1/D1.png", 2880),
+      new Background("assets/images/3. Background/Layers/2. Floor/D1.png", 2880),
+      new Background("assets/images/3. Background/Layers/1. Light/1.png", 2880),
 
-    new Background("assets/images/3. Background/Layers/5. Water/D2.png", 3600),
-    new Background("assets/images/3. Background/Layers/4.Fondo 2/D2.png", 3600),
-    new Background("assets/images/3. Background/Layers/3.Fondo 1/D2.png", 3600),
-    new Background("assets/images/3. Background/Layers/2. Floor/D2.png", 3600),
-    new Background("assets/images/3. Background/Layers/1. Light/2.png", 3600),
+      new Background("assets/images/3. Background/Layers/5. Water/D2.png", 3600),
+      new Background("assets/images/3. Background/Layers/4.Fondo 2/D2.png", 3600),
+      new Background("assets/images/3. Background/Layers/3.Fondo 1/D2.png", 3600),
+      new Background("assets/images/3. Background/Layers/2. Floor/D2.png", 3600),
+      new Background("assets/images/3. Background/Layers/1. Light/2.png", 3600),
 
-    new Background("assets/images/3. Background/Layers/5. Water/D1.png", 4320),
-    new Background("assets/images/3. Background/Layers/4.Fondo 2/D1.png", 4320),
-    new Background("assets/images/3. Background/Layers/3.Fondo 1/D1.png", 4320),
-    new Background("assets/images/3. Background/Layers/2. Floor/D1.png", 4320),
-    new Background("assets/images/3. Background/Layers/1. Light/1.png", 4320),
-  ],
-  [
-    new JellyFish(), new JellyFish(), new JellyFish(), new JellyFish(), , new JellyFish(), new PufferFish(), new PufferFish(), new PufferFish(), new PufferFish(), new PufferFish()
-  ],
+      new Background("assets/images/3. Background/Layers/5. Water/D1.png", 4320),
+      new Background("assets/images/3. Background/Layers/4.Fondo 2/D1.png", 4320),
+      new Background("assets/images/3. Background/Layers/3.Fondo 1/D1.png", 4320),
+      new Background("assets/images/3. Background/Layers/2. Floor/D1.png", 4320),
+      new Background("assets/images/3. Background/Layers/1. Light/1.png", 4320),
+    ],
+    [
+      new JellyFish(), new JellyFish(), new JellyFish(), new JellyFish(), , new JellyFish(), new PufferFish(), new PufferFish(), new PufferFish(), new PufferFish(), new PufferFish()
+    ],
   
-  [new Endboss()]
-);
+    [new Endboss()]
+  );
+}
 

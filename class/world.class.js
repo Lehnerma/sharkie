@@ -6,7 +6,7 @@ class World {
   bottles = [new Poisonbottle(), new Poisonbottle(), new Poisonbottle(), new Poisonbottle(), new Poisonbottle(), new Poisonbottle(), new Poisonbottle(), new Poisonbottle(), new Poisonbottle(), new Poisonbottle()];
   keyboard;
   ctx;
-  level = level1;
+  level;
   camera_x = 0;
   healthbar = new Healthbar();
   coinbar = new Coinbar();
@@ -28,6 +28,7 @@ class World {
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d");
     this.keyboard = keyboard;
+    this.level = createLevel1(); // build a fresh level so a restart starts clean
     this.setWorld();
     this.draw();
     this.helperFunction();
@@ -65,13 +66,13 @@ class World {
       this.addToMap(this.endscreen); // overlay the game over / win title on the frozen scene
     }
 
-    requestAnimationFrame(() => {
+    this.animationFrame = requestAnimationFrame(() => {
       this.draw();
     });
   }
 
   helperFunction() {
-    setInterval(() => {
+    this.helperInterval = setInterval(() => {
       if (this.isGameEnded) return; // block the up coming functions if game over or won
       this.checkEnemyCollision();
       this.checkEndbossCollision();
@@ -86,7 +87,7 @@ class World {
   }
 
   addElementsToWorld() {
-    setInterval(() => {
+    this.elementsInterval = setInterval(() => {
       this.addCoinsToWorld();
     }, 5000);
   }
@@ -328,5 +329,27 @@ class World {
 
   get isGameEnded() {
     return this.gameOver || this.gameWon;
+  }
+
+  /**
+   * shuts this world down completely: stops the world loops, cancels the next
+   * render frame and stops every game object's own intervals. without this a
+   * restart would leave all the old loops running in the background.
+   */
+  stop() {
+    clearInterval(this.helperInterval);
+    clearInterval(this.elementsInterval);
+    cancelAnimationFrame(this.animationFrame);
+    this.stopObjectIntervals();
+  }
+
+  /**
+   * stops the intervals of every object in the world (sharkie, enemies,
+   * endboss, bubbles, bottles, coins), so none of their animation or movement
+   * loops keep ticking after the world is gone.
+   */
+  stopObjectIntervals() {
+    const objects = [this.sharkie, ...this.level.enemies, ...this.level.endboss, ...this.bubbles, ...this.bottles, ...this.coins];
+    objects.forEach((object) => object?.stopIntervals()); // the enemies array has a hole, guard against undefined
   }
 }
