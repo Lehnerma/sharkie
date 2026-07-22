@@ -36,7 +36,19 @@
     <link rel="stylesheet" href="styles/style.css" />
   </head>
   <body onload="init()">
-    <header></header>
+    <header>
+      <div class="orientation-lock" id="orientation_lock">
+        <div class="orientation-lock__inner">
+          <svg class="orientation-lock__icon" viewBox="0 0 24 24" width="72" height="72" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="7" y="2" width="10" height="20" rx="2" />
+            <path d="M12 18h.01" />
+            <path d="M3 9a9 9 0 0 1 3-3" />
+            <path d="M2 5v3h3" />
+          </svg>
+          <p class="orientation-lock__text">Please turn your device to landscape to play.</p>
+        </div>
+      </div>
+    </header>
 
     <main>
       <article class="main-content" aria-label="Game">
@@ -228,7 +240,7 @@
     <footer class="footer-wrapper">
       <nav class="footer-bar" aria-label="Rechtliches und Profile">
         <button type="button" class="btn--social" aria-haspopup="dialog" data-dialog="impressum_dialog" title="Impressum">
-          <img src="assets/icons/impressum.svg" alt="Impressum"   class="img--link" />
+          <img src="assets/icons/impressum.svg" alt="Impressum" class="img--link" />
         </button>
 
         <ul class="footer-socials">
@@ -239,7 +251,7 @@
           </li>
           <li>
             <a class="btn--social" href="https://github.com/Lehnerma" target="_blank" rel="noopener" title="Github">
-              <img src="assets/icons/github.svg" alt="Github Image"   class="img--link" />
+              <img src="assets/icons/github.svg" alt="Github Image" class="img--link" />
             </a>
           </li>
         </ul>

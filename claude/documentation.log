@@ -576,3 +576,31 @@ Keine neuen Einträge — der Session-Verlauf ist bereits vollständig in `claud
 **Q:** Netter Nebeneffekt ohne Reload? | **A:** Sound-Einstellungen (Volumes, Mute) bleiben über den Restart erhalten, weil die Seite nicht neu lädt.
 
 **Q:** Live-getestet? | **A:** Nein, nur statisch geprüft (Syntax via `node --check` für alle 11 geänderten Dateien, Vererbungsketten verifiziert). Max testet den Restart im Browser selbst.
+
+**Q:** Problem bei Neustart | **A:** location.reload() durch echten Neustart ersetzen, ohne Seite zu neuladen
+**Q:** Warum ist simpler Umbau nicht möglich? | **A:** Alle Spielobjekte starten in Konstruktoren eigene setInterval-Loops; ohne Reload laufen alte Loops ewig weiter, häufen sich an, Spiel bricht ein
+**Q:** Lösungsansatz? | **A:** OOP-Weg: Basis-Methoden setStoppableInterval() + stopIntervals() in DrawableObjects; alle setInterval → setStoppableInterval umbauen
+**Q:** Level bei Neustart? | **A:** level1 von Konstante zu Factory createLevel1() umgebaut, liefert frische Gegner/Endboss bei jedem Restart
+**Q:** Restart-Mechanik in game.js? | **A:** TRY_Again_BTN ruft restartGame() statt location.reload() auf; stoppt alte World, versteckt Button, pausiert End-Sounds, startet neue World
+**Q:** Bug in level1.js? | **A:** enemies-Array hat Loch (doppeltes Komma); mit ?. abgesichert, sonst Crash beim stopIntervals()
+**Q:** Nebeneffekt? | **A:** Sound-/Mute-Einstellungen bleiben erhalten, weil Seite nicht neu lädt
+**Q:** Teststand? | **A:** Syntaktisch über alle 11 Dateien bestätigt (node --check); echtes Gameplay-Testen bis Game Over/Won ausstehend
+**Q:** Branch/Commit? | **A:** Issue #23, Branch issue23, bereit zum Commit
+
+## Issue #24 — Responsiveness & Mobile-Support · 2026-07-22
+
+**Q:** Was ist der Gesamtumfang? | **A:** Projekt hat null Media Queries, alles starr auf 720px. Checkliste: Querformat-Support, Orientation-Meldung, Touch-Buttons (nur mobil), Kontextmenü auf Touch-Buttons deaktivieren, kein Scrollbalken. Aufteilung in Teil-PRs geplant (Layout, Orientation-Overlay, Touch-Controls).
+
+**Q:** Erster Schritt — welcher Teil? | **A:** Entscheidung Max: **Orientation-Meldung zuerst**, Junior-Modus (ich schreibe), **CSS-only** (kein Spiel-Pausieren).
+
+**Q:** Breakpoint? | **A:** Entscheidung Max: **767px**. Meldung erscheint nur bei `max-width: 767px` UND `orientation: portrait` — schmales Desktop-Fenster löst sie damit nicht aus.
+
+**Q:** HTML-Struktur der Meldung? | **A:** `<div id="orientation_lock">` direkt im `<body>` (vor `<header>`). Inline-SVG (Handy-Dreh-Icon, `aria-hidden`) + `<p>`-Text "Please turn your device to landscape to play." Text trägt die Info, Icon rein dekorativ.
+
+**Q:** a11y-Ansatz? | **A:** Versteckter Zustand ist `display: none` → Overlay ist gar nicht erst im A11y-Tree. Hinweis: WCAG 1.3.4 (Orientation) verbietet Orientierungs-Zwang außer wenn essenziell — für ein Canvas-Action-Game vertretbar, aber bewusste Ausnahme.
+
+**Q:** CSS-Umsetzung? | **A:** `.orientation-lock { display: none }` als Basis; Media Query `(max-width: 767px) and (orientation: portrait)` setzt `display: flex; position: fixed; inset: 0; z-index: 100` + Hintergrund-Gradient wie body. Icon-Animation (Rotate) mit `prefers-reduced-motion: reduce`-Abschaltung.
+
+**Q:** Offene Punkte (Vorschlag)? | **A:** Phase A = fluides Layout: Canvas interne Auflösung 720×460 behalten, nur CSS skalieren (`width: min(720px,100vw)` + `aspect-ratio`, Canvas `width:100%`), body-Grid-Zeilen von starren 200px auf auto/minmax → löst Scrollbalken. Phase B = Touch-Controls: `touchstart/touchend` setzen dieselben Keyboard-Booleans, nur `<767px` sichtbar, `contextmenu` preventDefault + `touch-action:none`.
+
+**Q:** Teststand? | **A:** Statisch gebaut, Live-Test im Browser (DevTools Device-Toolbar, Handy hochkant) durch Max ausstehend.
