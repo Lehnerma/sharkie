@@ -1,4 +1,11 @@
 /* page background and grid container for the game layout */
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
+
 body {
   display: flex;
   justify-content: center;

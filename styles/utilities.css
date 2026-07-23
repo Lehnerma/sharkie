@@ -2,7 +2,6 @@
 .hidden {
   display: none;
 }
-
 /* flex container with centered content */
 .flex-center {
   display: flex;

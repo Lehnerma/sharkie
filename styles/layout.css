@@ -22,7 +22,7 @@
   /* fluid down to the viewport width, but never larger than the native 720px;
      --touch-reserve (touch-controls.css) leaves room for the action sidebar
      on touch devices and is 0px everywhere else */
-  width: min(720px, calc(100vw - var(--touch-reserve)));
+  width: min(720px);
 }
 
 /* the container for the canvas element; keeps aspect ratio while scaling */

@@ -4,7 +4,6 @@
  */
 
 .orientation-lock {
-  /* hidden by default; only the portrait media query below reveals it */
   display: none;
 }
 
@@ -38,17 +37,14 @@
   }
 }
 
-/* disable rotation animation for users who prefer reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .orientation-lock__icon {
     animation: none;
   }
 }
 
-/* show orientation lock only on touch devices in portrait mode */
-@media (max-width: 767px) and (orientation: portrait) and (pointer: coarse) {
+@media (max-width: 1024px) and (orientation: portrait) and (pointer: coarse) {
   body {
-    /* the fixed overlay covers everything; stop the page behind from scrolling */
     overflow: hidden;
   }
 
@@ -63,28 +59,11 @@
   }
 }
 
-/**
- * Short Landscape Mode
- * for phones/tablets lying down: viewport is wide but flat, so the canvas
- * must be capped by height to avoid vertical scrollbar. svh accounts for
- * the mobile browser chrome.
- */
 @media (orientation: landscape) and (max-height: 600px) {
-  body {
-    min-height: 100svh;
-    /* drop the empty top spacer row; title is hidden here anyway */
-    grid-template-rows: 0 1fr auto;
-  }
-
   .main-content {
     /* smallest of: native size, viewport width (minus --touch-reserve for the
        touch action sidebar, see touch-controls.css), and height-derived width
        (720/460 = the aspect ratio) so the canvas always fits the viewport */
     width: min(720px, calc(100vw - var(--touch-reserve)), calc(100svh * 720 / 460));
-  }
-
-  .game-title {
-    /* no vertical room for the big title in a flat landscape viewport */
-    display: none;
   }
 }
