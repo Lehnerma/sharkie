@@ -144,43 +144,92 @@ class Sharkie extends MoveableObjects {
    */
   animateSharkie() {
     this.setStoppableInterval(() => this.updateMovement(), 1000 / 60);
+    this.setStoppableInterval(() => this.updateAnimation(), 150);
+  }
 
-    this.setStoppableInterval(() => {
-      if (this.world?.isFrozen) return;
-      if (this.isSleeping && !this.timePassed(10)) this.wakeUp();
-      if (this.isDead()) {
-        this.playDead(this.DEAD[this.lastHitType]);
-      } else if (this.isAttacking) {
-        this.playFinSlapAttack();
-      } else if (this.isAttackingBubble) {
-        this.playAttack(this.ATTACK.BUBBLE, () => this.finishBubbleAttackAnimation());
-      } else if (this.isHurt()) {
-        this.animate(this.HURT[this.lastHitType]);
-      } else if (this.world.keyboard.UP || this.world.keyboard.DOWN || this.world.keyboard.W || this.world.keyboard.S) {
-        this.animate(this.SWIM.SWIM_1);
-      } else if (this.world.keyboard.LEFT || this.world.keyboard.A) {
-        this.animate(this.SWIM.SWIM_3);
-        this.otherDirection = true;
-      } else if (this.world.keyboard.RIGHT || this.world.keyboard.D) {
-        this.animate(this.SWIM.SWIM_3);
-        this.otherDirection = false;
-      } else if (this.world.keyboard.E) {
-        this.wakeUp();
-        this.isAttacking = true;
-        this.addDistanceForSlap();
-        playSound("FIN_SLAP");
-        this.playFinSlapAttack();
-      } else if (this.world.keyboard.SPACE && this.isBubbleShoot) {
-        this.wakeUp();
-        this.isAttackingBubble = true;
-        this.playAttack(this.ATTACK.BUBBLE, () => this.finishBubbleAttackAnimation());
-      } else if (this.timePassed(10)) {
-        this.playLongIdle();
-      } else {
-        this.animate(this.IDLE.IDLE);
-        this.moving = false;
-      }
-    }, 150);
+  /**
+   * determines and plays the correct animation based on sharkie's current state
+   */
+  updateAnimation() {
+    if (this.world?.isFrozen) return;
+    if (this.isSleeping && !this.timePassed(10)) this.wakeUp();
+
+    if (this.isDead()) {
+      this.playDead(this.DEAD[this.lastHitType]);
+    } else if (this.isAttacking) {
+      this.playFinSlapAttack();
+    } else if (this.isAttackingBubble) {
+      this.playAttack(this.ATTACK.BUBBLE, () => this.finishBubbleAttackAnimation());
+    } else if (this.isHurt()) {
+      this.animate(this.HURT[this.lastHitType]);
+    } else {
+      this.handleMovementAnimation();
+    }
+  }
+
+  /**
+   * handles animation for movement and attack inputs
+   */
+  handleMovementAnimation() {
+    if (this.isVerticalMovement()) {
+      this.animate(this.SWIM.SWIM_1);
+    } else if (this.isLeftMovement()) {
+      this.animate(this.SWIM.SWIM_3);
+      this.otherDirection = true;
+    } else if (this.isRightMovement()) {
+      this.animate(this.SWIM.SWIM_3);
+      this.otherDirection = false;
+    } else if (this.world.keyboard.E) {
+      this.executeFinalSlap();
+    } else if (this.world.keyboard.SPACE && this.isBubbleShoot) {
+      this.executeBubbleAttack();
+    } else if (this.timePassed(10)) {
+      this.playLongIdle();
+    } else {
+      this.animate(this.IDLE.IDLE);
+      this.moving = false;
+    }
+  }
+
+  /**
+   * checks if vertical movement keys are pressed
+   */
+  isVerticalMovement() {
+    return this.world.keyboard.UP || this.world.keyboard.DOWN || this.world.keyboard.W || this.world.keyboard.S;
+  }
+
+  /**
+   * checks if left movement keys are pressed
+   */
+  isLeftMovement() {
+    return this.world.keyboard.LEFT || this.world.keyboard.A;
+  }
+
+  /**
+   * checks if right movement keys are pressed
+   */
+  isRightMovement() {
+    return this.world.keyboard.RIGHT || this.world.keyboard.D;
+  }
+
+  /**
+   * executes fin slap attack
+   */
+  executeFinalSlap() {
+    this.wakeUp();
+    this.isAttacking = true;
+    this.addDistanceForSlap();
+    playSound("FIN_SLAP");
+    this.playFinSlapAttack();
+  }
+
+  /**
+   * executes bubble attack
+   */
+  executeBubbleAttack() {
+    this.wakeUp();
+    this.isAttackingBubble = true;
+    this.playAttack(this.ATTACK.BUBBLE, () => this.finishBubbleAttackAnimation());
   }
 
   /**
