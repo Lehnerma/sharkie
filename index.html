@@ -37,27 +37,28 @@
     <link rel="stylesheet" href="styles/layout.css" />
     <link rel="stylesheet" href="styles/canvas.css" />
     <link rel="stylesheet" href="styles/dialog.css" />
-    <link rel="stylesheet" href="styles/footer.css" />
     <link rel="stylesheet" href="styles/responsive.css" />
     <link rel="stylesheet" href="styles/utilities.css" />
     <link rel="stylesheet" href="styles/buttons.css" />
+    <link rel="stylesheet" href="styles/touch-controls.css" />
   </head>
   <body onload="init()">
-    <header>
-      <div class="orientation-lock" id="orientation_lock">
-        <div class="orientation-lock__inner">
-          <svg class="orientation-lock__icon" viewBox="0 0 24 24" width="72" height="72" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <rect x="7" y="2" width="10" height="20" rx="2" />
-            <path d="M12 18h.01" />
-            <path d="M3 9a9 9 0 0 1 3-3" />
-            <path d="M2 5v3h3" />
-          </svg>
-          <p class="orientation-lock__text">Please turn your device to landscape to play.</p>
-        </div>
-      </div>
-    </header>
-
     <main>
+      <aside class="touch-dpad-panel hidden" id="touch_dpad" aria-label="Movement controls">
+        <button type="button" class="touch-btn touch-btn--dir touch-btn--up" data-key="UP" aria-label="Swim up">
+          <span aria-hidden="true">&#9650;</span>
+        </button>
+        <button type="button" class="touch-btn touch-btn--dir touch-btn--left" data-key="LEFT" aria-label="Swim left">
+          <span aria-hidden="true">&#9664;</span>
+        </button>
+        <button type="button" class="touch-btn touch-btn--dir touch-btn--right" data-key="RIGHT" aria-label="Swim right">
+          <span aria-hidden="true">&#9654;</span>
+        </button>
+        <button type="button" class="touch-btn touch-btn--dir touch-btn--down" data-key="DOWN" aria-label="Swim down">
+          <span aria-hidden="true">&#9660;</span>
+        </button>
+      </aside>
+
       <article class="main-content" aria-label="Game">
         <h1 class="game-title">Sharkie</h1>
         <div class="canvas-wrapper" id="canvas_wrapper">
@@ -66,18 +67,22 @@
           <button type="button" class="btn--mute" id="mute_toggle" aria-pressed="false" aria-label="Mute sound">
             <img class="btn--mute-icon" src="assets/icons/sound.svg" alt="" />
           </button>
+          <button type="button" class="btn--fullscreen" id="fullscreen_toggle" aria-pressed="false" aria-label="Enter fullscreen">
+            <img class="btn--fullscreen-icon" src="assets/icons/fullscreen.svg" alt="" />
+          </button>
         </div>
-
+        <!-- !Start btn -->
         <section class="wrapper-absolute start-section">
           <button type="button" class="btn--main btn--start" id="game_start">
             <img class="btn--img btn--start" src="assets/images/6.Botones/Start/3.png" alt="Start" />
           </button>
         </section>
 
+        <!-- ! Setting Impressum btn -->
         <section class="wrapper-absolute wrapper-subarea">
           <button type="button" class="btn--dialog" aria-haspopup="dialog" data-dialog="description_dialog">Description</button>
-          <button type="button" class="btn--dialog" aria-haspopup="dialog" data-dialog="key_dialog">Key Descriptions</button>
           <button type="button" class="btn--dialog" aria-haspopup="dialog" data-dialog="sound_dialog">Sound</button>
+          <button type="button" class="btn--dialog" aria-haspopup="dialog" data-dialog="impressum_dialog">Impressum</button>
         </section>
 
         <section class="wrapper-absolute hidden" id="again_btn">
@@ -87,15 +92,83 @@
         </section>
       </article>
 
-      <dialog class="dialog" id="key_dialog" aria-labelledby="key_dialog_title">
+      <!-- !touch btn -->
+      <aside class="touch-actions-panel hidden" id="touch_actions" aria-label="Action controls">
+        <button type="button" class="touch-btn touch-btn--action" data-key="E" aria-label="Fin slap">Slap</button>
+        <button type="button" class="touch-btn touch-btn--action" data-key="SPACE" aria-label="Bubble attack">Bubble</button>
+        <button type="button" class="touch-btn touch-btn--shop" data-key="B" aria-label="Buy poison bottles">Buy Bottle</button>
+        <button type="button" class="touch-btn touch-btn--shop" data-key="H" aria-label="Buy health">Buy Health</button>
+      </aside>
+
+      <!-- !impressum  -->
+      <dialog class="dialog" id="impressum_dialog" lang="de" aria-labelledby="impressum_dialog_title">
         <article class="dialog__content">
           <header class="dialog__header">
-            <h2 class="dialog__title" id="key_dialog_title">Key Descriptions</h2>
-            <button type="button" class="btn--close" data-dialog-close aria-label="Close key descriptions">
+            <h2 class="dialog__title" id="impressum_dialog_title">Impressum</h2>
+            <button type="button" class="btn--close" data-dialog-close aria-label="Impressum schließen">
               <span aria-hidden="true">&times;</span>
             </button>
           </header>
 
+          <p class="dialog__text">Angaben gemäß § 5 ECG und § 25 Mediengesetz</p>
+
+          <h3 class="dialog__subtitle">Medieninhaber und Betreiber</h3>
+          <address class="dialog__address">
+            Maximilian Lehner<br />
+            Sportplatzstraße 6<br />
+            3492 Etsdorf<br />
+            Österreich
+          </address>
+
+          <h3 class="dialog__subtitle">Kontakt</h3>
+          <p class="dialog__text">E-Mail: <a class="dialog__link" href="mailto:max@lm-lehner.at">max@lm-lehner.at</a></p>
+
+          <h3 class="dialog__subtitle">Offenlegung</h3>
+          <p class="dialog__text">„Sharkie“ ist ein privates, nicht-kommerzielles Lern- und Portfolioprojekt im Rahmen der Ausbildung an der Developer Akademie. Die Website dient ausschließlich Übungs- und Demonstrationszwecken und verfolgt keine wirtschaftlichen Interessen.</p>
+
+          <h3 class="dialog__subtitle">Haftung für Inhalte</h3>
+          <p class="dialog__text">Die Inhalte dieser Seite wurden mit größtmöglicher Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität wird jedoch keine Gewähr übernommen.</p>
+        </article>
+      </dialog>
+
+      <!-- !description -->
+      <dialog class="dialog dialog--wide" id="description_dialog" aria-labelledby="description_dialog_title">
+        <article class="dialog__content">
+          <header class="dialog__header">
+            <h2 class="dialog__title" id="description_dialog_title">Description</h2>
+            <button type="button" class="btn--close" data-dialog-close aria-label="Close description">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </header>
+
+          <p class="dialog__text">Sharkie wants to fight the Army of the Seas and has to clear his own way through the ocean.</p>
+
+          <h3 class="dialog__subtitle">Attacks</h3>
+          <dl class="dialog__list">
+            <div class="dialog__row">
+              <dt class="dialog__action">Fin Slap</dt>
+              <dd class="dialog__text">Effective against the puffer fish</dd>
+            </div>
+            <div class="dialog__row">
+              <dt class="dialog__action">Bubble Attack</dt>
+              <dd class="dialog__text">Effective against the jellyfish</dd>
+            </div>
+          </dl>
+
+          <h3 class="dialog__subtitle">Bubbles</h3>
+          <dl class="dialog__list">
+            <div class="dialog__row">
+              <dt class="dialog__action">Normal Bubble</dt>
+              <dd class="dialog__text">Your standard shot</dd>
+            </div>
+            <div class="dialog__row">
+              <dt class="dialog__action">Poison Bubble</dt>
+              <dd class="dialog__text">The only bubble that hurts the endboss</dd>
+            </div>
+          </dl>
+
+          <h3 class="dialog__subtitle">Shop</h3>
+          <p class="dialog__text">With 10 coins Sharkie can either refill his health to 100% or buy poison bottles to shoot poison bubbles again.</p>
           <h3 class="dialog__subtitle">Controls</h3>
           <dl class="dialog__list">
             <div class="dialog__row">
@@ -139,46 +212,7 @@
         </article>
       </dialog>
 
-      <dialog class="dialog dialog--wide" id="description_dialog" aria-labelledby="description_dialog_title">
-        <article class="dialog__content">
-          <header class="dialog__header">
-            <h2 class="dialog__title" id="description_dialog_title">Description</h2>
-            <button type="button" class="btn--close" data-dialog-close aria-label="Close description">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </header>
-
-          <p class="dialog__text">Sharkie wants to fight the Army of the Seas and has to clear his own way through the ocean.</p>
-
-          <h3 class="dialog__subtitle">Attacks</h3>
-          <dl class="dialog__list">
-            <div class="dialog__row">
-              <dt class="dialog__action">Fin Slap</dt>
-              <dd class="dialog__text">Effective against the puffer fish</dd>
-            </div>
-            <div class="dialog__row">
-              <dt class="dialog__action">Bubble Attack</dt>
-              <dd class="dialog__text">Effective against the jellyfish</dd>
-            </div>
-          </dl>
-
-          <h3 class="dialog__subtitle">Bubbles</h3>
-          <dl class="dialog__list">
-            <div class="dialog__row">
-              <dt class="dialog__action">Normal Bubble</dt>
-              <dd class="dialog__text">Your standard shot</dd>
-            </div>
-            <div class="dialog__row">
-              <dt class="dialog__action">Poison Bubble</dt>
-              <dd class="dialog__text">The only bubble that hurts the endboss</dd>
-            </div>
-          </dl>
-
-          <h3 class="dialog__subtitle">Shop</h3>
-          <p class="dialog__text">With 10 coins Sharkie can either refill his health to 100% or buy poison bottles to shoot poison bubbles again.</p>
-        </article>
-      </dialog>
-
+      <!-- !sound settings -->
       <dialog class="dialog" id="sound_dialog" aria-labelledby="sound_dialog_title">
         <article class="dialog__content">
           <header class="dialog__header">
@@ -208,77 +242,18 @@
         </article>
       </dialog>
 
-      <dialog class="dialog" id="impressum_dialog" lang="de" aria-labelledby="impressum_dialog_title">
-        <article class="dialog__content">
-          <header class="dialog__header">
-            <h2 class="dialog__title" id="impressum_dialog_title">Impressum</h2>
-            <button type="button" class="btn--close" data-dialog-close aria-label="Impressum schließen">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </header>
-
-          <p class="dialog__text">Angaben gemäß § 5 ECG und § 25 Mediengesetz</p>
-
-          <h3 class="dialog__subtitle">Medieninhaber und Betreiber</h3>
-          <address class="dialog__address">
-            Maximilian Lehner<br />
-            Sportplatzstraße 6<br />
-            3492 Etsdorf<br />
-            Österreich
-          </address>
-
-          <h3 class="dialog__subtitle">Kontakt</h3>
-          <p class="dialog__text">E-Mail: <a class="dialog__link" href="mailto:max@lm-lehner.at">max@lm-lehner.at</a></p>
-
-          <h3 class="dialog__subtitle">Offenlegung</h3>
-          <p class="dialog__text">„Sharkie“ ist ein privates, nicht-kommerzielles Lern- und Portfolioprojekt im Rahmen der Ausbildung an der Developer Akademie. Die Website dient ausschließlich Übungs- und Demonstrationszwecken und verfolgt keine wirtschaftlichen Interessen.</p>
-
-          <h3 class="dialog__subtitle">Haftung für Inhalte</h3>
-          <p class="dialog__text">Die Inhalte dieser Seite wurden mit größtmöglicher Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität wird jedoch keine Gewähr übernommen.</p>
-        </article>
-      </dialog>
-      <aside class="flex-center mar-m" id="fullscreen_aside">
-        <button class="btn--main btn--fullscreen hidden" id="btn_fullscreen">
-          <img class="btn--img" src="assets/images/6.Botones/Full Screen/Mesa de trabajo 6.png" alt="Fullscreen" />
-        </button>
-      </aside>
-    </main>
-
-    <footer class="footer-wrapper">
-      <nav class="footer-bar" aria-label="Rechtliches und Profile">
-        <button
-          type="button"
-          class="footer-menu__toggle"
-          id="footer_menu_toggle"
-          aria-expanded="false"
-          aria-controls="footer_menu"
-          aria-label="Menü"
-        >
-          <svg class="footer-menu__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <line x1="4" y1="7" x2="20" y2="7" />
-            <line x1="4" y1="12" x2="20" y2="12" />
-            <line x1="4" y1="17" x2="20" y2="17" />
+      <!-- ! Information to turn phone into landscape -->
+      <section class="orientation-lock" id="orientation_lock" role="alert" aria-live="polite">
+        <div class="orientation-lock__inner">
+          <svg class="orientation-lock__icon" viewBox="0 0 24 24" width="72" height="72" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="7" y="2" width="10" height="20" rx="2" />
+            <path d="M12 18h.01" />
+            <path d="M3 9a9 9 0 0 1 3-3" />
+            <path d="M2 5v3h3" />
           </svg>
-        </button>
-
-        <ul class="footer-menu" id="footer_menu">
-          <li>
-            <button type="button" class="btn--social" aria-haspopup="dialog" data-dialog="impressum_dialog" title="Impressum">
-              <img src="assets/icons/impressum.svg" alt="Impressum" class="img--link" />
-            </button>
-          </li>
-          <li>
-            <a class="btn--social" href="https://www.linkedin.com/in/maximilian-lehner-7744a2276/" target="_blank" rel="noopener" title="LinkedIn">
-              <img src="assets/icons/linkedin.svg" alt="Linkedin Image" class="img--link" />
-            </a>
-          </li>
-          <li>
-            <a class="btn--social" href="https://github.com/Lehnerma" target="_blank" rel="noopener" title="Github">
-              <img src="assets/icons/github.svg" alt="Github Image" class="img--link" />
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </footer>
+          <p class="orientation-lock__text">Please turn your device to landscape to play.</p>
+        </div>
+      </section>
+    </main>
   </body>
 </html>

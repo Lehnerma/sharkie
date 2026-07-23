@@ -1,10 +1,3 @@
-/* main content container and grid positioning */
-main {
-  /* the first grid row stays empty on purpose: the title animates up
-     into it, so main and footer are pinned to rows 2 and 3 */
-  grid-row: 2;
-  align-self: center;
-}
 
 /* the game title that slides up when the game starts */
 .game-title {
@@ -26,8 +19,10 @@ main {
 /* the wrapper that holds canvas and related elements at a responsive size */
 .main-content {
   position: relative;
-  /* fluid down to the viewport width, but never larger than the native 720px */
-  width: min(720px, 100vw);
+  /* fluid down to the viewport width, but never larger than the native 720px;
+     --touch-reserve (touch-controls.css) leaves room for the action sidebar
+     on touch devices and is 0px everywhere else */
+  width: min(720px, calc(100vw - var(--touch-reserve)));
 }
 
 /* the container for the canvas element; keeps aspect ratio while scaling */

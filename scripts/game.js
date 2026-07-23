@@ -27,72 +27,52 @@ function init() {
 function initEventlistener() {
   const START_BTN = document.getElementById("game_start");
   const TRY_Again_BTN = document.getElementById("again_btn");
-  const FULLSCREEN_BTN = document.getElementById("btn_fullscreen");
 
   START_BTN.addEventListener("click", () => createWorld());
   TRY_Again_BTN.addEventListener("click", () => restartGame());
-  FULLSCREEN_BTN.addEventListener("click", () => toggleFullscreen());
 
   initDialogs();
   initVolumeSliders();
   initMuteButton();
-  initFooterMenu();
+  initFullscreenButton();
+  initTouchControls();
 }
 
 /**
- * wires the footer burger menu (touch layout only). the toggle flips its
- * aria-expanded state and css reveals the flyout; escape, a click outside
- * and choosing an entry close it again.
+ * wires the on-screen touch buttons. each button carries a data-key that maps
+ * onto the shared keyboard state, so a tap does exactly what the matching key
+ * does. touchend and touchcancel release the flag, so a finger sliding off a
+ * button can never leave a direction stuck. contextmenu is blocked so a long
+ * press does not open the touch-and-hold menu on top of the controls.
  */
-function initFooterMenu() {
-  const TOGGLE = document.getElementById("footer_menu_toggle");
-  const MENU = document.getElementById("footer_menu");
-
-  TOGGLE.addEventListener("click", () => toggleFooterMenu(TOGGLE));
-  MENU.addEventListener("click", (e) => closeOnMenuChoice(e, TOGGLE));
-
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") closeFooterMenu(TOGGLE);
-  });
-
-  document.addEventListener("click", (e) => {
-    if (!TOGGLE.contains(e.target) && !MENU.contains(e.target)) {
-      closeFooterMenu(TOGGLE);
-    }
+function initTouchControls() {
+  const buttons = document.querySelectorAll(".touch-btn[data-key]");
+  buttons.forEach((button) => {
+    const key = button.dataset.key;
+    button.addEventListener("touchstart", (e) => setTouchKey(e, key, true), { passive: false });
+    button.addEventListener("touchend", (e) => setTouchKey(e, key, false), { passive: false });
+    button.addEventListener("touchcancel", (e) => setTouchKey(e, key, false), { passive: false });
+    button.addEventListener("contextmenu", (e) => e.preventDefault());
   });
 }
 
 /**
- * toggles the menu open or closed by flipping aria-expanded on the button.
- * @param {HTMLButtonElement} toggle - the burger toggle button
+ * writes a single touch button's pressed state into the shared keyboard object
+ * and keeps the swim sound in sync, mirroring the keydown/keyup handlers.
+ * @param {TouchEvent} e - the originating touch event
+ * @param {string} key - the keyboard flag to toggle (e.g. "LEFT", "SPACE")
+ * @param {boolean} isPressed - true on touchstart, false on release/cancel
  */
-function toggleFooterMenu(toggle) {
-  const isOpen = toggle.getAttribute("aria-expanded") === "true";
-  toggle.setAttribute("aria-expanded", String(!isOpen));
-}
-
-/**
- * closes the footer menu if it is currently open.
- * @param {HTMLButtonElement} toggle - the burger toggle button
- */
-function closeFooterMenu(toggle) {
-  toggle.setAttribute("aria-expanded", "false");
-}
-
-/**
- * closes the menu after the user activated one of its entries (a link or
- * the impressum button), so it does not linger behind the chosen target.
- * @param {MouseEvent} e - the click event inside the menu
- * @param {HTMLButtonElement} toggle - the burger toggle button
- */
-function closeOnMenuChoice(e, toggle) {
-  if (e.target.closest("a, button")) {
-    closeFooterMenu(toggle);
-  }
+function setTouchKey(e, key, isPressed) {
+  e.preventDefault();
+  keyboard[key] = isPressed;
+  updateSwimSound();
 }
 
 const MUTE_ICON = "assets/icons/mute.svg";
 const SOUND_ICON = "assets/icons/sound.svg";
+const FULLSCREEN_ICON = "assets/icons/fullscreen.svg";
+const EXIT_FULLSCREEN_ICON = "assets/icons/exit_fullscreen.svg";
 
 /**
  * wires the mute button to the sound module. every click toggles the
@@ -245,8 +225,20 @@ function createWorld() {
   animateTitleUp();
   fadeOutBackground();
   fadeInCanvas();
-  showFullscreenButton();
+  enableFullscreenButton();
+  showTouchControls();
   hideStartscreenAfterDelay();
+}
+
+/**
+ * reveals the touch controls (movement d-pad on the canvas, action buttons
+ * in the sidebar beside it); css only actually shows them on touch devices
+ * (pointer: coarse), so this is a no-op on a mouse desktop. their grid columns
+ * are reserved from the first paint, so revealing them causes no layout shift.
+ */
+function showTouchControls() {
+  document.getElementById("touch_dpad")?.classList.remove("hidden");
+  document.getElementById("touch_actions")?.classList.remove("hidden");
 }
 
 function initWorld() {
@@ -306,26 +298,46 @@ function showCanvas() {
   canvas.classList.remove("hidden");
 }
 
-function showFullscreenButton() {
-  const fullscreenBtn = document.getElementById("btn_fullscreen");
-  if (fullscreenBtn) {
-    fullscreenBtn.classList.remove("hidden");
-  }
+/**
+ * wires the fullscreen button, mirroring the mute button. a click toggles
+ * fullscreen and the fullscreenchange event keeps the icon in sync even when
+ * the user leaves fullscreen with the escape key.
+ */
+function initFullscreenButton() {
+  const FULLSCREEN_BTN = document.getElementById("fullscreen_toggle");
+  FULLSCREEN_BTN.addEventListener("click", () => toggleFullscreen());
+  document.addEventListener("fullscreenchange", updateFullscreenButton);
+  updateFullscreenButton();
 }
 
-function hideFullscreenButton() {
-  const fullscreenBtn = document.getElementById("btn_fullscreen");
-  if (fullscreenBtn) {
-    fullscreenBtn.classList.add("hidden");
-  }
+/**
+ * enables the fullscreen button once the game is running; it starts disabled
+ * so fullscreen is only possible during play.
+ */
+function enableFullscreenButton() {
+  document.getElementById("fullscreen_toggle").disabled = false;
 }
 
+/**
+ * shows the current fullscreen state on the button: the exit icon and a
+ * pressed state while in fullscreen, the enter icon otherwise.
+ */
+function updateFullscreenButton() {
+  const FULLSCREEN_BTN = document.getElementById("fullscreen_toggle");
+  const active = Boolean(document.fullscreenElement);
+  FULLSCREEN_BTN.setAttribute("aria-pressed", String(active));
+  FULLSCREEN_BTN.setAttribute("aria-label", active ? "Exit fullscreen" : "Enter fullscreen");
+  FULLSCREEN_BTN.querySelector("img").src = active ? EXIT_FULLSCREEN_ICON : FULLSCREEN_ICON;
+}
+
+/**
+ * toggles fullscreen on the canvas wrapper (not the bare canvas) so the mute
+ * and fullscreen buttons stay visible and usable while in fullscreen.
+ */
 function toggleFullscreen() {
-  const fullscreenElement = document.fullscreenElement;
-
-  if (fullscreenElement) {
+  if (document.fullscreenElement) {
     document.exitFullscreen();
   } else {
-    canvas.requestFullscreen();
+    document.getElementById("canvas_wrapper").requestFullscreen();
   }
 }

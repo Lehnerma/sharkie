@@ -140,32 +140,45 @@
   pointer-events: none;
 }
 
-.btn--social {
+.btn--fullscreen {
+  position: absolute;
+  top: 0.5rem;
+  /* sits to the left of the mute button (0.5rem + 2.75rem button + 0.5rem gap) */
+  right: 3.75rem;
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 3rem;
-  padding: 0 0.75rem;
+  width: 2.75rem;
+  height: 2.75rem;
   cursor: pointer;
-  border: none;
-  background: none;
-  text-decoration: none;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(2, 17, 31, 0.6);
   transition:
     transform 75ms ease,
     background 75ms ease;
 }
 
-.btn--social:hover {
-  transform: scale(1.2);
+.btn--fullscreen:hover {
+  transform: scale(1.05);
+  background: rgba(2, 17, 31, 0.9);
 }
 
-.btn--social:active {
-  transform: scale(0.9);
+.btn--fullscreen:active {
+  transform: scale(0.98);
 }
 
-.btn--social img {
-  height: 2.5rem;
-  aspect-ratio: 1/1;
+.btn--fullscreen:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn--fullscreen-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  /* the icons are black, invert paints them white for contrast on the dark button */
   filter: invert(1);
   pointer-events: none;
 }

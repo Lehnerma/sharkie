@@ -1,0 +1,122 @@
+/* horizontal space reserved for the dpad and action-buttons sidebars flanking
+   the canvas. 0 on mouse devices so their width formulas stay untouched;
+   layout.css and responsive.css read this variable in their .main-content
+   width so the canvas and both sidebar reservations can never drift out of
+   sync. */
+:root {
+  --touch-reserve: 0px;
+}
+
+@media (pointer: coarse) {
+  /* reserve the flanking button columns from the very first paint, so revealing
+     the buttons on start never shifts the layout. 15rem = 8rem (left d-pad) +
+     5rem (right actions) + 2 * 1rem grid gap; keep in sync with the grid below. */
+  :root {
+    --touch-reserve: 15rem;
+  }
+
+  /* three-column game layout: fixed side columns flank the canvas (1fr) */
+  main {
+    display: grid;
+    grid-template-columns: 8rem 1fr 5rem;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  /* pin each area to its own column so the canvas stays centered in the middle
+     column even while the side panels are still display:none before the start. */
+  .touch-dpad-panel {
+    grid-column: 1;
+  }
+
+  .main-content {
+    grid-column: 2;
+    justify-self: center;
+  }
+
+  .touch-actions-panel {
+    grid-column: 3;
+  }
+}
+
+/* movement d-pad sidebar, left of the canvas; hidden by default, only the
+   touch device media query below reveals it.
+   grid: up/down span both columns and fill the full width, left/right sit
+   directly next to each other in the middle row. */
+.touch-dpad-panel {
+  display: none;
+  grid-template-columns: repeat(2, 1fr);
+  height: 100%;
+  gap: 0.5rem;
+  margin-left: 0.5rem;
+}
+
+@media (pointer: coarse) {
+  .touch-dpad-panel:not(.hidden) {
+    display: grid;
+  }
+}
+
+.touch-dpad-panel .touch-btn--up,
+.touch-dpad-panel .touch-btn--down {
+  grid-column: 1 / -1;
+  min-height: 3rem;
+}
+
+.touch-dpad-panel .touch-btn--left,
+.touch-dpad-panel .touch-btn--right {
+  min-height: 5rem;
+}
+
+/* action buttons sidebar, placed beside (not on top of) the canvas so it
+   never covers gameplay; hidden by default, revealed on touch once playing */
+.touch-actions-panel {
+  display: none;
+  gap: 0.4rem;
+  /* width comes from the reserved 5rem grid column (see @media coarse above) */
+}
+
+@media (pointer: coarse) {
+  .touch-actions-panel:not(.hidden) {
+    display: grid;
+    height: 100%;
+    margin-right: 0.5rem;
+  }
+}
+
+/* shared look for every touch button */
+.touch-btn {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  color: #ffffff;
+  text-align: center;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 12px;
+  background: rgba(2, 17, 31, 0.55);
+
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* pressed state gives tactile feedback without a hover (touch has none) */
+.touch-btn:active {
+  background: rgba(11, 61, 110, 0.85);
+  transform: scale(0.95);
+}
+
+/* arrow glyphs in the d-pad are larger than the action labels */
+.touch-btn--dir {
+  font-size: 1.5rem;
+}
+
+/* shop buttons are secondary, so their label reads a little smaller */
+.touch-btn--shop {
+  font-size: 0.75rem;
+}

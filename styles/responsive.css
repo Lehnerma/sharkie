@@ -77,23 +77,14 @@
   }
 
   .main-content {
-    /* smallest of: native size, viewport width, and height-derived width
-       (720/460 = the aspect ratio), leaving ~4rem for the footer */
-    width: min(720px, 100vw, calc((100svh - 4rem) * 720 / 460));
+    /* smallest of: native size, viewport width (minus --touch-reserve for the
+       touch action sidebar, see touch-controls.css), and height-derived width
+       (720/460 = the aspect ratio) so the canvas always fits the viewport */
+    width: min(720px, calc(100vw - var(--touch-reserve)), calc(100svh * 720 / 460));
   }
 
   .game-title {
     /* no vertical room for the big title in a flat landscape viewport */
     display: none;
-  }
-
-  #fullscreen_aside {
-    /* the standalone 250px fullscreen button doesn't fit a flat landscape
-       viewport and would push a vertical scrollbar */
-    display: none;
-  }
-
-  .footer-bar {
-    padding: 0.25rem 1rem;
   }
 }

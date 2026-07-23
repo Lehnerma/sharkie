@@ -654,3 +654,40 @@ Keine neuen Einträge — der Session-Verlauf ist bereits vollständig in `claud
 **Q:** Link-Reihenfolge CSS in index.html? | **A:** reset → base → layout → canvas → dialog → footer → responsive → utilities → buttons. Responsive am Ende (höchste Spezifität).
 
 **Q:** Burger-Menu-Logik JS-Stil? | **A:** `initFooterMenu()` verdrahtet in `initEventlistener()`. JS flippt nur `aria-expanded`, CSS macht Sichtbarkeit (eine State-Quelle). Toggles bei Klick auf Burger, schließt bei Escape/Klick daneben/Auswahl Eintrag.
+
+**Q:** Touch-Controls (Phase B, issue24) umgesetzt — wie? | **A:** HTML-Overlay `#touch_controls` im `canvas-wrapper` (position:absolute, inset:0, pointer-events:none; nur Buttons pointer-events:auto). D-Pad (UP/DOWN/LEFT/RIGHT als Plus-Grid) links, Aktionen rechts: E=Slap, SPACE=Bubble, B=Buy Bottle, H=Buy Health. Jeder `<button>` trägt `data-key`, das 1:1 auf das geteilte `keyboard`-Objekt gemappt wird — Tap tut exakt dasselbe wie die Taste. Neue Datei `styles/touch-controls.css`, verlinkt nach buttons.css.
+
+**Q:** Warum touchend UND touchcancel als Release? | **A:** Sonst bleibt ein Richtungs-Flag `true` hängen, wenn der Finger vom Button runterrutscht statt sauber loszulassen (Sharkie schwimmt ewig weiter). Beide setzen das Flag auf `false`.
+
+**Q:** Sichtbarkeit der Touch-Controls? | **A:** Default `display:none`; nur bei `@media (pointer: coarse)` und `:not(.hidden)` sichtbar. `.hidden` wird in `createWorld()` via `showTouchControls()` entfernt → erscheinen erst beim Spielstart, nicht im Startscreen. Auf Maus-Desktop bleibt alles unsichtbar (No-op).
+
+**Q:** Kontextmenü auf Touch-Buttons? | **A:** Gleich mit erledigt (nächster issue24-Punkt): `contextmenu`-Listener pro Button mit `e.preventDefault()` unterbindet das Touch-and-Hold-Menü. Zusätzlich CSS `touch-action:none` + `user-select:none` gegen Scroll/Zoom/Textauswahl.
+
+**Q:** JS-Anbindung Stil? | **A:** `initTouchControls()` in `initEventlistener()` verdrahtet, delegiert pro Button (multitouch-sicher: D-Pad + Aktion gleichzeitig). `setTouchKey(e, key, isPressed)` spiegelt die keydown/keyup-Handler inkl. `updateSwimSound()`. Listener mit `{passive:false}`, damit `preventDefault()` greift.
+
+**Q:** Nebenbefund — fonts.css & key--wide? | **A:** Reviewer-Warnungen entkräftet: `styles/fonts.css` existiert (in index.html:34 korrekt verlinkt, keine Leiche). `index.html` `key--wide` ist kein kaputter Name, sondern die Modifier-Klasse `key key--wide` für die breite Space-Taste im Key-Dialog.
+
+**Q:** Umbau — Aktions-Buttons (Slap/Bubble/Buy Bottle/Buy Health) neben statt auf dem Canvas? | **A:** Max' Wunsch: nicht mehr als Overlay auf dem Spielfeld, sondern rechts daneben — verdecken so nichts vom Gameplay. Neues `<aside class="touch-actions-panel">` als Geschwister von `.main-content` (nicht mehr Kind vom Canvas-Wrapper). D-Pad bleibt vorerst als Overlay auf dem Canvas (Max ist unsicher, ob das sinnvoll bleibt — mögliche Folgeaufgabe: D-Pad verkleinern, Footer im Mobile-Layout Platz machen lassen).
+
+**Q:** Wie liegt die Sidebar neben dem Canvas, ohne horizontalen Scrollbalken zu riskieren? | **A:** `main` wird nur bei `@media (pointer: coarse)` zu `display:flex` (Canvas-Spalte + Sidebar nebeneinander). Sidebar fix `width: 6rem`, 2×2-Grid der vier Buttons (kompakt für flaches Querformat).
+
+**Q:** Zwei Breiten-Formeln für `.main-content` (Basis in layout.css, Short-Landscape-Override in responsive.css) — wie gemeinsam Platz für die Sidebar reservieren, ohne dass sich die Regeln gegenseitig überschreiben? | **A:** Eine CSS-Variable `--touch-reserve` (definiert in touch-controls.css, 0px default, 7rem bei `pointer:coarse`) wird in BEIDEN `width: min(...)`-Formeln per `calc(100vw - var(--touch-reserve))` eingerechnet, statt die Breite in einer dritten, konkurrierenden Regel zu überschreiben. Sonst hätte die zuletzt geladene Datei die andere Formel (inkl. dem bestehenden Scrollbalken-Fix fürs kurze Querformat) komplett verdrängt statt kombiniert.
+
+**Q:** Ergebnis für Real-Szenarien (aus vorherigen Tests: Tablet quer 1024×768, Handy quer 667×375)? | **A:** Auf beiden bleibt nach Abzug der 7rem-Reservierung noch komfortabel Platz für die Sidebar (Tablet: 304px frei ohnehin; Handy quer: Canvas ist dort primär höhen-limitiert, ca. 180px Rest reichen für die 6rem-Sidebar). Noch nicht live am Gerät getestet.
+
+**Q:** JS-Anpassung für den Umbau? | **A:** `initTouchControls()`-Selector von `#touch_controls [data-key]` auf generisches `.touch-btn[data-key]` geändert (funktioniert jetzt für Buttons in zwei getrennten Containern). `showTouchControls()` zeigt jetzt `#touch_dpad` UND `#touch_actions` (statt nur ein Element). D-Pad-Overlay umbenannt von `#touch_controls`/`.touch-controls` zu `#touch_dpad`/`.touch-dpad-overlay`, da die ID nach dem Split nur noch den D-Pad meint.
+
+**Q:** D-Pad Redesign nach erstem Feedback ("schaut nicht gut aus") | **A:** D-Pad raus aus dem Canvas-Overlay, jetzt eigene Sidebar links (aside.touch-dpad-panel, id touch_dpad, gleiche id wie vorher -> kein JS-Aenderungsbedarf); main-Reihenfolge jetzt dpad-panel / main-content / actions-panel
+**Q:** D-Pad Grid-Layout | **A:** grid-template-columns: repeat(2,1fr); UP/DOWN grid-column 1/-1 (volle Breite, min-height 3rem); LEFT/RIGHT je 1 Spalte, min-height 5rem (laenglich), gap 1rem ueberall -> UP / LEFT RIGHT / DOWN
+**Q:** --touch-reserve Anpassung | **A:** von 7rem auf 13rem (8rem dpad-panel + 4rem actions-panel + 2x0.5rem main-gap); layout.css/responsive.css unveraendert, da sie nur die Variable referenzieren -> Beleg, dass die Variable-Loesung aus Phase 2 sich auszahlt
+**Q:** touch-actions-panel display/grid-template-columns war auskommentiert | **A:** vermutlich vom User waehrend lokalem Testen (Footer ausgeblendet) veraendert, um das Panel ohne echtes pointer:coarse zu sehen; wieder auf display:none + grid-template-columns gesetzt, sonst waere die Sidebar auch auf Maus-Desktop sichtbar
+
+**Q:** Warum funktioniert das erste Sidebar-Layout (rechts neben Canvas) nicht? | **A:** Visuelle Überlastung/zu viel Platz-Konkurrenz mit Canvas — User testet mit ausgeblendetem Footer um Live-Problem zu sehen, Neue-Lösung nötig.
+
+**Q:** Neues Touch-Control-Layout-Konzept? | **A:** D-Pad auf linke Sidebar, 2-Spalten-Grid: UP volle Breite (3rem hoch), LEFT/RIGHT elongated nebeneinander (5rem hoch, 1rem Gap), DOWN volle Breite (3rem) — Actions-Buttons bleiben rechts.
+
+**Q:** CSS-Anpassung für neues D-Pad-Layout? | **A:** `.touch-dpad-panel` ist jetzt `aside` auf linker Seite (nicht Overlay mehr), D-Pad-Grid neu: `grid-template-rows: repeat(3, auto)` mit span-Full für UP/DOWN, Links/Rechts je eine Spalte. `--touch-reserve` 7rem → 13rem (8rem D-Pad + 4rem Actions + Gaps).
+
+**Q:** Kommentar-Altlasten in touch-controls.css gefunden? | **A:** `.touch-actions-panel` display/grid waren auskommentiert (User-Test-Tinkering), wieder aktiviert sonst Sidebar auf Desktop sichtbar — nur unter `pointer: coarse` + `:not(.hidden)` soll sie zeigen.
+
+**Q:** Warum braucht game.js keine Anpassung? | **A:** `#touch_dpad` ID und `.touch-btn[data-key]` Selektor treffen weiterhin beide Sidebars (D-Pad + Actions), egal ob Overlay oder Panel-Sidebar.
