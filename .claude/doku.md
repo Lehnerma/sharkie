@@ -1,5 +1,43 @@
 # Sharkie – Arbeitsdoku
 
+## 2026-07-23 – Schnarch-Sound bei Long Idle (Sleep-Phase)
+
+**Ziel:** Wenn Sharkie in den Long-Idle fällt und die Sleep-Animation (`LONG_IDLE_SLEEP`) startet, soll `assets/sound/snore.wav` looped abspielen; bei jeder Art von Aufwachen (Bewegung, Angriff, Treffer, Tod) soll der Sound wieder stoppen. Asset war schon vorhanden, aber weder registriert noch verdrahtet.
+
+**Änderungen:**
+- **scripts/sound.js** – neuer `SNORE`-Eintrag in `SOUNDS` (`snore.wav`, `group: "sfx"`, `loop: true`), analog zu `SWIM`.
+- **class/sharkie.class.js**
+  - `playLongIdle()` startet `resumeSound("SNORE")` beim Wechsel in die Sleep-Frames, geguarded über die bereits vorhandene (bis dahin ungenutzte) Property `isSleeping`, damit der Sound nicht bei jedem Tick neu getriggert wird.
+  - neue Methode `wakeUp()` – stoppt den Snore-Sound und setzt `isSleeping = false`.
+  - `wakeUp()` wird an zwei Stellen aufgerufen: (1) generisch am Anfang des Animations-Intervals, sobald `isSleeping && !timePassed(10)` – deckt Bewegung/Hurt/Tod ab, weil die alle über `hit()`/`movements` ohnehin `setTimestamp()` aufrufen und damit `timePassed(10)` auf `false` kippen. (2) explizit in den `E`- und `SPACE`-Tasten-Zweigen (Finnenschlag/Bubble-Attacke) – die laufen **nicht** über `movements` und würden `timePassed(10)` sonst nicht zurücksetzen, also ohne den expliziten Call könnte man mitten aus dem Schlaf heraus angreifen, ohne dass der Snore stoppt.
+
+**Verifikation:** `node --check` auf beiden Dateien – keine Syntaxfehler. Kein Browsertest (kein UI-Testlauf angefordert).
+
+## 2026-07-23 – JSDoc nachgerüstet (alle Klassen + scripts/game.js)
+
+**Ziel:** Alle Methoden/Funktionen im Projekt bekommen JSDoc, wo noch keine war. Vorbereitet durch einen `Explore`-Agent-Überblick (23 JS-Dateien, ~230–250 Funktionen/Methoden, davon ~140–150 ohne JSDoc).
+
+**Stil (mit Max abgestimmt):** bestehender Minimal-Stil beibehalten – nur `@param {Typ} name - beschreibung` und `@returns {Typ} beschreibung`, kleingeschriebene Kurzbeschreibung. Kein `@class`/`@extends`, obwohl eine klare Vererbungshierarchie existiert (`DrawableObjects → MoveableObjects → Sharkie/Bubble/Enemies → PufferFish/JellyFish/Endboss` usw.) – bewusst nicht eingeführt, um vom Stil im Projekt nicht abzuweichen. Konstruktoren werden projektweit konsequent **nicht** dokumentiert (auch nicht bei Parametern) – dieser Konvention gefolgt.
+
+**Bearbeitete Dateien:**
+- `class/coinbar.class.js`, `class/bubblebar.class.js`, `class/healthbar.class.js`, `class/endscreen.class.js`
+- `class/poisonbottle.class.js`, `class/puffer-fish.class.js`
+- `class/drawable-objects.class.js`, `class/movable-objects.class.js`, `class/bubble.class.js`, `class/jelly-fish.class.js`, `class/statusbar.class.js`
+- `class/sharkie.class.js`, `class/world.class.js` (größte Lücken, ~30 bzw. ~35 Methoden)
+- `class/enemies.class.js`, `class/endboss.class.js` (kleine Restlücken: `getRandomColor()`, `preloadImages()`, `animation()`)
+- `scripts/game.js`
+
+**Bewusst unverändert:**
+- `class/background.class.js`, `class/coin.class.js`, `class/level.class.js`, `class/keyboard.class.js` – enthalten nur Property-Deklarationen bzw. einen trivialen Konstruktor, nichts zu dokumentieren.
+- `class/endbossbar.class.js`, `level/level1.js`, `scripts/sound.js` – waren schon vollständig/gut dokumentiert (Referenzstil).
+
+**Nebenbefunde beim Dokumentieren aufgefallen (nicht behoben, nur vermerkt):**
+- `class/movable-objects.class.js` `isMoving()` gibt trotz Namens das Gegenteil von `this.moving` zurück (`!this.moving`) – `applyGravity()` verlässt sich exakt auf dieses Verhalten.
+- `class/sharkie.class.js` `moveDirection()` scheint unbenutzt (der aktive Pfad ist `moveByKeyboard()`, das zusätzlich die Attacke prüft).
+- `class/world.class.js` `addBottlesToWorld()` scheint unbenutzt (keine Aufrufstelle gefunden, im Gegensatz zu `addCoinsToWorld()`).
+
+**Verifikation:** `node --check` über alle `.js`-Dateien in `class/`, `level/`, `scripts/` – keine Syntaxfehler.
+
 ## 2026-07-23 – Touch-Grid von Anfang an (feste Button-Spalten, kein Layout-Shift)
 
 **Ziel:** Kein Layout-Sprung mehr beim Spielstart. Das 3-Spalten-Grid soll auf Mobile schon beim Laden stehen; die äußeren Spalten reservieren fest Platz für die Buttons (auch solange die noch versteckt sind), die Mitte (`1fr`) gehört dem Canvas. Ersetzt den `is-playing`-Ansatz von gestern.

@@ -18,12 +18,20 @@ const keyMap = {
   KeyD: "D",
 };
 
+/**
+ * grabs the canvas element and wires up every UI event listener; runs
+ * once on page load, before any world exists.
+ */
 function init() {
   canvas = document.getElementById("canvas");
   //world = new World(canvas, keyboard);
   initEventlistener();
 }
 
+/**
+ * wires the start and try-again buttons plus every other UI control
+ * (dialogs, volume sliders, mute, fullscreen, touch controls).
+ */
 function initEventlistener() {
   const START_BTN = document.getElementById("game_start");
   const TRY_Again_BTN = document.getElementById("again_btn");
@@ -194,10 +202,12 @@ window.addEventListener("keyup", (e) => {
   }
 });
 
+/** reveals the try-again button, shown once the game has ended. */
 function showTryAgainBtn() {
   document.getElementById("again_btn").classList.remove("hidden");
 }
 
+/** hides the try-again button. */
 function hideTryAgainBtn() {
   document.getElementById("again_btn").classList.add("hidden");
 }
@@ -216,6 +226,11 @@ function restartGame() {
   playSound("BACKGROUND_MUSIC");
 }
 
+/**
+ * starts the game from the start screen: shows the canvas, creates the
+ * world, starts the music and plays the whole start screen transition
+ * (title, subarea, background fade out; canvas fade in).
+ */
 function createWorld() {
   showCanvas();
   initWorld();
@@ -241,10 +256,12 @@ function showTouchControls() {
   document.getElementById("touch_actions")?.classList.remove("hidden");
 }
 
+/** creates a fresh World instance, replacing any previous one. */
 function initWorld() {
   world = new World(canvas, keyboard);
 }
 
+/** slides the game title upward as part of the start transition. */
 function animateTitleUp() {
   const title = document.querySelector(".game-title");
   if (title) {
@@ -252,6 +269,7 @@ function animateTitleUp() {
   }
 }
 
+/** fades out the start screen section as part of the start transition. */
 function fadeOutStartscreen() {
   const startSection = document.querySelector(".start-section");
   if (startSection) {
@@ -259,6 +277,7 @@ function fadeOutStartscreen() {
   }
 }
 
+/** fades out the subarea wrapper as part of the start transition. */
 function fadeOutSubarea() {
   const subarea = document.querySelector(".wrapper-subarea");
   if (subarea) {
@@ -266,6 +285,7 @@ function fadeOutSubarea() {
   }
 }
 
+/** fades out the background layer as part of the start transition. */
 function fadeOutBackground() {
   const background = document.querySelector(".background-layer");
   if (background) {
@@ -273,16 +293,22 @@ function fadeOutBackground() {
   }
 }
 
+/** fades the canvas in as part of the start transition. */
 function fadeInCanvas() {
   canvas.classList.add("fade-in");
 }
 
+/**
+ * hides the start screen once its fade-out transition has had time to
+ * finish, so it doesn't just disappear mid-animation.
+ */
 function hideStartscreenAfterDelay() {
   setTimeout(() => {
     hideStartscreen();
   }, 2500);
 }
 
+/** hides the start screen section entirely (display: none via .hidden). */
 function hideStartscreen() {
   const startSection = document.querySelector(".start-section");
   if (startSection) {
@@ -290,10 +316,12 @@ function hideStartscreen() {
   }
 }
 
+/** hides the canvas. */
 function hideCanvas() {
   canvas.classList.add("hidden");
 }
 
+/** shows the canvas. */
 function showCanvas() {
   canvas.classList.remove("hidden");
 }

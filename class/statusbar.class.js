@@ -8,6 +8,11 @@ class Statusbar extends DrawableObjects {
     this.height = 45;
   }
 
+  /**
+   * shows the image matching the given percentage.
+   * @param {number} percentage - value between 0 and 100
+   * @param {string[]} images - image paths ordered from 0% to 100%
+   */
   setPercentage(percentage, images) {
     let path = images[this.getImageIndex(percentage)];
     this.img = this.imgCache[path];

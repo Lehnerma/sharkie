@@ -8,10 +8,17 @@ class Coinbar extends Statusbar {
     this.setPercentage(this.coinCounter, this.COIN);
   }
 
+  /**
+   * refreshes the coin bar image to match the current coin count.
+   * @param {number} coin - current coin count
+   */
   renderCoinbar(coin) {
     this.setPercentage(coin, this.COIN);
   }
 
+  /**
+   * adds 10 coins, capped at 100, and refreshes the bar.
+   */
   collectCoin() {
     if (this.coinCounter < 100) {
       this.coinCounter += 10;

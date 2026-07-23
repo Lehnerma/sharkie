@@ -39,6 +39,10 @@ class PufferFish extends Enemies {
     this.animateFish();
   }
 
+  /**
+   * loads every animation frame (swim, transition, bubble swim, dead) for
+   * all three colors, so a color switch never has to load images on the fly.
+   */
   preloadImages() {
     this.loadImages(this.MOVES.SWIM.GREEN);
     this.loadImages(this.MOVES.SWIM.RED);
@@ -54,6 +58,11 @@ class PufferFish extends Enemies {
     this.loadImages(this.MOVES.DEAD.BLUE);
   }
 
+  /**
+   * runs the fish's movement at 60fps: swims left while alive, or floats
+   * away once defeated. also checks each tick whether sharkie is close
+   * enough to trigger the transition into the bubble-swim state.
+   */
   animateFish() {
     // this.playAnimation(this.MOVES.SWIM[this.color], 180);
     this.animationImages();
@@ -68,6 +77,10 @@ class PufferFish extends Enemies {
     }, 1000 / 60);
   }
 
+  /**
+   * plays the frame set matching the fish's current animationState
+   * (SWIM, TRANSITION, BUBBLE_SWIM or DEAD).
+   */
   animationImages() {
     this.setStoppableInterval(() => {
       if (this.world?.isGameEnded) return; // stop advancing frames once the game is over or won
@@ -83,6 +96,10 @@ class PufferFish extends Enemies {
     }, 100);
   }
 
+  /**
+   * plays the transition frames once and then switches the fish into the
+   * bubble-swim state.
+   */
   playTransition() {
     this.img = this.imgCache[this.MOVES.TRANSITION[this.color][this.animationFrame]];
     if (this.animationFrame < this.MOVES.TRANSITION[this.color].length - 1) {
@@ -92,6 +109,11 @@ class PufferFish extends Enemies {
       this.animationFrame = 0;
     }
   }
+
+  /**
+   * switches the fish from swimming into the transition animation once
+   * sharkie comes within 250px, but only while it is still swimming.
+   */
   transitionToBubble() {
     if (!this.world) return;
     const distanceX = this.x - this.world.sharkie.x;

@@ -35,12 +35,20 @@ class Poisonbottle extends MoveableObjects {
     this.run();
   }
 
+  /**
+   * starts the render loop that keeps the bottle's frame/position up to date.
+   */
   run() {
     this.setStoppableInterval(() => {
       this.renderBottles();
     }, 150);
   }
 
+  /**
+   * loads every bottle image and sets the starting frame for this bottle's
+   * type; the animated type always needs the full frame set, a static
+   * type only needs its single left/right image.
+   */
   preloadImages() {
     this.loadImages(this.POISON_BOTTLE.ANIMATION);
     if (this.type === "ANIMATION") {
@@ -51,6 +59,10 @@ class Poisonbottle extends MoveableObjects {
     }
   }
 
+  /**
+   * plays the frame animation for an animated bottle, or drops a static
+   * bottle to the sea floor (y = 360) and shows its fixed image.
+   */
   renderBottles() {
     if (this.type == "ANIMATION") {
       this.animate(this.POISON_BOTTLE.ANIMATION);
@@ -60,6 +72,10 @@ class Poisonbottle extends MoveableObjects {
     }
   }
 
+  /**
+   * picks a random facing direction for a static bottle image.
+   * @returns {string} "LEFT" or "RIGHT"
+   */
   rightOrLeft() {
     const zeroOrOne = Math.floor(Math.random() * 2);
     if (zeroOrOne === 0) {
@@ -69,6 +85,9 @@ class Poisonbottle extends MoveableObjects {
     }
   }
 
+  /**
+   * picks a random bottle type from possibleTypes and stores it on the instance.
+   */
   getType() {
     const index = Math.floor(Math.random() * 3);
     this.type = this.possibleTypes[index];

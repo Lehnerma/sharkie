@@ -19,6 +19,7 @@ class Enemies extends MoveableObjects {
     this.health = 15;
   }
 
+  /** @returns {string} a random color key from this.colors */
   getRandomColor() {
     const length = Object.keys(this.colors).length;
     const randomNumber = Math.floor(Math.random() * length) + 1;

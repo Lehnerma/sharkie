@@ -72,6 +72,7 @@ class Endboss extends MoveableObjects {
     this.movement();
   }
 
+  /** loads every animation frame set the endboss can use. */
   preloadImages(){
     this.loadImages(this.MOVES.FLOATING);
     this.loadImages(this.MOVES.INTRODUCE);
@@ -80,6 +81,12 @@ class Endboss extends MoveableObjects {
     this.loadImages(this.MOVES.HURT);
   }
 
+  /**
+   * runs the boss's animation state machine: picks and plays the frame set
+   * matching its current state (dead, hurt, introducing, attacking, or the
+   * default floating loop), and checks each tick whether it's time to
+   * introduce the boss.
+   */
   animation() {
     this.setStoppableInterval(() => {
       if (this.world?.isGameEnded) return; // freeze the endboss once the game is over or won

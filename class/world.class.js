@@ -35,6 +35,11 @@ class World {
     this.addElementsToWorld();
   }
 
+  /**
+   * gives sharkie, every enemy and the endboss a back-reference to this
+   * world, so they can read game state (keyboard, isGameEnded, sharkie's
+   * position) without the world passing it in on every call.
+   */
   setWorld() {
     this.sharkie.world = this;
     this.level.enemies.forEach((enemy) => {
@@ -45,6 +50,10 @@ class World {
     });
   }
 
+  /**
+   * renders one frame: clears the canvas, draws the world (shifted by the
+   * camera) followed by the screen-fixed UI, then schedules the next frame.
+   */
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); //reset the canvas
     this.ctx.translate(this.camera_x, 0);
@@ -71,6 +80,10 @@ class World {
     });
   }
 
+  /**
+   * runs every game-logic check (collisions, pickups, shop input, game
+   * over) on a shared interval, frozen entirely once the game has ended.
+   */
   helperFunction() {
     this.helperInterval = setInterval(() => {
       if (this.isGameEnded) return; // block the up coming functions if game over or won
@@ -86,12 +99,20 @@ class World {
     }, 200);
   }
 
+  /**
+   * periodically replenishes collectibles that the player has picked up.
+   */
   addElementsToWorld() {
     this.elementsInterval = setInterval(() => {
       this.addCoinsToWorld();
+      this.addBottlesToWorld();
     }, 5000);
   }
 
+  /**
+   * tops coins back up to 11 once they drop below 5, so the world never
+   * runs dry; coinReplenishing keeps refilling until the cap is reached.
+   */
   addCoinsToWorld() {
     if (this.coins.length < 5) this.coinReplenishing = true;
     if (this.coinReplenishing) {
@@ -103,6 +124,10 @@ class World {
     }
   }
 
+  /**
+   * tops poison bottles back up to 11 once they drop below 5, mirroring
+   * addCoinsToWorld(); currently unused (no caller wires this up).
+   */
   addBottlesToWorld() {
     if (this.bottles.length < 5) this.bottleReplenishing = true;
     if (this.bottleReplenishing) {
@@ -114,6 +139,10 @@ class World {
     }
   }
 
+  /**
+   * reads the shop keys (H = heal, B = buy bottles), rate-limited to once
+   * every 5 seconds so holding a key down doesn't drain coins repeatedly.
+   */
   checkShopInput() {
     const now = new Date().getTime();
     if (now - this.lastShopBuy < 5000) return;
@@ -124,6 +153,10 @@ class World {
     }
   }
 
+  /**
+   * spends 100 coins to heal sharkie by 50 (capped at 100 health), if he
+   * has enough coins and isn't already at full health.
+   */
   buyHeal() {
     if (this.coinbar.coinCounter >= 99 && this.sharkie.health < 100) {
       this.coinbar.coinCounter -= 100;
@@ -136,6 +169,10 @@ class World {
     }
   }
 
+  /**
+   * spends 100 coins to buy 50 poison bottle charges (capped at 100), if
+   * sharkie has enough coins and isn't already full on bottles.
+   */
   buyBottles() {
     if (this.coinbar.coinCounter >= 99 && this.bottlebar.bottleCounter < 100) {
       this.coinbar.coinCounter -= 100;
@@ -148,6 +185,11 @@ class World {
     }
   }
 
+  /**
+   * draws one object, flipping it horizontally around the y axis first if
+   * it currently faces the other direction.
+   * @param {DrawableObjects} mo - the object to draw
+   */
   addToMap(mo) {
     if (mo.otherDirection) {
       this.flipImage(mo);
@@ -159,6 +201,10 @@ class World {
     }
   }
 
+  /**
+   * draws every object in a list via addToMap().
+   * @param {DrawableObjects[]} objects - objects to draw
+   */
   addObjectsToMap(objects) {
     objects.forEach((o) => {
       this.addToMap(o);
@@ -189,6 +235,11 @@ class World {
     });
   }
 
+  /**
+   * mirrors the canvas horizontally around the object so its next draw
+   * call renders facing the opposite way; must be paired with flipImageBack().
+   * @param {DrawableObjects} mo - the object about to be drawn flipped
+   */
   flipImage(mo) {
     this.ctx.save();
     this.ctx.translate(mo.width, 0);
@@ -196,11 +247,20 @@ class World {
     mo.x = mo.x * -1;
   }
 
+  /**
+   * undoes flipImage()'s canvas mirroring after the object has been drawn.
+   * @param {DrawableObjects} mo - the object that was just drawn flipped
+   */
   flipImageBack(mo) {
     this.ctx.restore();
     mo.x = mo.x * -1;
   }
 
+  /**
+   * for every enemy: removes it once it's ready, kills it via a fin slap
+   * if sharkie is attacking and it allows direct hits, or otherwise hurts
+   * sharkie on plain body contact (unless the enemy is already dying).
+   */
   checkEnemyCollision() {
     this.level.enemies.forEach((enemy, index) => {
       if (enemy.readyToRemove) {
@@ -266,6 +326,11 @@ class World {
     this.bubbles = this.bubbles.filter((bubble) => !bubble.readyToRemove);
   }
 
+  /**
+   * picks which hurt/dead animation sharkie should play based on the enemy
+   * that hit him: jelly fish shock him, everything else poisons him.
+   * @param {Enemies} enemy - the enemy sharkie just collided with
+   */
   getLastHitTypeSharkie(enemy) {
     if (enemy instanceof JellyFish) {
       this.sharkie.lastHitType = "ELECTRO";
@@ -274,6 +339,9 @@ class World {
     }
   }
 
+  /**
+   * collects a coin sharkie touches, as long as the coin bar isn't already full.
+   */
   checkCoinCollision() {
     this.coins.forEach((coin, index) => {
       if (this.sharkie.isColliding(coin) && this.coinbar.coinCounter < 100) {
@@ -284,6 +352,10 @@ class World {
     });
   }
 
+  /**
+   * collects a poison bottle sharkie touches, as long as the bottle bar
+   * isn't already full.
+   */
   checkPoisonBottleCollision() {
     this.bottles.forEach((bottle, index) => {
       if (this.sharkie.isColliding(bottle) && this.bottlebar.bottleCounter < 100) {
@@ -294,6 +366,10 @@ class World {
     });
   }
 
+  /**
+   * wraps an enemy that drifted past the world's left edge back around to
+   * the right edge with a fresh random height, so enemies loop endlessly.
+   */
   checkEnemyBoundary() {
     this.level.enemies.forEach((enemy) => {
       if (enemy.x < this.worldBeginX) {
@@ -303,10 +379,16 @@ class World {
     });
   }
 
+  /** removes every active bubble immediately. */
   deleteBubble() {
     this.bubbles = [];
   }
 
+  /**
+   * ends the game once sharkie's death animation or the endboss's death
+   * animation has fully played through, and shows the matching end screen,
+   * sound and try-again button.
+   */
   checkGameOver() {
     if (this.isGameEnded) return;
     if (this.sharkie.deathAnimationDone) {
@@ -327,6 +409,7 @@ class World {
     }
   }
 
+  /** @returns {boolean} true once the game has been won or lost */
   get isGameEnded() {
     return this.gameOver || this.gameWon;
   }

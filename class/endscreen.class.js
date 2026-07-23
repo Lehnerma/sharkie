@@ -12,6 +12,10 @@ class Endscreen extends DrawableObjects {
     this.y = (this.canvasHeight - this.height) / 2;
   }
 
+  /**
+   * picks which end screen image to show.
+   * @param {boolean} win - true shows the win screen, false the game over screen
+   */
   setResult(win) {
     if (win) {
       this.img = this.imgCache[this.GAME_WIN[0]];

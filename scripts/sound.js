@@ -8,6 +8,7 @@ const SOUND_PATH = "assets/sound/";
 const SOUNDS = {
   BACKGROUND_MUSIC: { file: "background_music.mp3", base: 0.3, group: "music", loop: true },
   SWIM: { file: "swim_sharkie2.mp3", base: 0.5, group: "sfx", loop: true },
+  SNORE: { file: "snore.wav", base: 0.5, group: "sfx", loop: true },
   BUBBLE: { file: "bubble.mp3", base: 0.2, group: "sfx" },
   BOSS_APPEAR: { file: "boss_apear.mp3", base: 0.7, group: "sfx" },
   FIN_SLAP: { file: "fin_slap.wav", base: 0.5, group: "sfx" },

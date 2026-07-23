@@ -19,6 +19,13 @@ class Bubble extends MoveableObjects {
     this.bubbleAttack(x, y, poison);
   }
 
+  /**
+   * launches the bubble: plays the poison or normal animation and moves it
+   * in a straight line away from where it was fired.
+   * @param {number} x - starting x position
+   * @param {number} y - starting y position
+   * @param {boolean} poison - true plays the poisoned bubble animation
+   */
   bubbleAttack(x, y, poison) {
     this.x = x;
     this.y = y;

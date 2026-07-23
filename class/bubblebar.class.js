@@ -8,10 +8,17 @@ class Bottlebar extends Statusbar {
     this.setPercentage(this.bottleCounter, this.BOTTLES);
   }
 
+  /**
+   * refreshes the bottle bar image to match the current bottle count.
+   * @param {number} bottle - current bottle count
+   */
   renderBottle(bottle) {
     this.setPercentage(bottle, this.BOTTLES);
   }
 
+  /**
+   * adds 10 bottles, capped at 100, and refreshes the bar.
+   */
   collectBottle() {
     if (this.bottleCounter < 100) {
       this.bottleCounter += 10;

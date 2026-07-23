@@ -140,11 +140,17 @@ class Sharkie extends MoveableObjects {
     this.animateSharkie();
   }
 
+  /**
+   * runs sharkie's state machine at 60fps for movement, and again on a
+   * slower interval to pick and play the animation matching his current
+   * state (dead, attacking, hurt, swimming, idle) in that priority order.
+   */
   animateSharkie() {
     this.setStoppableInterval(() => this.updateMovement(), 1000 / 60);
 
     this.setStoppableInterval(() => {
       if (this.world?.isGameEnded) return; // stop advancing frames once the game is over or won
+      if (this.isSleeping && !this.timePassed(10)) this.wakeUp(); // catches movement/hurt/death, which all refresh the timestamp
       if (this.isDead()) {
         this.playDead(this.DEAD[this.lastHitType]);
       } else if (this.isAttacking) {
@@ -162,11 +168,13 @@ class Sharkie extends MoveableObjects {
         this.animate(this.SWIM.SWIM_3);
         this.otherDirection = false;
       } else if (this.world.keyboard.E) {
+        this.wakeUp(); // E and SPACE don't run through movements, so they never refresh the timestamp themselves
         this.isAttacking = true;
         this.addDistanceForSlap();
         playSound("FIN_SLAP");
         this.playFinSlapAttack();
       } else if (this.world.keyboard.SPACE && this.isBubbleShoot) {
+        this.wakeUp();
         this.isAttackingBubble = true;
         this.playAttack(this.ATTACK.BUBBLE, () => this.finishBubbleAttackAnimation());
       } else if (this.timePassed(10)) {
@@ -209,6 +217,7 @@ class Sharkie extends MoveableObjects {
     this.world.camera_x = -this.x + 100;
   }
 
+  /** shrinks sharkie's collision box down from the sprite's transparent padding. */
   setOffset() {
     this.collisionOffset.top = 90;
     this.collisionOffset.bottom = 40;
@@ -216,6 +225,7 @@ class Sharkie extends MoveableObjects {
     this.collisionOffset.left = 40;
   }
 
+  /** sets how far sharkie may move within the level. */
   setBoundary() {
     this.levelBoundary.left = -620;
     this.levelBoundary.right = 3700;
@@ -223,6 +233,7 @@ class Sharkie extends MoveableObjects {
     this.levelBoundary.bottom = 290;
   }
 
+  /** loads every animation frame set sharkie can use. */
   preloadImages() {
     this.loadImages(this.IDLE.IDLE);
     this.loadImages(this.IDLE.LONG_IDLE_INTRO);
@@ -284,6 +295,11 @@ class Sharkie extends MoveableObjects {
     this.playAttack(this.ATTACK.FIN_SLAP, () => this.finishFinSlap());
   }
 
+  /**
+   * ends the fin slap attack and kills every enemy that was marked as a
+   * pending slap kill, so their death animation only plays once the slap
+   * has fully played through.
+   */
   finishFinSlap() {
     this.isAttacking = false;
     this.world.level.enemies.forEach((enemy) => {
@@ -291,27 +307,44 @@ class Sharkie extends MoveableObjects {
     });
   }
 
+  /**
+   * ends the bubble attack animation and fires the actual bubble.
+   */
   finishBubbleAttackAnimation() {
     this.isAttackingBubble = false;
     this.bubbleShoot();
   }
 
+  /**
+   * plays the long-idle intro once, then loops the sleep frames until
+   * sharkie moves again.
+   */
   playLongIdle() {
     if (this.currentImage <= this.IDLE.LONG_IDLE_INTRO.length) {
       this.animate(this.IDLE.LONG_IDLE_INTRO);
     } else {
       this.animate(this.IDLE.LONG_IDLE_SLEEP);
-    }
-  }
-
-  moveDirection() {
-    for (let key in this.movements) {
-      if (this.world.keyboard[key]) {
-        this.movements[key]();
+      if (!this.isSleeping) {
+        this.isSleeping = true;
+        resumeSound("SNORE");
       }
     }
   }
 
+  /**
+   * stops the snore sound once sharkie leaves the long-idle sleep state.
+   */
+  wakeUp() {
+    if (this.isSleeping) {
+      this.isSleeping = false;
+      stopSound("SNORE");
+    }
+  }
+
+  /**
+   * re-enables bubble shooting after a short cooldown, so sharkie can't
+   * fire bubbles back to back.
+   */
   bubbleShootTimer() {
     setTimeout(() => {
       this.isBubbleShoot = true;
@@ -320,6 +353,11 @@ class Sharkie extends MoveableObjects {
   }
 
 
+  /**
+   * fires a bubble from sharkie's mouth in the direction he currently faces,
+   * consuming a poison bottle first if any are available, and starts the
+   * shoot cooldown.
+   */
   bubbleShoot() {
     this.checkPoison();
     const bubbleX = this.otherDirection ? this.x - 25 : this.x + 145;
@@ -331,6 +369,10 @@ class Sharkie extends MoveableObjects {
     this.bubbleShootTimer();
   }
 
+  /**
+   * nudges sharkie towards the enemy before a fin slap, so the slap's
+   * collision box actually reaches enemies that are just out of range.
+   */
   addDistanceForSlap() {
     if (this.otherDirection) {
       this.x -= 20;
@@ -339,6 +381,10 @@ class Sharkie extends MoveableObjects {
     }
   }
 
+  /**
+   * consumes one poison bottle charge if available and flags the next
+   * bubble shot as poisoned; otherwise fires a normal bubble.
+   */
   checkPoison() {
     if (this.world.bottlebar.bottleCounter > 0) {
       this.poison = true;

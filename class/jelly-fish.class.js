@@ -47,11 +47,18 @@ class JellyFish extends Enemies {
     this.animateJellyfisch();
   }
 
+  /**
+   * loads the swim and dead frames for this jelly fish's color.
+   */
   preloadImages() {
     this.loadImages(this.MOVES.SWIM[this.color]);
     this.loadImages(this.MOVES.DEAD[this.color]);
   }
 
+  /**
+   * runs the jelly fish's movement at 60fps: swims left while alive,
+   * or floats away once defeated.
+   */
   animateJellyfisch() {
     this.animationImages();
     this.setStoppableInterval(() => {
@@ -64,6 +71,9 @@ class JellyFish extends Enemies {
     }, 1000 / 60);
   }
 
+  /**
+   * plays the swim or dead frame set matching the current animationState.
+   */
   animationImages() {
     this.setStoppableInterval(() => {
       if (this.world?.isGameEnded) return; // stop advancing frames once the game is over or won

@@ -43,10 +43,18 @@ class DrawableObjects {
     this.intervalIds = [];
   }
 
+  /**
+   * draws this object's current image at its current position.
+   * @param {CanvasRenderingContext2D} ctx - canvas context to draw on
+   */
   drawObject(ctx) {
     ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
   }
 
+  /**
+   * loads a single image and sets it as the object's current image.
+   * @param {string} path - path of the image to load
+   */
   loadImage(path) {
     this.img = new Image();
     this.img.src = path;
@@ -64,6 +72,12 @@ class DrawableObjects {
     });
   }
 
+  /**
+   * draws the collision box outline for debugging; only for the object
+   * types that actually use collisionOffset (sharkie, jelly fish, puffer
+   * fish, endboss).
+   * @param {CanvasRenderingContext2D} ctx - canvas context to draw on
+   */
   drawBorderCollision(ctx) {
     if (this instanceof Sharkie || this instanceof JellyFish || this instanceof PufferFish || this instanceof Endboss) {
       ctx.beginPath();
@@ -74,14 +88,25 @@ class DrawableObjects {
     }
   }
 
+  /**
+   * @returns {number} random y coordinate within the playable vertical range
+   */
   getRandomY() {
     return 10 + Math.random() * 340;
   }
 
+  /**
+   * @param {number} [start=-600] - lower bound of the range
+   * @param {number} [end=3600] - upper bound of the range
+   * @returns {number} random x coordinate within the given range
+   */
   getRandomX(start = -600, end = 3600) {
     return start + Math.random() * (end - start);
   }
 
+  /**
+   * places this object at a random position within the level.
+   */
   getRandomCoordinate() {
     this.y = this.getRandomY();
     this.x = this.getRandomX();

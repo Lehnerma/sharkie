@@ -9,6 +9,10 @@ class Healthbar extends Statusbar {
     this.setPercentage(this.healthPercentage, this.HEALTH);
   }
 
+  /**
+   * refreshes the health bar image to match sharkie's current health.
+   * @param {number} health - current health value
+   */
   renderHealthbar(health){
     this.setPercentage(health, this.HEALTH)
   }
