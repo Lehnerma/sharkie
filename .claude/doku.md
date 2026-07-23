@@ -1,5 +1,23 @@
 # Sharkie – Arbeitsdoku
 
+## 2026-07-23 – Touch-Buttons als fixed HUD am echten Bildschirmrand (Branch `reponsiv_tablet`)
+
+**Ziel:** D-Pad und Action-Buttons sollten nicht mehr am Canvas-Rand kleben (feste Grid-Spalten neben dem `1fr`-Canvas), sondern am tatsächlichen Viewport-Rand sitzen – ergonomischer Daumen-Reach beim Halten von Tablet/Smartphone, unabhängig davon, dass das Canvas selbst bei 720px gedeckelt ist und auf breiteren Screens nicht mitwächst.
+
+**Entscheidung (mit Max):** `position: fixed` statt Grid-Spalten-Reservierung; Canvas-Breite und Button-Position sind damit komplett entkoppelt. Getestet auf dem separaten Branch `reponsiv_tablet` (nicht `issue27`).
+
+**Änderungen:**
+- **styles/touch-controls.css**
+  - `.touch-dpad-panel`/`.touch-actions-panel` sind bei `pointer: coarse` jetzt `position: fixed; top: 50%; transform: translateY(-50%)`, D-Pad links (`left: max(0.5rem, env(safe-area-inset-left))`), Actions rechts (`right: max(0.5rem, env(safe-area-inset-right))`).
+  - Komplette Grid-Reservierung entfernt: kein `main { display: grid; grid-template-columns: 8rem 1fr 5rem }` mehr, keine `--touch-reserve`-Variable mehr – fixed positionierte Panels beanspruchen keinen Platz im Layout, also keine Reservierung nötig.
+  - Feste `width` (8rem D-Pad, 5rem Actions) direkt auf den Panels gesetzt, da sie ohne Grid-Spalte sonst auf Content-Breite schrumpfen würden.
+- **styles/layout.css** / **styles/responsive.css** – Kommentare bzw. `width`-Berechnung von `.main-content` an den Wegfall von `--touch-reserve` angepasst (Landscape-Formel verliert das `calc(100vw - var(--touch-reserve))`-Glied, einfach `100vw`).
+- **index.html** – Viewport-Meta um `viewport-fit=cover` ergänzt, sonst liefert `env(safe-area-inset-*)` auf Geräten mit Notch/Home-Indicator `0`.
+
+**Ergebnis:** Von Max am Gerät bestätigt ("perfekt so hab ich mir das vorgestellt").
+
+**Hinweis:** Auf `issue27` läuft parallel noch die ältere Grid-Spalten-Variante (siehe Eintrag "Touch-Grid von Anfang an" unten) – die beiden Branches sind an dieser Stelle divergiert, `reponsiv_tablet` noch nicht gemerged.
+
 ## 2026-07-23 – Schnarch-Sound bei Long Idle (Sleep-Phase)
 
 **Ziel:** Wenn Sharkie in den Long-Idle fällt und die Sleep-Animation (`LONG_IDLE_SLEEP`) startet, soll `assets/sound/snore.wav` looped abspielen; bei jeder Art von Aufwachen (Bewegung, Angriff, Treffer, Tod) soll der Sound wieder stoppen. Asset war schon vorhanden, aber weder registriert noch verdrahtet.

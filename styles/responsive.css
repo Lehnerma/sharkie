@@ -61,9 +61,10 @@
 
 @media (orientation: landscape) and (max-height: 600px) {
   .main-content {
-    /* smallest of: native size, viewport width (minus --touch-reserve for the
-       touch action sidebar, see touch-controls.css), and height-derived width
-       (720/460 = the aspect ratio) so the canvas always fits the viewport */
-    width: min(720px, calc(100vw - var(--touch-reserve)), calc(100svh * 720 / 460));
+    /* smallest of: native size, viewport width, and height-derived width
+       (720/460 = the aspect ratio) so the canvas always fits the viewport;
+       the touch d-pad/action buttons float as a fixed HUD (touch-controls.css)
+       and no longer compete with this width */
+    width: min(720px, 100vw, calc(100svh * 720 / 460));
   }
 }
