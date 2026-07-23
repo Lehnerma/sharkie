@@ -691,3 +691,17 @@ Keine neuen Einträge — der Session-Verlauf ist bereits vollständig in `claud
 **Q:** Kommentar-Altlasten in touch-controls.css gefunden? | **A:** `.touch-actions-panel` display/grid waren auskommentiert (User-Test-Tinkering), wieder aktiviert sonst Sidebar auf Desktop sichtbar — nur unter `pointer: coarse` + `:not(.hidden)` soll sie zeigen.
 
 **Q:** Warum braucht game.js keine Anpassung? | **A:** `#touch_dpad` ID und `.touch-btn[data-key]` Selektor treffen weiterhin beide Sidebars (D-Pad + Actions), egal ob Overlay oder Panel-Sidebar.
+
+**Q:** Funktioniert Mute-Button auf dem Handy? | **A:** Nein; Icon wechselt, Ton bleibt an (iPhone Safari/Firefox getestet)
+
+**Q:** Warum funktioniert Mute auf iOS nicht? | **A:** `audio.volume` ist read-only auf iOS/WebKit; nur Hardware-Tasten wirken, JS-Änderungen werden ignoriert
+
+**Q:** Gilt read-only volume auch für Firefox auf iOS? | **A:** Ja; alle iOS-Browser sind WebKit-Wrapper (Apple-Zwang), identisches Verhalten
+
+**Q:** Was ist der Lösungsansatz? | **A:** Nutze `audio.muted = true/false` statt `VOLUMES.master = 0` — wirkt auf iOS
+
+**Q:** Wo wird aktuell Mute-Zustand geprüft? | **A:** `isMuted()` prüft `VOLUMES.master === 0` (sound.js:161)
+
+**Q:** Wo wird Lautstärke auf alle Sounds angewendet? | **A:** `applyVolume()` setzt pro Sound `audio.volume` (sound.js:96); zentrale Stelle für neue & existierende Sounds
+
+**Q:** Was muss bei Umstellung beachtet werden? | **A:** Zustand speichern (eigenes Flag statt master=0), applyVolume() aktualisieren, playSound() prüfen ob automatisch greift
