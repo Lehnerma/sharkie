@@ -37,3 +37,11 @@ Findings: CSS-Aufteilung funktional sauber; buttons.css enthält .start-section 
 ✅ Dialog close-Event (L425) setzt paused=false mit world-Guard — safe.
 ✅ showStartscreen() (L334-339) kehrt alle Fade-outs um — Gegenstück zu createWorld() OK.
 No race conditions detected: keyup handler läuft immer, sodass stuck-keys nicht entstehen.
+
+[2026-07-23 SESSION-REVIEW] Shop-Extraktion (Issue 29)
+🔴 CRITICAL shop.class.js L28: buyHeal() — `this.coinbar.coinCounter -= 100;` sollte `this.world.coinbar.coinCounter -= 100;` sein (undefined zur Laufzeit)
+🔴 CRITICAL shop.class.js L47: buyBottles() — `this.bottlebar.bottleCounter = ...` sollte `this.world.bottlebar.bottleCounter` sein (undefined zur Laufzeit)
+✅ State-Migration: lastShopBuy korrekt zu Shop (shop.class.js L2), nicht mehr in World
+✅ Script-Order: index.html L28-29 korrekt (shop vor world)
+✅ Instanziierung: world.class.js L45 this.shop = new Shop(this), Call L97 updated zu this.shop.checkShopInput()
+✅ Andere Refs: keine Duplikate/verwaiste Reste in World erkannt

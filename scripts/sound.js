@@ -34,10 +34,15 @@ const VOLUMES = {
 const MOVEMENT_KEYS = ["UP", "DOWN", "LEFT", "RIGHT", "W", "A", "S", "D"];
 
 const VOLUME_STORAGE_KEY = "sharkie_volumes";
+const MUTE_STORAGE_KEY = "sharkie_muted";
 
 let musicPreviewTimeout;
 
+/** remembers the master volume from before muting, so unmute can restore it. */
+let masterVolumeBeforeMute = 1;
+
 loadVolumes();
+loadMuteState();
 createSounds();
 
 /**
@@ -62,6 +67,29 @@ function loadVolumes() {
  */
 function saveVolumes() {
   localStorage.setItem(VOLUME_STORAGE_KEY, JSON.stringify(VOLUMES));
+}
+
+/**
+ * restores the mute state of the last visit, so a reload keeps the game
+ * muted instead of always starting with sound on. a broken storage entry
+ * is ignored on purpose, same reasoning as loadVolumes().
+ */
+function loadMuteState() {
+  try {
+    if (localStorage.getItem(MUTE_STORAGE_KEY) === "true") {
+      masterVolumeBeforeMute = VOLUMES.master || 1;
+      VOLUMES.master = 0;
+    }
+  } catch (error) {
+    console.warn("Stored mute state could not be read:", error);
+  }
+}
+
+/**
+ * keeps the mute state for the next visit.
+ */
+function saveMuteState() {
+  localStorage.setItem(MUTE_STORAGE_KEY, String(isMuted()));
 }
 
 /**
@@ -150,9 +178,6 @@ function stopSound(name) {
   SOUNDS[name].audio.pause();
 }
 
-/** remembers the master volume from before muting, so unmute can restore it. */
-let masterVolumeBeforeMute = 1;
-
 /**
  * whether the game is currently muted. muting simply pulls the master
  * volume down to zero, so a master of exactly 0 means muted.
@@ -164,22 +189,24 @@ function isMuted() {
 
 /**
  * mutes everything by setting the master volume to zero. the previous
- * value is kept so unmute can bring it back. on purpose this is not
- * persisted, a fresh page load always starts with sound on.
+ * value is kept so unmute can bring it back, and the mute state is
+ * persisted so it survives a reload.
  */
 function muteSound() {
   masterVolumeBeforeMute = VOLUMES.master || 1;
   VOLUMES.master = 0;
   applyAllVolumes();
+  saveMuteState();
 }
 
 /**
- * restores the master volume from before muting and restarts the
- * background music from the beginning.
+ * restores the master volume from before muting, persists the change and
+ * restarts the background music from the beginning.
  */
 function unmuteSound() {
   VOLUMES.master = masterVolumeBeforeMute;
   applyAllVolumes();
+  saveMuteState();
   playSound("BACKGROUND_MUSIC");
 }
 

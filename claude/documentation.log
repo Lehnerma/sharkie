@@ -743,3 +743,13 @@ Keine neuen Einträge — der Session-Verlauf ist bereits vollständig in `claud
 **Q:** Positionierung dritter HUD-Button (Mute/Fullscreen/Home)? | **A:** Mute `right: 0.5rem`, Fullscreen `right: 3.75rem`, Home `right: 7rem` (jeder Button 2.75rem breit + 0.5rem Abstand)
 
 **Q:** Feature-Test-Validierung Home-Button? | **A:** Manuell im Browser bestätigt — Start-Klick aktiviert Button, Klick zeigt Dialog, Abbrechen pausiert Spiel, Ja führt zu Startbildschirm; Game-Over Skip-Dialog funktioniert
+
+**Q:** game.js aufteilen | **A:** 3 Dateien — game.js (Core/Input), ui-controls.js (Dialoge/Volume/Fullscreen), screen-transitions.js (Start-Screen-Fades)
+**Q:** LOC & Funktionsgröße | **A:** unter 400 LOC gesamt, Funktionen ≤14 Zeilen (±2 ok)
+**Q:** Script-Tags in index.html | **A:** ui-controls.js + screen-transitions.js vor game.js (game.js zuletzt, ruft initEventlistener auf)
+**Q:** goHome() zu lang | **A:** 18 Zeilen → goHome() + stopAllGameSounds() + exitFullscreenIfActive() zerlegt
+**Q:** Funktionen verloren? | **A:** 35 Original-Funktionen auf 3 Dateien verteilt, 100% vollständig
+**Q:** Finale LOC-Verteilung | **A:** game.js 180, ui-controls.js 189, screen-transitions.js 100
+**Q:** Alle Funktionen unter Limit | **A:** ja, max. 16 Zeilen (initHomeButton exakt an Grenze)
+**Q:** Syntax-Check | **A:** grün auf allen 3 Dateien
+**Q:** Nächster Schritt | **A:** Browser-Test durchführen (Start, Pause-Dialog, Home-Button, Mute/Volume, Fullscreen)

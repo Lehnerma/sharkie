@@ -77,115 +77,6 @@ function setTouchKey(e, key, isPressed) {
   updateSwimSound();
 }
 
-const MUTE_ICON = "assets/icons/mute.svg";
-const SOUND_ICON = "assets/icons/sound.svg";
-const FULLSCREEN_ICON = "assets/icons/fullscreen.svg";
-const EXIT_FULLSCREEN_ICON = "assets/icons/exit_fullscreen.svg";
-
-/**
- * wires the mute button to the sound module. every click toggles the
- * mute state and refreshes button and master slider to match.
- */
-function initMuteButton() {
-  const MUTE_BTN = document.getElementById("mute_toggle");
-  MUTE_BTN.addEventListener("click", () => {
-    toggleMute();
-    updateMuteButton();
-    syncMasterSlider();
-  });
-  updateMuteButton();
-}
-
-/**
- * shows the current mute state on the button: the crossed out icon and a
- * pressed state while muted, the speaker icon while sound is on.
- */
-function updateMuteButton() {
-  const MUTE_BTN = document.getElementById("mute_toggle");
-  const muted = isMuted();
-  MUTE_BTN.setAttribute("aria-pressed", String(muted));
-  MUTE_BTN.setAttribute("aria-label", muted ? "Unmute sound" : "Mute sound");
-  MUTE_BTN.querySelector("img").src = muted ? MUTE_ICON : SOUND_ICON;
-}
-
-/**
- * mirrors the current master volume onto its slider and value label, so
- * muting from the button keeps the sound dialog in sync.
- */
-function syncMasterSlider() {
-  const SLIDER = document.getElementById("volume_master");
-  const PERCENT = Math.round(VOLUMES.master * 100);
-  SLIDER.value = PERCENT;
-  showVolumeValue("master", PERCENT);
-}
-
-/**
- * connects every slider to the sound group named in data-volume. the
- * input event fires while dragging, so the volume changes right away
- * instead of only after releasing the slider. the change event fires once
- * on release and plays a short preview at the new volume.
- */
-function initVolumeSliders() {
-  document.querySelectorAll("[data-volume]").forEach((slider) => {
-    const GROUP = slider.dataset.volume;
-
-    slider.value = VOLUMES[GROUP] * 100;
-    showVolumeValue(GROUP, slider.value);
-
-    slider.addEventListener("input", () => {
-      setVolume(GROUP, slider.value / 100);
-      showVolumeValue(GROUP, slider.value);
-      if (GROUP === "master") updateMuteButton();
-    });
-
-    slider.addEventListener("change", () => {
-      previewVolume(GROUP);
-    });
-  });
-}
-
-/**
- * writes the current percentage next to a slider.
- * @param {string} group - master, music or sfx
- * @param {string} percent - slider value between 0 and 100
- */
-function showVolumeValue(group, percent) {
-  document.querySelector(`[data-volume-value="${group}"]`).textContent = `${percent}%`;
-}
-
-/**
- * wires up every dialog on the page. a button opens the dialog whose id
- * it names in data-dialog, every element with data-dialog-close closes
- * its own dialog. escape is handled natively by showModal().
- */
-function initDialogs() {
-  document.querySelectorAll("[data-dialog]").forEach((btn) => {
-    const DIALOG = document.getElementById(btn.dataset.dialog);
-    btn.addEventListener("click", () => DIALOG.showModal());
-  });
-
-  document.querySelectorAll("[data-dialog-close]").forEach((btn) => {
-    btn.addEventListener("click", () => btn.closest("dialog").close());
-  });
-
-  document.querySelectorAll("dialog").forEach((dialog) => {
-    dialog.addEventListener("click", (e) => closeOnBackdropClick(e, dialog));
-  });
-}
-
-/**
- * closes the dialog when the click happened outside of its content.
- * a click on the backdrop reports the dialog itself as event target,
- * a click inside reports one of the child elements.
- * @param {MouseEvent} e - the click event
- * @param {HTMLDialogElement} dialog - the dialog to close
- */
-function closeOnBackdropClick(e, dialog) {
-  if (e.target === dialog) {
-    dialog.close();
-  }
-}
-
 window.addEventListener("keydown", (e) => {
   if (world?.paused) return;
   const pressedKey = keyMap[e.code];
@@ -247,191 +138,9 @@ function createWorld() {
   hideStartscreenAfterDelay();
 }
 
-/**
- * reveals the touch controls (movement d-pad on the canvas, action buttons
- * in the sidebar beside it); css only actually shows them on touch devices
- * (pointer: coarse), so this is a no-op on a mouse desktop. their grid columns
- * are reserved from the first paint, so revealing them causes no layout shift.
- */
-function showTouchControls() {
-  document.getElementById("touch_dpad")?.classList.remove("hidden");
-  document.getElementById("touch_actions")?.classList.remove("hidden");
-}
-
 /** creates a fresh World instance, replacing any previous one. */
 function initWorld() {
   world = new World(canvas, keyboard);
-}
-
-/** slides the game title upward as part of the start transition. */
-function animateTitleUp() {
-  const title = document.querySelector(".game-title");
-  if (title) {
-    title.classList.add("animate-up");
-    title.addEventListener(
-      "transitionend",
-      () => title.classList.add("title-animation-done"),
-      { once: true }
-    );
-  }
-}
-
-/** fades out the start screen section as part of the start transition. */
-function fadeOutStartscreen() {
-  const startSection = document.querySelector(".start-section");
-  if (startSection) {
-    startSection.classList.add("fade-out");
-  }
-}
-
-/** fades out the subarea wrapper as part of the start transition. */
-function fadeOutSubarea() {
-  const subarea = document.querySelector(".wrapper-subarea");
-  if (subarea) {
-    subarea.classList.add("fade-out");
-  }
-}
-
-/** fades out the background layer as part of the start transition. */
-function fadeOutBackground() {
-  const background = document.querySelector(".background-layer");
-  if (background) {
-    background.classList.add("fade-out");
-  }
-}
-
-/** fades the canvas in as part of the start transition. */
-function fadeInCanvas() {
-  canvas.classList.add("fade-in");
-}
-
-/** timeout handle for hideStartscreenAfterDelay, cancelled by goHome() if a run ends early. */
-let startscreenHideTimeout;
-
-/**
- * hides the start screen once its fade-out transition has had time to
- * finish, so it doesn't just disappear mid-animation.
- */
-function hideStartscreenAfterDelay() {
-  startscreenHideTimeout = setTimeout(() => {
-    hideStartscreen();
-  }, 2500);
-}
-
-/** hides the start screen section entirely (display: none via .hidden). */
-function hideStartscreen() {
-  const startSection = document.querySelector(".start-section");
-  if (startSection) {
-    startSection.classList.add("hidden");
-  }
-}
-
-/**
- * reverses the start transition: brings the start screen, subarea,
- * background and title back to how they looked before the game started.
- */
-function showStartscreen() {
-  document.querySelector(".start-section")?.classList.remove("hidden", "fade-out");
-  document.querySelector(".wrapper-subarea")?.classList.remove("fade-out");
-  document.querySelector(".background-layer")?.classList.remove("fade-out");
-  document.querySelector(".game-title")?.classList.remove("animate-up");
-}
-
-/** hides the canvas. */
-function hideCanvas() {
-  canvas.classList.add("hidden");
-}
-
-/** shows the canvas. */
-function showCanvas() {
-  canvas.classList.remove("hidden");
-}
-
-/** hides the on-screen touch controls again. */
-function hideTouchControls() {
-  document.getElementById("touch_dpad")?.classList.add("hidden");
-  document.getElementById("touch_actions")?.classList.add("hidden");
-}
-
-/**
- * wires the fullscreen button, mirroring the mute button. a click toggles
- * fullscreen and the fullscreenchange event keeps the icon in sync even when
- * the user leaves fullscreen with the escape key.
- */
-function initFullscreenButton() {
-  const FULLSCREEN_BTN = document.getElementById("fullscreen_toggle");
-  FULLSCREEN_BTN.addEventListener("click", () => toggleFullscreen());
-  document.addEventListener("fullscreenchange", updateFullscreenButton);
-  updateFullscreenButton();
-}
-
-/**
- * enables the fullscreen button once the game is running; it starts disabled
- * so fullscreen is only possible during play.
- */
-function enableFullscreenButton() {
-  document.getElementById("fullscreen_toggle").disabled = false;
-}
-
-/**
- * shows the current fullscreen state on the button: the exit icon and a
- * pressed state while in fullscreen, the enter icon otherwise.
- */
-function updateFullscreenButton() {
-  const FULLSCREEN_BTN = document.getElementById("fullscreen_toggle");
-  const active = Boolean(document.fullscreenElement);
-  FULLSCREEN_BTN.setAttribute("aria-pressed", String(active));
-  FULLSCREEN_BTN.setAttribute("aria-label", active ? "Exit fullscreen" : "Enter fullscreen");
-  FULLSCREEN_BTN.querySelector("img").src = active ? EXIT_FULLSCREEN_ICON : FULLSCREEN_ICON;
-}
-
-/**
- * toggles fullscreen on the canvas wrapper (not the bare canvas) so the mute
- * and fullscreen buttons stay visible and usable while in fullscreen.
- */
-function toggleFullscreen() {
-  if (document.fullscreenElement) {
-    document.exitFullscreen();
-  } else {
-    document.getElementById("canvas_wrapper").requestFullscreen();
-  }
-}
-
-/**
- * wires the home button: if the game has already ended it returns to the
- * start screen right away, otherwise it pauses the world and asks for
- * confirmation first, since a run in progress would otherwise be lost
- * without warning. the dialog's native close event (escape, backdrop
- * click or the cancel button) unpauses again.
- */
-function initHomeButton() {
-  const HOME_BTN = document.getElementById("home_toggle");
-  const HOME_DIALOG = document.getElementById("home_dialog");
-
-  HOME_BTN.addEventListener("click", () => {
-    if (world?.isGameEnded) {
-      goHome();
-      return;
-    }
-    world.paused = true;
-    stopSound("SWIM");
-    stopSound("SNORE");
-    HOME_DIALOG.showModal();
-  });
-
-  document.getElementById("home_yes").addEventListener("click", () => goHome());
-
-  HOME_DIALOG.addEventListener("close", () => {
-    if (world) world.paused = false;
-  });
-}
-
-/**
- * enables the home button once the game is running; it starts disabled
- * so there is nothing to go back from before a run has started.
- */
-function enableHomeButton() {
-  document.getElementById("home_toggle").disabled = false;
 }
 
 /**
@@ -444,18 +153,28 @@ function goHome() {
   world.stop();
   world.paused = false;
   hideTryAgainBtn();
-  stopSound("BACKGROUND_MUSIC");
-  stopSound("SWIM");
-  stopSound("SNORE");
-  stopSound("GAME_OVER");
-  stopSound("GAME_WON");
-  if (document.fullscreenElement) {
-    document.exitFullscreen();
-  }
+  stopAllGameSounds();
+  exitFullscreenIfActive();
   canvas.classList.remove("fade-in");
   hideCanvas();
   hideTouchControls();
   document.getElementById("fullscreen_toggle").disabled = true;
   document.getElementById("home_toggle").disabled = true;
   showStartscreen();
+}
+
+/** stops every sound that could still be playing when a run ends. */
+function stopAllGameSounds() {
+  stopSound("BACKGROUND_MUSIC");
+  stopSound("SWIM");
+  stopSound("SNORE");
+  stopSound("GAME_OVER");
+  stopSound("GAME_WON");
+}
+
+/** leaves fullscreen if the browser is currently in it. */
+function exitFullscreenIfActive() {
+  if (document.fullscreenElement) {
+    document.exitFullscreen();
+  }
 }
