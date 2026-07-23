@@ -123,7 +123,7 @@ class Sharkie extends MoveableObjects {
     this.y = 200;
     this.height = 200;
     this.width = 200;
-    this.speedX = 8;
+    this.speedX = 4;
     this.speedY = 4;
     this.gravityY = 0.2;
     this.health = 100;

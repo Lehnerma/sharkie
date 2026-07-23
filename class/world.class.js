@@ -13,8 +13,9 @@ class World {
   bottlebar = new Bottlebar();
   endbossbar = new Endbossbar();
   endscreen = new Endscreen();
+  shop;
   world_end = 3700;
-  lastShopBuy = 0;
+
   coinReplenishing = false;
   bottleReplenishing = false;
   gameOver = false;
@@ -41,6 +42,7 @@ class World {
    */
   setWorld() {
     this.sharkie.world = this;
+    this.shop = new Shop(this);
     this.level.enemies.forEach((enemy) => {
       enemy.world = this;
     });
@@ -92,7 +94,7 @@ class World {
       this.removeBubbles();
       this.checkCoinCollision();
       this.checkPoisonBottleCollision();
-      this.checkShopInput();
+      this.shop.checkShopInput();
       this.checkEnemyBoundary();
       this.checkGameOver();
     }, 200);
@@ -125,7 +127,7 @@ class World {
 
   /**
    * tops poison bottles back up to 11 once they drop below 5, mirroring
-   * addCoinsToWorld(); currently unused (no caller wires this up).
+   * addCoinsToWorld();
    */
   addBottlesToWorld() {
     if (this.bottles.length < 5) this.bottleReplenishing = true;
@@ -135,52 +137,6 @@ class World {
       } else {
         this.bottleReplenishing = false;
       }
-    }
-  }
-
-  /**
-   * reads the shop keys (H = heal, B = buy bottles), rate-limited to once
-   * every 5 seconds so holding a key down doesn't drain coins repeatedly.
-   */
-  checkShopInput() {
-    const now = new Date().getTime();
-    if (now - this.lastShopBuy < 5000) return;
-    if (this.keyboard.H) {
-      this.buyHeal();
-    } else if (this.keyboard.B) {
-      this.buyBottles();
-    }
-  }
-
-  /**
-   * spends 100 coins to heal sharkie by 50 (capped at 100 health), if he
-   * has enough coins and isn't already at full health.
-   */
-  buyHeal() {
-    if (this.coinbar.coinCounter >= 99 && this.sharkie.health < 100) {
-      this.coinbar.coinCounter -= 100;
-
-      this.coinbar.renderCoinbar(this.coinbar.coinCounter);
-      this.sharkie.health = Math.min(100, this.sharkie.health + 50);
-      this.healthbar.renderHealthbar(this.sharkie.health);
-      playSound("HEALING");
-      this.lastShopBuy = new Date().getTime();
-    }
-  }
-
-  /**
-   * spends 100 coins to buy 50 poison bottle charges (capped at 100), if
-   * sharkie has enough coins and isn't already full on bottles.
-   */
-  buyBottles() {
-    if (this.coinbar.coinCounter >= 99 && this.bottlebar.bottleCounter < 100) {
-      this.coinbar.coinCounter -= 100;
-
-      this.coinbar.renderCoinbar(this.coinbar.coinCounter);
-      this.bottlebar.bottleCounter = Math.min(100, this.bottlebar.bottleCounter + 50);
-      this.bottlebar.renderBottle(this.bottlebar.bottleCounter);
-      playSound("SHOP_BUYING");
-      this.lastShopBuy = new Date().getTime();
     }
   }
 
