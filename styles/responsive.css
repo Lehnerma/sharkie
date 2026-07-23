@@ -1,6 +1,7 @@
 /**
  * Orientation Lock Overlay
- * shown only on touch devices in portrait mode with small viewport width
+ * shown in portrait mode below tablet width (1024px); keep in sync with the
+ * touch breakpoint in touch-controls.css
  */
 
 .orientation-lock {
@@ -45,8 +46,8 @@
   }
 }
 
-/* show orientation lock only on touch devices in portrait mode */
-@media (max-width: 767px) and (orientation: portrait) and (pointer: coarse) {
+/* show orientation lock in portrait mode below tablet width */
+@media (max-width: 1024px) and (orientation: portrait) {
   body {
     /* the fixed overlay covers everything; stop the page behind from scrolling */
     overflow: hidden;

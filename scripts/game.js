@@ -247,9 +247,10 @@ function createWorld() {
 
 /**
  * reveals the touch controls (movement d-pad on the canvas, action buttons
- * in the sidebar beside it); css only actually shows them on touch devices
- * (pointer: coarse), so this is a no-op on a mouse desktop. their grid columns
- * are reserved from the first paint, so revealing them causes no layout shift.
+ * in the sidebar beside it); css only actually shows them below the tablet
+ * breakpoint (max-width: 1024px), so this is a no-op on a wide desktop
+ * viewport. their grid columns are reserved from the first paint, so
+ * revealing them causes no layout shift.
  */
 function showTouchControls() {
   document.getElementById("touch_dpad")?.classList.remove("hidden");

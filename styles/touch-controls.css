@@ -1,13 +1,17 @@
 /* horizontal space reserved for the dpad and action-buttons sidebars flanking
-   the canvas. 0 on mouse devices so their width formulas stay untouched;
-   layout.css and responsive.css read this variable in their .main-content
-   width so the canvas and both sidebar reservations can never drift out of
-   sync. */
+   the canvas. 0 above the tablet breakpoint so their width formulas stay
+   untouched; layout.css and responsive.css read this variable in their
+   .main-content width so the canvas and both sidebar reservations can never
+   drift out of sync. */
 :root {
   --touch-reserve: 0px;
 }
 
-@media (pointer: coarse) {
+/* touch layout kicks in below tablet width (1024px = iPad landscape), not by
+   pointer-type feature detection, so mirrored/emulated tablets get it too;
+   keep this max-width in sync across all three blocks below and with the
+   orientation-lock breakpoint in responsive.css */
+@media (max-width: 1024px) {
   /* reserve the flanking button columns from the very first paint, so revealing
      the buttons on start never shifts the layout. 15rem = 8rem (left d-pad) +
      5rem (right actions) + 2 * 1rem grid gap; keep in sync with the grid below. */
@@ -51,7 +55,7 @@
   margin-left: 0.5rem;
 }
 
-@media (pointer: coarse) {
+@media (max-width: 1024px) {
   .touch-dpad-panel:not(.hidden) {
     display: grid;
   }
@@ -76,7 +80,7 @@
   /* width comes from the reserved 5rem grid column (see @media coarse above) */
 }
 
-@media (pointer: coarse) {
+@media (max-width: 1024px) {
   .touch-actions-panel:not(.hidden) {
     display: grid;
     height: 100%;
