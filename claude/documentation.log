@@ -691,3 +691,15 @@ Keine neuen Einträge — der Session-Verlauf ist bereits vollständig in `claud
 **Q:** Kommentar-Altlasten in touch-controls.css gefunden? | **A:** `.touch-actions-panel` display/grid waren auskommentiert (User-Test-Tinkering), wieder aktiviert sonst Sidebar auf Desktop sichtbar — nur unter `pointer: coarse` + `:not(.hidden)` soll sie zeigen.
 
 **Q:** Warum braucht game.js keine Anpassung? | **A:** `#touch_dpad` ID und `.touch-btn[data-key]` Selektor treffen weiterhin beide Sidebars (D-Pad + Actions), egal ob Overlay oder Panel-Sidebar.
+
+**Q:** Fullscreen-Button nach Mute-Vorbild umbauen? | **A:** Icon-Toggle neben Mute-Button, `fullscreenchange`-Listener, altes `<aside#fullscreen_aside>` gelöscht, Fullscreen auf `#canvas_wrapper` statt nur Canvas (damit Button im Vollbild sichtbar bleibt)
+
+**Q:** Footer komplett entfernen? | **A:** `footer.css` gelöscht (via `git rm`), HTML-Link + auskommentierter Block weg, JS-Funktionen (`initFooterMenu`, `toggleFooterMenu`, etc.) raus, `.footer-bar` und `.btn--social` aus CSS entfernt, Canvas nutzt volle Höhe im Landscape
+
+**Q:** Fullscreen erst nach Spielstart aktivieren? | **A:** Button initial `disabled`, wird in `createWorld()` via `enableFullscreenButton()` freigeschalten
+
+**Q:** Mobile: Canvas vor Start mittig, danach 3-Spalten-Grid? | **A:** `is-playing`-Klasse auf `body`, Grid und `--touch-reserve` hängen daran, vorher nur Flexbox-Zentrierung
+
+**Q:** Mobile Layout: Konstantes Grid statt Umschalter? | **A:** `main` immer Grid (`8rem 1fr 5rem`, Gap 1rem), explizite `grid-column`-Zuweisung (Spalte 1/2/3), `is-playing` entfernt, `--touch-reserve` = 15rem (feste Spalten reservieren Platz auch bei `display:none`)
+
+**Q:** Safari/iOS Fullscreen-Kompatibilität? | **A:** iPhone-Safari unterstützt Fullscreen-API nicht (nur `<video>`), iPad/Desktop-Safari teils über `webkitRequestFullscreen`-Präfix, Empfehlung: Feature-Detection + webkit-Fallback oder erst im Browser-Test checken
