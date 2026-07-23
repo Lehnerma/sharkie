@@ -70,13 +70,7 @@
     0 0 20px rgba(2, 17, 31, 0.4);
 }
 
-.btn--dialog:active {
-  transform: scale(0.98);
-}
-
 .btn--close {
-  /* the times glyph sits in its own aria-hidden span so screen readers
-     only announce the aria-label, so it needs centering of its own */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -95,14 +89,44 @@
     background 75ms ease;
 }
 
-.btn--close:hover {
+.btn--mute-icon,
+.btn--fullscreen-icon,
+.btn--home-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  filter: invert(1);
+  pointer-events: none;
+}
+
+.btn--close:hover,
+.btn--mute:hover,
+.btn--fullscreen:hover,
+.btn--home:hover {
   transform: scale(1.05);
   background: rgba(2, 17, 31, 0.9);
 }
 
-.btn--close:active {
+.btn--close:active,
+.btn--mute:active,
+.btn--fullscreen:active,
+.btn--dialog:active,
+.btn--home:active {
   transform: scale(0.98);
 }
+
+.btn--mute:focus-visible,
+.btn--fullscreen:focus-visible,
+.btn--home:focus-visible{
+border: 1px solid rgb(255, 255, 255);
+}
+
+.btn--fullscreen:disabled,
+.btn--home:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
 
 .btn--mute {
   position: absolute;
@@ -123,27 +147,9 @@
     background 75ms ease;
 }
 
-.btn--mute:hover {
-  transform: scale(1.05);
-  background: rgba(2, 17, 31, 0.9);
-}
-
-.btn--mute:active {
-  transform: scale(0.98);
-}
-
-.btn--mute-icon {
-  width: 1.5rem;
-  height: 1.5rem;
-  /* the icons are black, invert paints them white for contrast on the dark button */
-  filter: invert(1);
-  pointer-events: none;
-}
-
 .btn--fullscreen {
   position: absolute;
   top: 0.5rem;
-  /* sits to the left of the mute button (0.5rem + 2.75rem button + 0.5rem gap) */
   right: 3.75rem;
   z-index: 2;
   display: flex;
@@ -160,27 +166,23 @@
     background 75ms ease;
 }
 
-.btn--fullscreen:hover {
-  transform: scale(1.05);
-  background: rgba(2, 17, 31, 0.9);
-}
-
-.btn--fullscreen:active {
-  transform: scale(0.98);
-}
-
-.btn--fullscreen:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-  transform: none;
-}
-
-.btn--fullscreen-icon {
-  width: 1.5rem;
-  height: 1.5rem;
-  /* the icons are black, invert paints them white for contrast on the dark button */
-  filter: invert(1);
-  pointer-events: none;
+.btn--home {
+  position: absolute;
+  top: 0.5rem;
+  right: 7rem;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  cursor: pointer;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(2, 17, 31, 0.6);
+  transition:
+    transform 75ms ease,
+    background 75ms ease;
 }
 
 .wrapper-subarea button {

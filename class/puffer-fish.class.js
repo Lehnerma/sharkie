@@ -67,7 +67,7 @@ class PufferFish extends Enemies {
     // this.playAnimation(this.MOVES.SWIM[this.color], 180);
     this.animationImages();
     this.setStoppableInterval(() => {
-      if (this.world?.isGameEnded) return; // freeze the fish once the game is over or won
+      if (this.world?.isFrozen) return; // freeze the fish once the game is over, won or paused
       if (this.animationState === "DEAD") {
         this.floatAway(this.MOVES.DEAD[this.color]);
       } else {
@@ -83,7 +83,7 @@ class PufferFish extends Enemies {
    */
   animationImages() {
     this.setStoppableInterval(() => {
-      if (this.world?.isGameEnded) return; // stop advancing frames once the game is over or won
+      if (this.world?.isFrozen) return; // stop advancing frames once the game is over, won or paused
       if (this.animationState === "SWIM") {
         this.animate(this.MOVES.SWIM[this.color]);
       } else if (this.animationState === "TRANSITION") {

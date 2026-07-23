@@ -89,7 +89,7 @@ class Endboss extends MoveableObjects {
    */
   animation() {
     this.setStoppableInterval(() => {
-      if (this.world?.isGameEnded) return; // freeze the endboss once the game is over or won
+      if (this.world?.isFrozen) return; // freeze the endboss once the game is over, won or paused
       this.checkIntroduce();
       if (this.isDefeated) {
         this.playDeadAnimation();
@@ -143,7 +143,7 @@ class Endboss extends MoveableObjects {
    */
   movement() {
     this.setStoppableInterval(() => {
-      if (this.world?.isGameEnded) return; // freeze the endboss once the game is over or won
+      if (this.world?.isFrozen) return; // freeze the endboss once the game is over, won or paused
       if (!this.canFight()) return;
       this.followSharkieY();
       if (!this.isSharkieInAttackRange()) this.swimTowardsSharkie();

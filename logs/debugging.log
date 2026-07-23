@@ -10,3 +10,30 @@ Architektur: DrawableObjects → MoveableObjects → {Sharkie, Enemies, Endboss,
 CSS-Split: reset → base → layout → canvas → dialog → footer → responsive → utilities → buttons (saubere Separation of Concerns)
 Uncommitted: style.css deleted, 8 new CSS files untracked, index.html/game.js/buttons.css/documentation.log modified
 Findings: CSS-Aufteilung funktional sauber; buttons.css enthält .start-section Animations (sollte zu canvas.css); fonts.css noch in index.html:34; console.logs möglich; Gegner in level1.js auskommentiert; bubblebar.class.js/Bottlebar Namens-Mismatch bekannt
+
+[2026-07-23 SESSION-REVIEW] Issue 37 - Home Button (HTML/CSS only)
+- index.html L70, L73: disabled="true" nicht idiomatisch (boolean attr: disabled ohne Wert, nicht disabled="true")
+- index.html L68-75: redundante alt-Texte in Icons (alt="Mute/Fullscreen/Home Icon") — aria-label auf Button hat Vorrang, sollte alt="" sein
+- index.html L64: <section class="canvas-wrapper"> unbenannt (kein aria-label/Überschrift) — unnamed landmark a11y-Fehler
+- styles/buttons.css: :focus-visible Styling fehlt komplett für HUD-Buttons (Tastatur-Nutzer sehen Fokus nicht)
+- Touch-Target: 2.75rem ≈ 44px (WCAG-Ziel 48px, acceptable aber knapp)
+- CSS-Konsolidierung OK: .btn--dialog:hover bleibt separat (richtig; anderer Gradient), :disabled-Priorität via Spezifität korrekt, z-index=2 konsistent
+- Keine Regelverluste erkannt
+
+[2026-07-23 VERIFY FIXES] Issue 37 follow-up
+✅ index.html L71, L74: disabled ✓ (nacktes Attribut, nicht ="true")
+✅ index.html L69, L72, L75: alt="" ✓ (korrekt leer für dekorative Icons)
+✅ index.html L65: aria-label="canvas-wrapper" ✓ (Landmark nun benannt)
+🔴 styles/buttons.css L117-121: :focus statt :focus-visible; auf .btn--*-icon (Images), nicht .btn--* (Buttons); Fokus kann nicht auf <img>; Border-Styling redundant (= default-Border), keine visuelle Veränderung sichtbar
+
+[2026-07-23 SESSION-REVIEW] Issue 37 - Home Button Feature (Logic)
+🔴 CRITICAL game.js L222-229 restartGame(): hideStartscreenAfterDelay() fehlt. Nach Try-Again wird Startscreen nicht auto-hidden nach 2.5s wie in createWorld() — UI bleibt sichtbar/blockiert Canvas. Vergleich: createWorld() ruft es auf (L248), restartGame() nicht.
+🔴 CRITICAL world.class.js: checkGameOver() nutzt isGameEnded für Endscreen-Overlay-Check (L75/L414-416) — korrekt, das ist NICHT etwas, das mit paused gefroren werden sollte (Endscreen immer sichtbar auch wenn pausiert). isFrozen Getter (L419-421) ist korrekt: isGameEnded || paused.
+🟡 game.js L413: world.isGameEnded ungeguarded — sollte world?.isGameEnded sein (defensiv, auch wenn Button disabled bis enableHomeButton()).
+🟡 index.html L120: aria-label="Close Dialog" auf #home_no — sollte "Cancel" sein für Dialog-Konsistenz.
+✅ isFrozen-Umstellung in allen Objekt-Klassen vollständig: Sharkie L152+194, PufferFish L70+86, JellyFish L65+79, Endboss L92+146, Bubble L34, MoveableObjects.applyGravity() L188. Keine orphaned isGameEnded-Checks gefunden.
+✅ world.paused guard im keydown L191 (absichtlich NICHT im keyup L199 um stuck-key zu verhindern) — korrekt, Kommentar präzise.
+✅ goHome() stoppt alle relevanten Sounds + world + fullscreen + Buttons disabled. startscreenHideTimeout wird gelöscht (L444).
+✅ Dialog close-Event (L425) setzt paused=false mit world-Guard — safe.
+✅ showStartscreen() (L334-339) kehrt alle Fade-outs um — Gegenstück zu createWorld() OK.
+No race conditions detected: keyup handler läuft immer, sodass stuck-keys nicht entstehen.

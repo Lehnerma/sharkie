@@ -149,7 +149,7 @@ class Sharkie extends MoveableObjects {
     this.setStoppableInterval(() => this.updateMovement(), 1000 / 60);
 
     this.setStoppableInterval(() => {
-      if (this.world?.isGameEnded) return; // stop advancing frames once the game is over or won
+      if (this.world?.isFrozen) return; // stop advancing frames once the game is over, won or paused
       if (this.isSleeping && !this.timePassed(10)) this.wakeUp(); // catches movement/hurt/death, which all refresh the timestamp
       if (this.isDead()) {
         this.playDead(this.DEAD[this.lastHitType]);
@@ -191,7 +191,7 @@ class Sharkie extends MoveableObjects {
    * keyboard controls him. the camera follows him in both cases.
    */
   updateMovement() {
-    if (this.world?.isGameEnded) return; // freeze sharkie once the game is over or won
+    if (this.world?.isFrozen) return; // freeze sharkie once the game is over, won or paused
     if (this.isDead()) {
       this.moveDead();
     } else {

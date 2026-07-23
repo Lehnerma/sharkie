@@ -19,6 +19,7 @@ class World {
   bottleReplenishing = false;
   gameOver = false;
   gameWon = false;
+  paused = false;
   //* begin point for the world
   worldBeginX = -700;
   //* endpoint for the world.
@@ -86,7 +87,7 @@ class World {
    */
   helperFunction() {
     this.helperInterval = setInterval(() => {
-      if (this.isGameEnded) return; // block the up coming functions if game over or won
+      if (this.isFrozen) return; // block the up coming functions if game over, won or paused
       this.checkEnemyCollision();
       this.checkEndbossCollision();
       this.checkBubbleCollision();
@@ -412,6 +413,11 @@ class World {
   /** @returns {boolean} true once the game has been won or lost */
   get isGameEnded() {
     return this.gameOver || this.gameWon;
+  }
+
+  /** @returns {boolean} true once the game has ended or is paused (e.g. the home confirm dialog is open) */
+  get isFrozen() {
+    return this.isGameEnded || this.paused;
   }
 
   /**

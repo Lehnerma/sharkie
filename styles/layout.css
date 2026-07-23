@@ -34,3 +34,10 @@
   height: auto;
   aspect-ratio: 720 / 460;
 }
+
+/* hide the title on small view heights only after the start animation finished */
+@media (max-height: 800px) {
+  .game-title.title-animation-done {
+    display: none;
+  }
+}

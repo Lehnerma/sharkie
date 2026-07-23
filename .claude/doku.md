@@ -1,5 +1,35 @@
 # Sharkie – Arbeitsdoku
 
+## 2026-07-23 – Home-Button: zurück zum Startbildschirm ohne Reload (Issue 37, Branch `issue37`)
+
+**Ziel:** Dritter Button oben rechts im Eck (neben Mute/Fullscreen), der nach Spielende zurück zur Startseite führt. Sollte ursprünglich nur "after scene ist beendet" kommen, wurde im Gespräch erweitert.
+
+**Entscheidungen (mit Max):**
+- **State-Reset statt `location.reload()`** – `restartGame()` (Try-Again) macht das schon vor (`world.stop()` + neue `World`-Instanz statt Asset-Reload), Home-Button folgt demselben Muster.
+- **Button aktiv ab Spielstart**, nicht erst nach Game-Over – nimmt am `game_start`-Click-Event teil (genauer: wird wie der Fullscreen-Button in `createWorld()` freigeschaltet, startet `disabled` im Markup).
+- **Bestätigungs-Dialog** vor dem Zurückspringen, *außer* das Spiel ist schon vorbei (`world.isGameEnded`) – dann direkt ohne Rückfrage zum Start.
+- **Pause während des Dialogs** – Max' eigener Einwand im Gespräch, dass ohne Pause der Spielzustand hinter dem Dialog weiterläuft. Ursprünglich als "leichtgewichtig" geplant (nur `helperFunction()` einfrieren + Keyboard blocken), stellte sich bei der Umsetzung aber heraus, dass Sharkies Bewegung/Animation über ein **eigenes** Interval läuft (`animateSharkie()`/`updateMovement()` in `sharkie.class.js`), das nur `isGameEnded` prüfte – nicht über `World.helperFunction()`. Ohne Anpassung hätte Sharkie hinter dem offenen Dialog weitergeschwommen. Deshalb wurde der Scope erweitert: neuer Getter `World.isFrozen` (`isGameEnded || paused`) ersetzt `isGameEnded` in **allen** objekteigenen Freeze-Checks (Sharkie, Endboss, PufferFish, JellyFish, MoveableObjects/Gravity, Bubble) – damit friert bei offenem Dialog wirklich alles ein, nicht nur Kollisionen.
+
+**Änderungen:**
+- **index.html**
+  - Dritter Button `#home_toggle` (`.btn--home`) im `#canvas_wrapper`, startet `disabled`.
+  - Neuer `<dialog id="home_dialog">` (Bestätigung "Go back to beach?") mit `#home_yes`/`#home_no` (`.btn--dialog`, `data-dialog-close`), plus `.dialog__actions`-Wrapper für die Button-Reihe.
+  - Nebenbei im selben Zuge gefixt (fielen beim Bauen des Buttons auf): `disabled="true"` → `disabled` (Boolean-Attribut), redundante `alt`-Texte auf den HUD-Icons → `alt=""` (Icons sind dekorativ, `aria-label` auf dem Button trägt den Namen), `<div class="canvas-wrapper">` → `<section aria-label="canvas-wrapper">` (benannter Landmark).
+- **styles/buttons.css** – `.btn--home` analog `.btn--fullscreen` (`right: 7rem`, gleiches Spacing-Schema 0.5/3.75/7rem), `:hover`/`:active`/`:disabled` in die bestehenden Sammel-Selektoren aufgenommen, neu: `:focus-visible` für Mute/Fullscreen/Home (fehlte komplett, war Tastatur-Fokus unsichtbar).
+- **styles/dialog.css** – `.dialog__actions` (flex row, `justify-content: flex-end`, `gap: 0.75rem`) für die Yes/Cancel-Reihe.
+- **class/world.class.js** – `paused = false` Property, neuer Getter `isFrozen` (`isGameEnded || paused`), `helperFunction()` prüft jetzt `isFrozen` statt `isGameEnded`. Der Endscreen-Overlay-Check in `draw()` und die State-Transition-Checks in `checkGameOver()` bleiben bewusst bei `isGameEnded` (Endscreen soll auch bei laufender Pause sichtbar bleiben, falls das Spiel tatsächlich zu Ende ist).
+- **class/sharkie.class.js, endboss.class.js, puffer-fish.class.js, jelly-fish.class.js, movable-objects.class.js, bubble.class.js** – alle `this.world?.isGameEnded`-Freeze-Checks in den jeweiligen Update-/Animations-Intervallen auf `this.world?.isFrozen` umgestellt.
+- **scripts/game.js**
+  - `initHomeButton()` – Klick öffnet bei laufendem Spiel den Dialog (`world.paused = true`, SWIM/SNORE-Sound gestoppt), bei beendetem Spiel direkt `goHome()`. Dialog-`close`-Event (deckt Escape, Backdrop-Klick und Cancel-Button ab) setzt `paused` wieder zurück.
+  - `enableHomeButton()` – Pattern wie `enableFullscreenButton()`, Aufruf in `createWorld()`.
+  - `goHome()` – Gegenstück zu `createWorld()`: `world.stop()`, alle relevanten Sounds stoppen, Fullscreen ggf. verlassen, Canvas/Touch-Controls ausblenden, Fullscreen-/Home-Button wieder `disabled`, `showStartscreen()` (neu, kehrt die `fadeOut*`-Funktionen um) und `hideTouchControls()` (neu, Gegenstück zu `showTouchControls()`).
+  - `keydown`-Listener blockt Input bei `world.paused` – bewusst **nicht** im `keyup`-Listener, damit eine beim Pausieren gehaltene und währenddessen losgelassene Taste nicht als "stuck" hängen bleibt.
+  - `startscreenHideTimeout` gespeichert (statt anonymem `setTimeout`) und in `goHome()` per `clearTimeout` abgebrochen – Randfall: Home-Klick in den ersten 2.5s nach Spielstart, bevor der verzögerte `hideStartscreen()` sonst den gerade wiederhergestellten Startbildschirm erneut versteckt hätte.
+
+**Verifikation:** Von Max im Browser getestet ("perfekt funktioniert alles was ich bis jetzt getestet habe"). Zusätzlich zweifach über den `session-code-reviewer`-Agenten gegengelesen (HTML/CSS-Teilschritt, dann komplette Logik) – dabei u.a. `disabled="true"`, fehlendes `:focus-visible`, redundante `alt`-Texte und fehlendes `world?.`-Optional-Chaining gefunden und behoben. Ein vom Review-Agenten gemeldeter "kritischer" Fund (fehlender `hideStartscreenAfterDelay()`-Aufruf in `restartGame()`) wurde geprüft und als nicht erreichbar verworfen – der Try-Again-Button ist nur sichtbar, wenn das Spiel schon lief, zu dem Zeitpunkt ist der Startbildschirm immer schon ausgeblendet.
+
+**Nicht angefasst:** `styles/layout.css` (neue `@media (max-height: 800px)`-Regel für `.game-title.title-animation-done`) und der zugehörige `transitionend`-Listener in `animateTitleUp()` stammen aus einer parallelen, unabhängigen Änderung von Max außerhalb dieses Issues.
+
 ## 2026-07-23 – Touch-Buttons als fixed HUD am echten Bildschirmrand (Branch `reponsiv_tablet`)
 
 **Ziel:** D-Pad und Action-Buttons sollten nicht mehr am Canvas-Rand kleben (feste Grid-Spalten neben dem `1fr`-Canvas), sondern am tatsächlichen Viewport-Rand sitzen – ergonomischer Daumen-Reach beim Halten von Tablet/Smartphone, unabhängig davon, dass das Canvas selbst bei 720px gedeckelt ist und auf breiteren Screens nicht mitwächst.

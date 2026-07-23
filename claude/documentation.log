@@ -703,3 +703,19 @@ Keine neuen Einträge — der Session-Verlauf ist bereits vollständig in `claud
 **Q:** Mobile Layout: Konstantes Grid statt Umschalter? | **A:** `main` immer Grid (`8rem 1fr 5rem`, Gap 1rem), explizite `grid-column`-Zuweisung (Spalte 1/2/3), `is-playing` entfernt, `--touch-reserve` = 15rem (feste Spalten reservieren Platz auch bei `display:none`)
 
 **Q:** Safari/iOS Fullscreen-Kompatibilität? | **A:** iPhone-Safari unterstützt Fullscreen-API nicht (nur `<video>`), iPad/Desktop-Safari teils über `webkitRequestFullscreen`-Präfix, Empfehlung: Feature-Detection + webkit-Fallback oder erst im Browser-Test checken
+
+**Q:** Warum von `pointer: coarse` zu `max-width: 1024px` für Touch-Erkennung wechseln? | **A:** Tablet-Emulatoren/Mirrors mit Trackpad haben "fine pointer", brauchen aber trotzdem Touch-Controls – `pointer: coarse` fällt durchs Raster
+
+**Q:** Welche Breakpoint-Werte müssen für Touch-Controls synchron bleiben? | **A:** `1024px` überall (touch-controls.css 3x, responsive.css 1x) – hardcodiert, Duplikation-Risiko
+
+**Q:** Problem: Touch-Buttons sitzen bei großen Screens in der Mitte statt am Viewport-Rand | **A:** `position: fixed` statt Grid-Spalten – kleben jetzt am echten Screen-Rand, Canvas-Breite egal
+
+**Q:** Was passiert mit `--touch-reserve`-Variable nach Umstieg auf fixed positioning? | **A:** Komplett entfernen – fixed elements brauchen keine Layout-Reservierung
+
+**Q:** Brauchen wir `env(safe-area-inset-*)`? | **A:** Hauptsächlich iPhone-Notch (nicht Haupt-Ziel); auf iPad/Tablet nicht kritisch; harmlos drin zu lassen, auto-fallback auf 0.5rem wenn nicht unterstützt
+
+**Q:** Warum `viewport-fit=cover` in index.html nötig? | **A:** Sonst liefert `env(safe-area-inset-*)` auf Geräten mit Notch/Home-Indicator nur `0`
+
+**Q:** Auf welchem Branch wurde fixed-positioning umgesetzt? | **A:** `reponsiv_tablet` – issue27 fährt noch die alte Grid-Variante
+
+**Q:** Sollen Doku-Einträge geschrieben werden? | **A:** Standard nein, nur wenn explizit gewünscht; Nutzer kann dazu auffordern

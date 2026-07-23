@@ -43,6 +43,7 @@ function initEventlistener() {
   initVolumeSliders();
   initMuteButton();
   initFullscreenButton();
+  initHomeButton();
   initTouchControls();
 }
 
@@ -187,6 +188,7 @@ function closeOnBackdropClick(e, dialog) {
 }
 
 window.addEventListener("keydown", (e) => {
+  if (world?.paused) return; // ignore new input while the home confirm dialog is open; keyup stays unguarded below so a key held since before the pause can't get stuck
   const pressedKey = keyMap[e.code];
   if (pressedKey) {
     keyboard[pressedKey] = true;
@@ -241,6 +243,7 @@ function createWorld() {
   fadeOutBackground();
   fadeInCanvas();
   enableFullscreenButton();
+  enableHomeButton();
   showTouchControls();
   hideStartscreenAfterDelay();
 }
@@ -266,6 +269,11 @@ function animateTitleUp() {
   const title = document.querySelector(".game-title");
   if (title) {
     title.classList.add("animate-up");
+    title.addEventListener(
+      "transitionend",
+      () => title.classList.add("title-animation-done"),
+      { once: true }
+    );
   }
 }
 
@@ -298,12 +306,15 @@ function fadeInCanvas() {
   canvas.classList.add("fade-in");
 }
 
+/** timeout handle for hideStartscreenAfterDelay, cancelled by goHome() if a run ends early. */
+let startscreenHideTimeout;
+
 /**
  * hides the start screen once its fade-out transition has had time to
  * finish, so it doesn't just disappear mid-animation.
  */
 function hideStartscreenAfterDelay() {
-  setTimeout(() => {
+  startscreenHideTimeout = setTimeout(() => {
     hideStartscreen();
   }, 2500);
 }
@@ -316,6 +327,17 @@ function hideStartscreen() {
   }
 }
 
+/**
+ * reverses the start transition: brings the start screen, subarea,
+ * background and title back to how they looked before the game started.
+ */
+function showStartscreen() {
+  document.querySelector(".start-section")?.classList.remove("hidden", "fade-out");
+  document.querySelector(".wrapper-subarea")?.classList.remove("fade-out");
+  document.querySelector(".background-layer")?.classList.remove("fade-out");
+  document.querySelector(".game-title")?.classList.remove("animate-up");
+}
+
 /** hides the canvas. */
 function hideCanvas() {
   canvas.classList.add("hidden");
@@ -324,6 +346,12 @@ function hideCanvas() {
 /** shows the canvas. */
 function showCanvas() {
   canvas.classList.remove("hidden");
+}
+
+/** hides the on-screen touch controls again. */
+function hideTouchControls() {
+  document.getElementById("touch_dpad")?.classList.add("hidden");
+  document.getElementById("touch_actions")?.classList.add("hidden");
 }
 
 /**
@@ -368,4 +396,67 @@ function toggleFullscreen() {
   } else {
     document.getElementById("canvas_wrapper").requestFullscreen();
   }
+}
+
+/**
+ * wires the home button: if the game has already ended it returns to the
+ * start screen right away, otherwise it pauses the world and asks for
+ * confirmation first, since a run in progress would otherwise be lost
+ * without warning. the dialog's native close event (escape, backdrop
+ * click or the cancel button) unpauses again.
+ */
+function initHomeButton() {
+  const HOME_BTN = document.getElementById("home_toggle");
+  const HOME_DIALOG = document.getElementById("home_dialog");
+
+  HOME_BTN.addEventListener("click", () => {
+    if (world?.isGameEnded) {
+      goHome();
+      return;
+    }
+    world.paused = true;
+    stopSound("SWIM");
+    stopSound("SNORE");
+    HOME_DIALOG.showModal();
+  });
+
+  document.getElementById("home_yes").addEventListener("click", () => goHome());
+
+  HOME_DIALOG.addEventListener("close", () => {
+    if (world) world.paused = false;
+  });
+}
+
+/**
+ * enables the home button once the game is running; it starts disabled
+ * so there is nothing to go back from before a run has started.
+ */
+function enableHomeButton() {
+  document.getElementById("home_toggle").disabled = false;
+}
+
+/**
+ * leaves the running game and returns to the start screen without
+ * reloading the page: stops the world, silences every game sound, exits
+ * fullscreen if active and plays the start transition in reverse.
+ */
+function goHome() {
+  clearTimeout(startscreenHideTimeout);
+  world.stop();
+  world.paused = false;
+  hideTryAgainBtn();
+  stopSound("BACKGROUND_MUSIC");
+  stopSound("SWIM");
+  stopSound("SNORE");
+  stopSound("GAME_OVER");
+  stopSound("GAME_WON");
+  if (document.fullscreenElement) {
+    document.exitFullscreen();
+  }
+  canvas.classList.remove("fade-in");
+  hideCanvas();
+  hideTouchControls();
+  document.getElementById("fullscreen_toggle").disabled = true;
+  document.getElementById("home_toggle").disabled = true;
+  showStartscreen();
 }
