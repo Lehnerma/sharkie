@@ -719,3 +719,27 @@ Keine neuen Einträge — der Session-Verlauf ist bereits vollständig in `claud
 **Q:** Auf welchem Branch wurde fixed-positioning umgesetzt? | **A:** `reponsiv_tablet` – issue27 fährt noch die alte Grid-Variante
 
 **Q:** Sollen Doku-Einträge geschrieben werden? | **A:** Standard nein, nur wenn explizit gewünscht; Nutzer kann dazu auffordern
+
+**Q:** `location.reload()` oder State-Reset für Home-Button? | **A:** State-Reset wie `restartGame()` — `world.stop()` + `initWorld()` — verhindert Asset-Reload/Flackern und pflegt bestehende State-Management-Arbeit
+
+**Q:** Wann sollte Home-Button aktiv sein? | **A:** Vom Game-Start an (Pattern wie Fullscreen-Button), aktiviert in `createWorld()` — nicht erst bei Game-Over
+
+**Q:** Bestätigungsdialog bei Spielabbruch nötig? | **A:** Ja. Nutzt bestehendes `<dialog>`-System (`initDialogs()`), aber mit Custom-Action-Buttons (Ja/Abbrechen) statt generischem Close-Pattern
+
+**Q:** Spielpause beim Dialog umsetzen? | **A:** `paused`-Flag auf `World`, Check in `helperFunction()` (Zeile 89) — friert Kollisionen/Pickups/Game-Over-Check ein; Sprite-Animationen laufen optisch weiter (kein globaler Interval-Stopp)
+
+**Q:** Dialog-Skip bei Game-Over? | **A:** `world.isGameEnded` prüfen — bei `true` direkt `goHome()`, ohne Dialog; Getter existiert bereits
+
+**Q:** Boolean-Attribute Markup (`disabled="true"` gültig)? | **A:** Nein — nacktes Attribut `disabled` ist korrekt; `="true"` ist ungültig und wird ignoriert
+
+**Q:** Icon-Buttons `alt`-Text bei `aria-label`? | **A:** `alt=""` verwenden — Accessible Name kommt vom `aria-label` des `<button>`; dekorative `alt`-Texte verwirren Screenreader
+
+**Q:** `:focus`-Stil für HUD-Buttons? | **A:** `:focus-visible` (nicht `:focus`!) auf `<button>` selbst, visuell unterscheidbar (z.B. andersfarbiger Outline); `:focus` zeigt Ring auch bei Maus-Klick
+
+**Q:** Dialog-Button-Markup für JS-Hooks? | **A:** `.dialog__actions`-Container (`<div>`), zwei `.btn--dialog`; "Ja"-Button mit `id` für Custom-JS; "Abbrechen" mit `data-dialog-close` (nutzt bestehendes System)
+
+**Q:** Keyboard-Block während Dialog? | **A:** `world.paused`-Check auf `keydown`/`keyup`-Listenern (`game.js:190/197`) — verhindert Steuerung; zusätzlich `isFrozen` in allen Objekt-Klassen für Animations-Freeze
+
+**Q:** Positionierung dritter HUD-Button (Mute/Fullscreen/Home)? | **A:** Mute `right: 0.5rem`, Fullscreen `right: 3.75rem`, Home `right: 7rem` (jeder Button 2.75rem breit + 0.5rem Abstand)
+
+**Q:** Feature-Test-Validierung Home-Button? | **A:** Manuell im Browser bestätigt — Start-Klick aktiviert Button, Klick zeigt Dialog, Abbrechen pausiert Spiel, Ja führt zu Startbildschirm; Game-Over Skip-Dialog funktioniert

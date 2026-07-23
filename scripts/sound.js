@@ -118,7 +118,7 @@ function previewVolume(group) {
     playSound("COIN_COLLECT");
   } else {
     playSound("BACKGROUND_MUSIC");
-    clearTimeout(musicPreviewTimeout); // don't let overlapping previews cut each other short
+    clearTimeout(musicPreviewTimeout);
     musicPreviewTimeout = setTimeout(() => stopSound("BACKGROUND_MUSIC"), 1500);
   }
 }

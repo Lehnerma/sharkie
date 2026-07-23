@@ -1,9 +1,3 @@
-/* movement d-pad and action buttons float as a fixed HUD anchored to the true
-   viewport edges (not the canvas edges), so they land where a thumb rests
-   when holding a tablet or phone -- even though the canvas itself is capped
-   at 720px and stops growing on wider screens. env(safe-area-inset-*) keeps
-   them clear of notches/home-indicators; index.html needs
-   viewport-fit=cover for that to report non-zero insets. */
 @media (pointer: coarse) {
   .touch-dpad-panel:not(.hidden),
   .touch-actions-panel:not(.hidden) {
@@ -22,10 +16,6 @@
   }
 }
 
-/* movement d-pad; hidden by default, only the touch device media query above
-   reveals and fixed-positions it.
-   grid: up/down span both columns and fill the full width, left/right sit
-   directly next to each other in the middle row. */
 .touch-dpad-panel {
   display: none;
   width: 8rem;
@@ -50,8 +40,6 @@
   height: clamp(3rem, 25vh, 9rem);
 }
 
-/* action buttons; hidden by default, only the touch device media query above
-   reveals and fixed-positions it */
 .touch-actions-panel {
   display: none;
   width: 5rem;
@@ -64,7 +52,6 @@
   }
 }
 
-/* shared look for every touch button */
 .touch-btn {
   pointer-events: auto;
   display: flex;
@@ -78,29 +65,26 @@
   border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 12px;
   background: rgba(2, 17, 31, 0.55);
-
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
   -webkit-tap-highlight-color: transparent;
 }
 
-/* pressed state gives tactile feedback without a hover (touch has none) */
 .touch-btn:active {
   background: rgba(11, 61, 110, 0.85);
   transform: scale(0.95);
 }
 
-/* arrow glyphs in the d-pad are larger than the action labels */
 .touch-btn--dir {
   font-size: 1.5rem;
 }
 
-/* shop buttons are secondary, so their label reads a little smaller */
 .touch-btn--shop {
   font-size: 0.75rem;
 }
 
-.touch-btn--action, .touch-btn--shop {
+.touch-btn--action,
+.touch-btn--shop {
   height: clamp(3rem, 20vh, 9rem);
 }

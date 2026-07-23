@@ -13,12 +13,8 @@ class DrawableObjects {
   bottleCounter = 0;
   canvasWidth = 720;
   canvasHeight = 460;
-  //* endpoint for the world.
   worldEndX = 3600;
-  //* begin point for the world
   worldBeginX = -700;
-
-  //* ids of every interval this object started, so they can all be cleared on restart
   intervalIds = [];
 
   /**

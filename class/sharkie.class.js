@@ -5,8 +5,6 @@ class Sharkie extends MoveableObjects {
   poison = false;
   lastHitType;
   deadFrame = 0;
-  
-
 
   IDLE = {
     IDLE: [
@@ -114,7 +112,6 @@ class Sharkie extends MoveableObjects {
       "assets/images/1.Sharkie/4.Attack/bubble_trap/op1/5.png",
       "assets/images/1.Sharkie/4.Attack/bubble_trap/op1/6.png",
       "assets/images/1.Sharkie/4.Attack/bubble_trap/op1/7.png",
-      // "assets/images/1.Sharkie/4.Attack/bubble_trap/op1/8.png",
     ],
   };
 
@@ -149,8 +146,8 @@ class Sharkie extends MoveableObjects {
     this.setStoppableInterval(() => this.updateMovement(), 1000 / 60);
 
     this.setStoppableInterval(() => {
-      if (this.world?.isFrozen) return; // stop advancing frames once the game is over, won or paused
-      if (this.isSleeping && !this.timePassed(10)) this.wakeUp(); // catches movement/hurt/death, which all refresh the timestamp
+      if (this.world?.isFrozen) return;
+      if (this.isSleeping && !this.timePassed(10)) this.wakeUp();
       if (this.isDead()) {
         this.playDead(this.DEAD[this.lastHitType]);
       } else if (this.isAttacking) {
@@ -168,7 +165,7 @@ class Sharkie extends MoveableObjects {
         this.animate(this.SWIM.SWIM_3);
         this.otherDirection = false;
       } else if (this.world.keyboard.E) {
-        this.wakeUp(); // E and SPACE don't run through movements, so they never refresh the timestamp themselves
+        this.wakeUp();
         this.isAttacking = true;
         this.addDistanceForSlap();
         playSound("FIN_SLAP");
@@ -191,7 +188,7 @@ class Sharkie extends MoveableObjects {
    * keyboard controls him. the camera follows him in both cases.
    */
   updateMovement() {
-    if (this.world?.isFrozen) return; // freeze sharkie once the game is over, won or paused
+    if (this.world?.isFrozen) return;
     if (this.isDead()) {
       this.moveDead();
     } else {
@@ -268,10 +265,10 @@ class Sharkie extends MoveableObjects {
    * electrocuted sharkie sinks down to the ground (y = 300) and stays there.
    */
   moveDead() {
-    this.moving = true; // disables the ambient gravity so death controls the movement
+    this.moving = true;
     if (this.lastHitType === "POISON") {
       if (this.deadFrame >= this.DEAD.POISON.length - 1) {
-        this.gravityY -= 0.2; // accelerate upwards step by step, like applyGravity in reverse
+        this.gravityY -= 0.2;
         this.y += this.gravityY;
       }
     } else if (this.lastHitType === "ELECTRO") {
@@ -303,7 +300,7 @@ class Sharkie extends MoveableObjects {
   finishFinSlap() {
     this.isAttacking = false;
     this.world.level.enemies.forEach((enemy) => {
-      if (enemy.pendingDeath) enemy.defeat(); // now that the slap ran through, play the death animation
+      if (enemy.pendingDeath) enemy.defeat();
     });
   }
 
@@ -348,10 +345,8 @@ class Sharkie extends MoveableObjects {
   bubbleShootTimer() {
     setTimeout(() => {
       this.isBubbleShoot = true;
-      //this.world.deleteBubble();
     }, 500);
   }
-
 
   /**
    * fires a bubble from sharkie's mouth in the direction he currently faces,
@@ -362,7 +357,7 @@ class Sharkie extends MoveableObjects {
     this.checkPoison();
     const bubbleX = this.otherDirection ? this.x - 25 : this.x + 145;
     let newBubble = new Bubble(bubbleX, this.y + 110, this.poison, this.otherDirection);
-    newBubble.world = this.world; // let the bubble freeze with the rest of the world on game end
+    newBubble.world = this.world;
     this.isBubbleShoot = false;
     this.world.bubbles.push(newBubble);
     playSound("BUBBLE");

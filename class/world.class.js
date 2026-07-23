@@ -20,16 +20,14 @@ class World {
   gameOver = false;
   gameWon = false;
   paused = false;
-  //* begin point for the world
   worldBeginX = -700;
-  //* endpoint for the world.
   worldEndX = 3600;
 
   constructor(canvas, keyboard) {
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d");
     this.keyboard = keyboard;
-    this.level = createLevel1(); // build a fresh level so a restart starts clean
+    this.level = createLevel1();
     this.setWorld();
     this.draw();
     this.helperFunction();
@@ -56,7 +54,7 @@ class World {
    * camera) followed by the screen-fixed UI, then schedules the next frame.
    */
   draw() {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); //reset the canvas
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.level.backgrounds);
 
@@ -73,7 +71,7 @@ class World {
     this.drawEndbossbar();
 
     if (this.isGameEnded) {
-      this.addToMap(this.endscreen); // overlay the game over / win title on the frozen scene
+      this.addToMap(this.endscreen);
     }
 
     this.animationFrame = requestAnimationFrame(() => {
@@ -87,7 +85,7 @@ class World {
    */
   helperFunction() {
     this.helperInterval = setInterval(() => {
-      if (this.isFrozen) return; // block the up coming functions if game over, won or paused
+      if (this.isFrozen) return;
       this.checkEnemyCollision();
       this.checkEndbossCollision();
       this.checkBubbleCollision();
@@ -267,7 +265,7 @@ class World {
       if (enemy.readyToRemove) {
         this.level.enemies.splice(index, 1);
       } else if (this.sharkie.isColliding(enemy) && this.sharkie.isAttacking && enemy.canDirectHit && !enemy.isDefeated) {
-        enemy.markSlapKill(); // dies only once the fin slap has finished (see sharkie.finishFinSlap)
+        enemy.markSlapKill();
       } else if (this.sharkie.isColliding(enemy) && !enemy.isDefeated && !enemy.pendingDeath) {
         const wasHurt = this.sharkie.isHurt();
         this.getLastHitTypeSharkie(enemy);
@@ -439,6 +437,6 @@ class World {
    */
   stopObjectIntervals() {
     const objects = [this.sharkie, ...this.level.enemies, ...this.level.endboss, ...this.bubbles, ...this.bottles, ...this.coins];
-    objects.forEach((object) => object?.stopIntervals()); // the enemies array has a hole, guard against undefined
+    objects.forEach((object) => object?.stopIntervals());
   }
 }

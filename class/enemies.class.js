@@ -4,12 +4,12 @@ class Enemies extends MoveableObjects {
   defeatFrame = 0;
   readyToRemove = false;
   isDefeated = false;
-  pendingDeath = false; // hit by a fin slap, but waits for the slap to finish before dying
+  pendingDeath = false;
   canDirectHit;
-  world; // over this we can get the information about sharkie.
+  world;
   animationState = "SWIM";
   animationFrame = 0;
-  deadSpeedY = 2.5; // upward drift while the enemy is defeated
+  deadSpeedY = 2.5;
 
   constructor() {
     super();
@@ -46,7 +46,7 @@ class Enemies extends MoveableObjects {
   markSlapKill() {
     if (this.isDefeated) return;
     this.pendingDeath = true;
-    this.speedX = 0; // stop swimming the moment sharkie's slap connects
+    this.speedX = 0;
   }
 
   /**

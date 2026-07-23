@@ -9,6 +9,4 @@ class Coin extends DrawableObjects {
     this.x = this.getRandomX(this.worldBeginX, this.worldEndX);
     this.y = this.getRandomY();
   }
-
-
 }
