@@ -61,7 +61,6 @@
       <article class="main-content" aria-label="Game">
         <h1 class="game-title">Sharkie</h1>
 
-        <!-- !Main section with canvas -->
         <section class="canvas-wrapper" id="canvas_wrapper" aria-label="canvas-wrapper">
           <div class="background-layer"></div>
           <canvas id="canvas" width="720" height="460" aria-label="Sharkie game">This game needs a browser with canvas support.</canvas>
@@ -76,21 +75,18 @@
           </button>
         </section>
 
-        <!-- !Start btn -->
         <section class="wrapper-absolute start-section">
           <button type="button" class="btn--main btn--start" id="game_start">
             <img class="btn--img btn--start" src="assets/images/6.Botones/Start/3.png" alt="Start" />
           </button>
         </section>
 
-        <!-- ! Setting Impressum btn -->
         <section class="wrapper-absolute wrapper-subarea">
           <button type="button" class="btn--dialog" aria-haspopup="dialog" data-dialog="description_dialog">Description</button>
           <button type="button" class="btn--dialog" aria-haspopup="dialog" data-dialog="sound_dialog">Sound</button>
           <button type="button" class="btn--dialog" aria-haspopup="dialog" data-dialog="impressum_dialog">Impressum</button>
         </section>
 
-        <!-- ! Try again btn -->
         <section class="wrapper-absolute hidden" id="again_btn">
           <button type="button" id="try_again" class="btn--secondary">
             <img class="btn--img" src="assets/images/6.Botones/Try again/Recurso 17.png" alt="Try again" />
@@ -98,7 +94,6 @@
         </section>
       </article>
 
-      <!-- !touch btn -->
       <aside class="touch-actions-panel hidden" id="touch_actions" aria-label="Action controls">
         <button type="button" class="touch-btn touch-btn--shop" data-key="H" aria-label="Buy health">Buy Health</button>
         <button type="button" class="touch-btn touch-btn--action" data-key="E" aria-label="Fin slap">Slap</button>
@@ -106,7 +101,6 @@
         <button type="button" class="touch-btn touch-btn--shop" data-key="B" aria-label="Buy poison bottles">Buy Bottle</button>
       </aside>
 
-      <!-- !home confirm  -->
       <dialog class="dialog" id="home_dialog" aria-labelledby="home_dialog_title">
         <article class="dialog__content">
           <header class="dialog__header">
@@ -122,7 +116,6 @@
         </article>
       </dialog>
 
-      <!-- !impressum  -->
       <dialog class="dialog" id="impressum_dialog" lang="de" aria-labelledby="impressum_dialog_title">
         <article class="dialog__content">
           <header class="dialog__header">
@@ -153,7 +146,6 @@
         </article>
       </dialog>
 
-      <!-- !description -->
       <dialog class="dialog dialog--wide" id="description_dialog" aria-labelledby="description_dialog_title">
         <article class="dialog__content">
           <header class="dialog__header">
@@ -234,7 +226,6 @@
         </article>
       </dialog>
 
-      <!-- !sound settings -->
       <dialog class="dialog" id="sound_dialog" aria-labelledby="sound_dialog_title">
         <article class="dialog__content">
           <header class="dialog__header">
@@ -264,7 +255,6 @@
         </article>
       </dialog>
 
-      <!-- ! Information to turn phone into landscape -->
       <section class="orientation-lock" id="orientation_lock" role="alert" aria-live="polite">
         <div class="orientation-lock__inner">
           <svg class="orientation-lock__icon" viewBox="0 0 24 24" width="72" height="72" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">

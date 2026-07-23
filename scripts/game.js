@@ -24,7 +24,6 @@ const keyMap = {
  */
 function init() {
   canvas = document.getElementById("canvas");
-  //world = new World(canvas, keyboard);
   initEventlistener();
 }
 
@@ -188,7 +187,7 @@ function closeOnBackdropClick(e, dialog) {
 }
 
 window.addEventListener("keydown", (e) => {
-  if (world?.paused) return; // ignore new input while the home confirm dialog is open; keyup stays unguarded below so a key held since before the pause can't get stuck
+  if (world?.paused) return;
   const pressedKey = keyMap[e.code];
   if (pressedKey) {
     keyboard[pressedKey] = true;

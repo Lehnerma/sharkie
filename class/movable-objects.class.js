@@ -91,7 +91,6 @@ class MoveableObjects extends DrawableObjects {
       this.moveDown();
       this.setTimestamp();
     },
-    // WASD movements.
     W: () => {
       this.moveUp();
       this.setTimestamp();
@@ -166,7 +165,7 @@ class MoveableObjects extends DrawableObjects {
    * @returns {boolean} true while the last hit is still within the hurt window
    */
   isHurt(seconds = 2) {
-    let timePassed = (new Date().getTime() - this.lastHit) / 1000; // get the seconds
+    let timePassed = (new Date().getTime() - this.lastHit) / 1000;
 
     return timePassed < seconds;
   }
@@ -185,7 +184,7 @@ class MoveableObjects extends DrawableObjects {
    */
   applyGravity() {
     this.setStoppableInterval(() => {
-      if (this.world?.isFrozen) return; // freeze gravity once the game is over, won or paused
+      if (this.world?.isFrozen) return;
       if (this.isAboveGround() && this.isMoving()) {
         this.y += this.gravityY;
       }
@@ -212,7 +211,7 @@ class MoveableObjects extends DrawableObjects {
       onFinish();
       this.attackFrame = 0;
     }
-    this.setTimestamp(); // wird gesetzt um die longIdle richtig zu triggern
+    this.setTimestamp();
   }
 
   /**

@@ -1,8 +1,5 @@
-
-/* the game title that slides up when the game starts */
 .game-title {
   position: absolute;
-  /* scales with the viewport so it never overflows a narrow canvas */
   font-size: clamp(2.5rem, 12vw, 5rem);
   top: 30%;
   left: 50%;
@@ -16,26 +13,18 @@
   top: -120px;
 }
 
-/* the wrapper that holds canvas and related elements at a responsive size */
 .main-content {
   position: relative;
-  /* fluid down to the viewport width, but never larger than the native 720px;
-     the touch d-pad/action buttons float as a fixed HUD (touch-controls.css)
-     and no longer reserve room here */
   width: min(720px);
 }
 
-/* the container for the canvas element; keeps aspect ratio while scaling */
 .canvas-wrapper {
   position: relative;
-  /* the canvas keeps its internal 720x460 buffer; only the display box scales,
-     the aspect-ratio keeps the 720:460 shape while width follows main-content */
   width: 100%;
   height: auto;
   aspect-ratio: 720 / 460;
 }
 
-/* hide the title on small view heights only after the start animation finished */
 @media (max-height: 800px) {
   .game-title.title-animation-done {
     display: none;

@@ -31,7 +31,7 @@ class Bubble extends MoveableObjects {
     this.y = y;
     const direction = this.otherDirection ? -1 : 1;
     this.setStoppableInterval(() => {
-      if (this.world?.isFrozen) return; // freeze the bubble once the game is over, won or paused
+      if (this.world?.isFrozen) return;
       if (poison) {
         this.animate(this.POISON_BUBBLE);
       } else {

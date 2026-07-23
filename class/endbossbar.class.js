@@ -3,7 +3,6 @@ class Endbossbar extends DrawableObjects {
     super();
     this.width = 300;
     this.height = 24;
-    // top center of the 720px wide canvas
     this.x = (720 - this.width) / 2;
     this.y = 20;
     this.healthPercentage = 100;
@@ -68,9 +67,9 @@ class Endbossbar extends DrawableObjects {
 
   /** picks the fill color: green -> orange -> red as health drops. */
   getFillColor() {
-    if (this.healthPercentage > 60) return "#3ec300"; // green
-    if (this.healthPercentage > 30) return "#ff9f1c"; // orange
-    return "#e63946"; // red
+    if (this.healthPercentage > 60) return "#3ec300";
+    if (this.healthPercentage > 30) return "#ff9f1c";
+    return "#e63946";
   }
 
   /**
