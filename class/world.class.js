@@ -8,9 +8,19 @@ class World {
   ctx;
   level;
   camera_x = 0;
-  healthbar = new Healthbar();
-  coinbar = new Coinbar();
-  bottlebar = new Bottlebar();
+  healthbar = new Statusbar(
+    ["assets/images/4_Marcadores/green/Life/0.png", "assets/images/4_Marcadores/green/Life/20.png", "assets/images/4_Marcadores/green/Life/40.png", "assets/images/4_Marcadores/green/Life/60.png", "assets/images/4_Marcadores/green/Life/80.png", "assets/images/4_Marcadores/green/Life/100.png"],
+    0,
+    100
+  );
+  coinbar = new Statusbar(
+    ["assets/images/4_Marcadores/green/Coin/0.png", "assets/images/4_Marcadores/green/Coin/20.png", "assets/images/4_Marcadores/green/Coin/40.png", "assets/images/4_Marcadores/green/Coin/60.png", "assets/images/4_Marcadores/green/Coin/80.png", "assets/images/4_Marcadores/green/Coin/100.png"],
+    35
+  );
+  bottlebar = new Statusbar(
+    ["assets/images/4_Marcadores/orange/0_poison.png", "assets/images/4_Marcadores/orange/20_poison.png", "assets/images/4_Marcadores/orange/40_poison.png", "assets/images/4_Marcadores/orange/60_poison.png", "assets/images/4_Marcadores/orange/80_ poison.png", "assets/images/4_Marcadores/orange/100_ poison.png"],
+    70
+  );
   endbossbar = new Endbossbar();
   endscreen = new Endscreen();
   shop;

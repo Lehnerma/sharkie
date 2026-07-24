@@ -1,11 +1,20 @@
 class Statusbar extends DrawableObjects {
-  healthPercentage;
+  images;
 
-  constructor() {
+  /**
+   * @param {string[]} images - image paths ordered from 0% to 100%
+   * @param {number} y - vertical position of the bar
+   * @param {number} [initialValue] - percentage to render right away
+   */
+  constructor(images, y, initialValue = 0) {
     super();
     this.x = 0;
     this.width = 140;
     this.height = 45;
+    this.y = y;
+    this.images = images;
+    this.loadImages(images);
+    this.setPercentage(initialValue, images);
   }
 
   /**
@@ -36,5 +45,53 @@ class Statusbar extends DrawableObjects {
     } else {
       return 0;
     }
+  }
+
+  /**
+   * refreshes the health bar image to match sharkie's current health.
+   * @param {number} health - current health value
+   */
+  renderHealthbar(health) {
+    this.setPercentage(health, this.images);
+  }
+
+  /**
+   * refreshes the coin bar image to match the current coin count.
+   * @param {number} coin - current coin count
+   */
+  renderCoinbar(coin) {
+    this.setPercentage(coin, this.images);
+  }
+
+  /**
+   * refreshes the bottle bar image to match the current bottle count.
+   * @param {number} bottle - current bottle count
+   */
+  renderBottle(bottle) {
+    this.setPercentage(bottle, this.images);
+  }
+
+  /**
+   * adds 10 coins, capped at 100, and refreshes the bar.
+   */
+  collectCoin() {
+    if (this.coinCounter < 100) {
+      this.coinCounter += 10;
+    } else {
+      this.coinCounter = 100;
+    }
+    this.renderCoinbar(this.coinCounter);
+  }
+
+  /**
+   * adds 10 bottles, capped at 100, and refreshes the bar.
+   */
+  collectBottle() {
+    if (this.bottleCounter < 100) {
+      this.bottleCounter += 10;
+    } else {
+      this.bottleCounter = 100;
+    }
+    this.renderBottle(this.bottleCounter);
   }
 }
