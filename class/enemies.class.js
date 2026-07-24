@@ -46,7 +46,6 @@ class Enemies extends MoveableObjects {
   markSlapKill() {
     if (this.isDefeated) return;
     this.pendingDeath = true;
-    this.speedX = 0;
   }
 
   /**
