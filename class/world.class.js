@@ -236,6 +236,7 @@ class World {
    */
   checkEnemyCollision() {
     this.level.enemies.forEach((enemy, index) => {
+      
       if (enemy.readyToRemove) {
         this.level.enemies.splice(index, 1);
       } else if (this.canSlapKill(enemy)) {
