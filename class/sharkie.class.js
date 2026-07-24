@@ -119,7 +119,18 @@ class Sharkie extends MoveableObjects {
   constructor() {
     super();
     this.loadImage("assets/images/1.Sharkie/1.IDLE/1.png");
+    this.initStats();
+    this.preloadImages();
+    this.setBoundary();
+    this.setOffset();
 
+    this.lastMove = new Date().getTime();
+    this.applyGravity();
+    this.animateSharkie();
+  }
+
+  /** sets sharkie's spawn position, size, movement speed, gravity and health. */
+  initStats() {
     this.x = 200;
     this.y = 200;
     this.height = 200;
@@ -128,14 +139,6 @@ class Sharkie extends MoveableObjects {
     this.speedY = 4;
     this.gravityY = 0.2;
     this.health = 100;
-
-    this.preloadImages();
-    this.setBoundary();
-    this.setOffset();
-
-    this.lastMove = new Date().getTime();
-    this.applyGravity();
-    this.animateSharkie();
   }
 
   /** loads every animation frame set sharkie can use. */

@@ -67,9 +67,18 @@ class World {
    */
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.drawWorldObjects();
+    this.drawUI();
+    this.animationFrame = requestAnimationFrame(() => this.draw());
+  }
+
+  /**
+   * draws everything that lives in world space (shifted by the camera):
+   * backgrounds, sharkie, the endboss, enemies and collectibles.
+   */
+  drawWorldObjects() {
     this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.level.backgrounds);
-
     this.addToMap(this.sharkie);
     this.addEndbossToMap();
     this.addObjectsToMap(this.level.enemies);
@@ -77,18 +86,17 @@ class World {
     this.addObjectsToMap(this.bottles);
     this.addObjectsToMap(this.bubbles);
     this.ctx.translate(-this.camera_x, 0);
+  }
+
+  /** draws the screen-fixed UI: the status bars, boss bar and end screen. */
+  drawUI() {
     this.addToMap(this.healthbar);
     this.addToMap(this.coinbar);
     this.addToMap(this.bottlebar);
     this.drawEndbossbar();
-
     if (this.isGameEnded) {
       this.addToMap(this.endscreen);
     }
-
-    this.animationFrame = requestAnimationFrame(() => {
-      this.draw();
-    });
   }
 
   /**
@@ -230,20 +238,38 @@ class World {
     this.level.enemies.forEach((enemy, index) => {
       if (enemy.readyToRemove) {
         this.level.enemies.splice(index, 1);
-      } else if (this.sharkie.isColliding(enemy) && this.sharkie.isAttacking && enemy.canDirectHit && !enemy.isDefeated) {
+      } else if (this.canSlapKill(enemy)) {
         enemy.markSlapKill();
       } else if (this.sharkie.isColliding(enemy) && !enemy.isDefeated && !enemy.pendingDeath) {
-        const wasHurt = this.sharkie.isHurt();
-        this.getLastHitTypeSharkie(enemy);
-        this.sharkie.hit();
-        if (!wasHurt && this.sharkie.lastHitType === "ELECTRO") {
-          playSound("ELECTRIC_HIT");
-        } else if (!wasHurt && this.sharkie.lastHitType === "POISON") {
-          playSound("POISON_HIT_SHARKIE");
-        }
-        this.healthbar.renderHealthbar(this.sharkie.health);
+        this.hurtSharkieByEnemy(enemy);
       }
     });
+  }
+
+  /**
+   * true when a fin-slapping sharkie touches an enemy that allows direct
+   * hits and isn't already dying.
+   * @param {Enemies} enemy - the enemy to test
+   */
+  canSlapKill(enemy) {
+    return this.sharkie.isColliding(enemy) && this.sharkie.isAttacking && enemy.canDirectHit && !enemy.isDefeated;
+  }
+
+  /**
+   * hurts sharkie on plain body contact with an enemy and plays the matching
+   * hit sound (only on a fresh hit), then refreshes the healthbar.
+   * @param {Enemies} enemy - the enemy sharkie collided with
+   */
+  hurtSharkieByEnemy(enemy) {
+    const wasHurt = this.sharkie.isHurt();
+    this.getLastHitTypeSharkie(enemy);
+    this.sharkie.hit();
+    if (!wasHurt && this.sharkie.lastHitType === "ELECTRO") {
+      playSound("ELECTRIC_HIT");
+    } else if (!wasHurt && this.sharkie.lastHitType === "POISON") {
+      playSound("POISON_HIT_SHARKIE");
+    }
+    this.healthbar.renderHealthbar(this.sharkie.health);
   }
 
   /**
@@ -265,22 +291,40 @@ class World {
    * on a hit the enemy reacts via hitByBubble() and the bubble is removed.
    */
   checkBubbleCollision() {
-    this.bubbles.forEach((bubble, bubbleIndex) => {
+    this.bubbles.forEach((bubble) => {
       if (bubble.readyToRemove) return;
-      this.level.enemies.forEach((enemy) => {
-        if (!enemy.isDefeated && bubble.isColliding(enemy) && !enemy.canDirectHit) {
-          enemy.hitByBubble();
-          playSound("ENEMY_HIT");
-          bubble.readyToRemove = true;
-        }
-      });
-      this.level.endboss.forEach((boss) => {
-        if (!boss.isDefeated && bubble.isColliding(boss) && bubble.poison) {
-          boss.hitByBubble();
-          playSound("ENEMY_HIT");
-          bubble.readyToRemove = true;
-        }
-      });
+      this.checkBubbleEnemyHit(bubble);
+      this.checkBubbleBossHit(bubble);
+    });
+  }
+
+  /**
+   * hits every non-defeated, non-direct-hit enemy the bubble touches and
+   * marks the bubble for removal.
+   * @param {Bubble} bubble - the active bubble to test
+   */
+  checkBubbleEnemyHit(bubble) {
+    this.level.enemies.forEach((enemy) => {
+      if (!enemy.isDefeated && bubble.isColliding(enemy) && !enemy.canDirectHit) {
+        enemy.hitByBubble();
+        playSound("ENEMY_HIT");
+        bubble.readyToRemove = true;
+      }
+    });
+  }
+
+  /**
+   * hits the endboss when a poison bubble touches it and marks the bubble
+   * for removal.
+   * @param {Bubble} bubble - the active bubble to test
+   */
+  checkBubbleBossHit(bubble) {
+    this.level.endboss.forEach((boss) => {
+      if (!boss.isDefeated && bubble.isColliding(boss) && bubble.poison) {
+        boss.hitByBubble();
+        playSound("ENEMY_HIT");
+        bubble.readyToRemove = true;
+      }
     });
   }
 
@@ -357,21 +401,31 @@ class World {
   checkGameOver() {
     if (this.isGameEnded) return;
     if (this.sharkie.deathAnimationDone) {
-      this.gameOver = true;
-      this.gameWon = false;
-      this.endscreen.setResult(false);
-      stopSound("BACKGROUND_MUSIC");
-      playSound("GAME_OVER");
+      this.endWithLoss();
     } else if (this.level.endboss.some((boss) => boss.deathAnimationDone)) {
-      this.gameOver = false;
-      this.gameWon = true;
-      this.endscreen.setResult(true);
-      stopSound("BACKGROUND_MUSIC");
-      playSound("GAME_WON");
+      this.endWithWin();
     }
     if (this.isGameEnded) {
       showTryAgainBtn();
     }
+  }
+
+  /** ends the game as a loss: shows the game-over screen and plays its sound. */
+  endWithLoss() {
+    this.gameOver = true;
+    this.gameWon = false;
+    this.endscreen.setResult(false);
+    stopSound("BACKGROUND_MUSIC");
+    playSound("GAME_OVER");
+  }
+
+  /** ends the game as a win: shows the game-won screen and plays its sound. */
+  endWithWin() {
+    this.gameOver = false;
+    this.gameWon = true;
+    this.endscreen.setResult(true);
+    stopSound("BACKGROUND_MUSIC");
+    playSound("GAME_WON");
   }
 
   /** @returns {boolean} true once the game has been won or lost */

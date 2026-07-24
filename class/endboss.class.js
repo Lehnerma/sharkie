@@ -34,9 +34,17 @@ class Endboss extends MoveableObjects {
 
   constructor() {
     super();
+    this.loadImage('assets/images/2.Enemy/endboss/2_floating/1.png');
+    this.initDimensions();
+    this.initState();
+    this.initCombat();
+    this.preloadImages();
+    this.animation();
+    this.movement();
+  }
 
-    this.loadImage('assets/images/2.Enemy/endboss/2_floating/1.png')
-
+  /** sets the boss's size, collision box, spawn position and movement bounds. */
+  initDimensions() {
     this.width = 400;
     this.height = 400;
     this.collisionOffset.top = 150;
@@ -45,6 +53,14 @@ class Endboss extends MoveableObjects {
     this.collisionOffset.left = 20;
     this.x = 3900;
     this.y = -20;
+    this.minX = 0;
+    this.yOffset = -100;
+    this.minY = -100;
+    this.maxY = 100;
+  }
+
+  /** sets the boss's health and the flags/frames tracking its animation state. */
+  initState() {
     this.health = 100;
     this.hurtFrame = 0;
     this.isHurt = false;
@@ -53,6 +69,10 @@ class Endboss extends MoveableObjects {
     this.hasIntroduced = false;
     this.introduceFrame = 0;
     this.deadFrame = 0;
+  }
+
+  /** sets the boss's speed, follow easing and attack timing values. */
+  initCombat() {
     this.speedX = 1;
     this.speedY = 3;
     this.yFollowFactor = 0.05;
@@ -61,15 +81,6 @@ class Endboss extends MoveableObjects {
     this.lastAttack = 0;
     this.attackLunge = 90;
     this.lungeApplied = 10;
-    this.minX = 0;
-    this.yOffset = -100;
-    this.minY = -100;
-    this.maxY = 100;
-
-    this.preloadImages();
-
-    this.animation();
-    this.movement();
   }
 
   /** loads every animation frame set the endboss can use. */
@@ -88,21 +99,24 @@ class Endboss extends MoveableObjects {
    * introduce the boss.
    */
   animation() {
-    this.setStoppableInterval(() => {
-      if (this.world?.isFrozen) return;
-      this.checkIntroduce();
-      if (this.isDefeated) {
-        this.playDeadAnimation();
-      } else if (this.isHurt) {
-        this.playHurtAnimation();
-      } else if (this.isIntroducing) {
-        this.playIntroduceAnimation();
-      } else if (this.hasIntroduced && this.isSharkieInAttackRange() && !this.sharkieIsDead()) {
-        this.attackSharkie();
-      } else {
-        this.animate(this.MOVES.FLOATING);
-      }
-    }, 100);
+    this.setStoppableInterval(() => this.playAnimationFrame(), 100);
+  }
+
+  /** picks and plays the frame set matching the boss's current state for one tick. */
+  playAnimationFrame() {
+    if (this.world?.isFrozen) return;
+    this.checkIntroduce();
+    if (this.isDefeated) {
+      this.playDeadAnimation();
+    } else if (this.isHurt) {
+      this.playHurtAnimation();
+    } else if (this.isIntroducing) {
+      this.playIntroduceAnimation();
+    } else if (this.hasIntroduced && this.isSharkieInAttackRange() && !this.sharkieIsDead()) {
+      this.attackSharkie();
+    } else {
+      this.animate(this.MOVES.FLOATING);
+    }
   }
 
   /**
