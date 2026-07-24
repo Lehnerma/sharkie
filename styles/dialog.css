@@ -36,12 +36,14 @@
 }
 
 .dialog__title {
-  font-size: 1.5rem;
+  font-size: 2rem;
+  text-decoration: underline;
 }
 
 .dialog__subtitle {
   margin-bottom: 0.5rem;
-  font-size: 1.1rem;
+  font-size: 1.4rem;
+  text-decoration: underline;
 }
 
 .dialog__address {
