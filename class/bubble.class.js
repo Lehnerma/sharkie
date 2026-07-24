@@ -2,6 +2,12 @@ class Bubble extends MoveableObjects {
   BUBBLE = ["assets/images/1.Sharkie/4.Attack/bubble_trap/Bubble.png"];
   POISON_BUBBLE = ["assets/images/1.Sharkie/4.Attack/bubble_trap/Poisoned Bubble (for whale).png"];
 
+  /**
+   * @param {number} x - starting x position
+   * @param {number} y - starting y position
+   * @param {boolean} poison - true fires a poisoned bubble
+   * @param {boolean} [otherDirection=false] - true fires the bubble facing left
+   */
   constructor(x, y, poison, otherDirection = false) {
     super();
     this.width = 30;

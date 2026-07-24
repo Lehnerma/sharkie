@@ -116,6 +116,7 @@ class Sharkie extends MoveableObjects {
     ],
   };
 
+  /** spawns sharkie at his start position and boots stats, gravity and his animation loop. */
   constructor() {
     super();
     this.loadImage("assets/images/1.Sharkie/1.IDLE/1.png");
@@ -294,7 +295,7 @@ class Sharkie extends MoveableObjects {
    */
   moveByKeyboard() {
     for (let key in this.movements) {
-      if (this.world.keyboard[key] && !this.isAttacking) {
+      if (this.world.keyboard[key] && !this.isAttacking && !this.isHurt()) {
         this.movements[key]();
       }
     }

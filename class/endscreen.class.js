@@ -2,6 +2,7 @@ class Endscreen extends DrawableObjects {
   GAME_OVER = ["assets/images/6.Botones/Tittles/GameOver/gameover.png"];
   GAME_WIN = ["assets/images/6.Botones/Tittles/game_win/win.png"];
 
+  /** centers the (initially imageless) end screen on the canvas. */
   constructor() {
     super();
     this.loadImages(this.GAME_OVER);

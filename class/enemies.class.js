@@ -11,6 +11,7 @@ class Enemies extends MoveableObjects {
   animationFrame = 0;
   deadSpeedY = 2.5;
 
+  /** spawns the enemy at a random position and sets its base speed and health. */
   constructor() {
     super();
     this.x = this.getRandomX(720, 4000);

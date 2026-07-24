@@ -15,6 +15,7 @@ class MoveableObjects extends DrawableObjects {
 
   deathAnimationDone = false
 
+  /** no-op besides calling the DrawableObjects constructor; subclasses set their own stats. */
   constructor() {
     super();
   }
@@ -147,10 +148,12 @@ class MoveableObjects extends DrawableObjects {
 
   /**
    * reduces health by the given amount, clamped at 0, and marks the hit
-   * timestamp so isHurt() can detect a brief invulnerability window.
+   * timestamp so isHurt() can detect a brief invulnerability window. does
+   * nothing while still within a previous hit's invulnerability window.
    * @param {number} [hitpoints=5] - damage to apply
    */
   hit(hitpoints = 5) {
+    if (this.isHurt()) return;
     this.health -= hitpoints;
     this.setTimestamp();
     if (this.health < 0) {

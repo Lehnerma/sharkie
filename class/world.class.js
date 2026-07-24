@@ -24,6 +24,8 @@ class World {
   endbossbar = new Endbossbar();
   endscreen = new Endscreen();
   shop;
+  renderer;
+  collisions;
   world_end = 3700;
 
   coinReplenishing = false;
@@ -34,13 +36,17 @@ class World {
   worldBeginX = -700;
   worldEndX = 3600;
 
+  /**
+   * @param {HTMLCanvasElement} canvas - canvas element to render into
+   * @param {Keyboard} keyboard - shared keyboard state to read input from
+   */
   constructor(canvas, keyboard) {
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d");
     this.keyboard = keyboard;
     this.level = createLevel1();
     this.setWorld();
-    this.draw();
+    this.renderer.draw();
     this.helperFunction();
     this.addElementsToWorld();
   }
@@ -48,11 +54,14 @@ class World {
   /**
    * gives sharkie, every enemy and the endboss a back-reference to this
    * world, so they can read game state (keyboard, isGameEnded, sharkie's
-   * position) without the world passing it in on every call.
+   * position) without the world passing it in on every call. also sets up
+   * the shop, renderer and collision-check collaborators.
    */
   setWorld() {
     this.sharkie.world = this;
     this.shop = new Shop(this);
+    this.renderer = new WorldRenderer(this);
+    this.collisions = new WorldCollisions(this);
     this.level.enemies.forEach((enemy) => {
       enemy.world = this;
     });
@@ -62,58 +71,20 @@ class World {
   }
 
   /**
-   * renders one frame: clears the canvas, draws the world (shifted by the
-   * camera) followed by the screen-fixed UI, then schedules the next frame.
-   */
-  draw() {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.drawWorldObjects();
-    this.drawUI();
-    this.animationFrame = requestAnimationFrame(() => this.draw());
-  }
-
-  /**
-   * draws everything that lives in world space (shifted by the camera):
-   * backgrounds, sharkie, the endboss, enemies and collectibles.
-   */
-  drawWorldObjects() {
-    this.ctx.translate(this.camera_x, 0);
-    this.addObjectsToMap(this.level.backgrounds);
-    this.addToMap(this.sharkie);
-    this.addEndbossToMap();
-    this.addObjectsToMap(this.level.enemies);
-    this.addObjectsToMap(this.coins);
-    this.addObjectsToMap(this.bottles);
-    this.addObjectsToMap(this.bubbles);
-    this.ctx.translate(-this.camera_x, 0);
-  }
-
-  /** draws the screen-fixed UI: the status bars, boss bar and end screen. */
-  drawUI() {
-    this.addToMap(this.healthbar);
-    this.addToMap(this.coinbar);
-    this.addToMap(this.bottlebar);
-    this.drawEndbossbar();
-    if (this.isGameEnded) {
-      this.addToMap(this.endscreen);
-    }
-  }
-
-  /**
    * runs every game-logic check (collisions, pickups, shop input, game
    * over) on a shared interval, frozen entirely once the game has ended.
    */
   helperFunction() {
     this.helperInterval = setInterval(() => {
       if (this.isFrozen) return;
-      this.checkEnemyCollision();
-      this.checkEndbossCollision();
-      this.checkBubbleCollision();
-      this.removeBubbles();
-      this.checkCoinCollision();
-      this.checkPoisonBottleCollision();
+      this.collisions.checkEnemyCollision();
+      this.collisions.checkEndbossCollision();
+      this.collisions.checkBubbleCollision();
+      this.collisions.removeBubbles();
+      this.collisions.checkCoinCollision();
+      this.collisions.checkPoisonBottleCollision();
       this.shop.checkShopInput();
-      this.checkEnemyBoundary();
+      this.collisions.checkEnemyBoundary();
       this.checkGameOver();
     }, 200);
   }
@@ -156,242 +127,6 @@ class World {
         this.bottleReplenishing = false;
       }
     }
-  }
-
-  /**
-   * draws one object, flipping it horizontally around the y axis first if
-   * it currently faces the other direction.
-   * @param {DrawableObjects} mo - the object to draw
-   */
-  addToMap(mo) {
-    if (mo.otherDirection) {
-      this.flipImage(mo);
-    }
-    mo.drawObject(this.ctx);
-    // mo.drawBorderCollision(this.ctx);
-    if (mo.otherDirection) {
-      this.flipImageBack(mo);
-    }
-  }
-
-  /**
-   * draws every object in a list via addToMap().
-   * @param {DrawableObjects[]} objects - objects to draw
-   */
-  addObjectsToMap(objects) {
-    objects.forEach((o) => {
-      this.addToMap(o);
-    });
-  }
-
-  /**
-   * draws the endboss only once it has been introduced, so it stays hidden
-   * off-screen until sharkie reaches the boss arena and the introduce
-   * animation kicks in.
-   */
-  addEndbossToMap() {
-    this.level.endboss.forEach((boss) => {
-      if (boss.hasIntroduced) this.addToMap(boss);
-    });
-  }
-
-  /**
-   * draws the screen-fixed boss healthbar once the endboss has appeared and is
-   * still alive, mirroring the boss's current health.
-   */
-  drawEndbossbar() {
-    this.level.endboss.forEach((boss) => {
-      if (boss.hasIntroduced && !boss.isDefeated) {
-        this.endbossbar.setHealth(boss.health);
-        this.addToMap(this.endbossbar);
-      }
-    });
-  }
-
-  /**
-   * mirrors the canvas horizontally around the object so its next draw
-   * call renders facing the opposite way; must be paired with flipImageBack().
-   * @param {DrawableObjects} mo - the object about to be drawn flipped
-   */
-  flipImage(mo) {
-    this.ctx.save();
-    this.ctx.translate(mo.width, 0);
-    this.ctx.scale(-1, 1);
-    mo.x = mo.x * -1;
-  }
-
-  /**
-   * undoes flipImage()'s canvas mirroring after the object has been drawn.
-   * @param {DrawableObjects} mo - the object that was just drawn flipped
-   */
-  flipImageBack(mo) {
-    this.ctx.restore();
-    mo.x = mo.x * -1;
-  }
-
-  /**
-   * for every enemy: removes it once it's ready, kills it via a fin slap
-   * if sharkie is attacking and it allows direct hits, or otherwise hurts
-   * sharkie on plain body contact (unless the enemy is already dying).
-   */
-  checkEnemyCollision() {
-    this.level.enemies.forEach((enemy, index) => {
-      
-      if (enemy.readyToRemove) {
-        this.level.enemies.splice(index, 1);
-      } else if (this.canSlapKill(enemy)) {
-        enemy.markSlapKill();
-      } else if (this.sharkie.isColliding(enemy) && !enemy.isDefeated && !enemy.pendingDeath) {
-        this.hurtSharkieByEnemy(enemy);
-      }
-    });
-  }
-
-  /**
-   * true when a fin-slapping sharkie touches an enemy that allows direct
-   * hits and isn't already dying.
-   * @param {Enemies} enemy - the enemy to test
-   */
-  canSlapKill(enemy) {
-    return this.sharkie.isColliding(enemy) && this.sharkie.isAttacking && enemy.canDirectHit && !enemy.isDefeated;
-  }
-
-  /**
-   * hurts sharkie on plain body contact with an enemy and plays the matching
-   * hit sound (only on a fresh hit), then refreshes the healthbar.
-   * @param {Enemies} enemy - the enemy sharkie collided with
-   */
-  hurtSharkieByEnemy(enemy) {
-    const wasHurt = this.sharkie.isHurt();
-    this.getLastHitTypeSharkie(enemy);
-    this.sharkie.hit();
-    if (!wasHurt && this.sharkie.lastHitType === "ELECTRO") {
-      playSound("ELECTRIC_HIT");
-    } else if (!wasHurt && this.sharkie.lastHitType === "POISON") {
-      playSound("POISON_HIT_SHARKIE");
-    }
-    this.healthbar.renderHealthbar(this.sharkie.health);
-  }
-
-  /**
-   * hurts sharkie while he is in direct body contact with an introduced,
-   * still-living endboss.
-   */
-  checkEndbossCollision() {
-    this.level.endboss.forEach((boss) => {
-      if (boss.hasIntroduced && !boss.isDefeated && this.sharkie.isColliding(boss)) {
-        this.sharkie.lastHitType = "POISON";
-        this.sharkie.hit(20);
-        this.healthbar.renderHealthbar(this.sharkie.health);
-      }
-    });
-  }
-
-  /**
-   * checks whether any active bubble collides with an enemy.
-   * on a hit the enemy reacts via hitByBubble() and the bubble is removed.
-   */
-  checkBubbleCollision() {
-    this.bubbles.forEach((bubble) => {
-      if (bubble.readyToRemove) return;
-      this.checkBubbleEnemyHit(bubble);
-      this.checkBubbleBossHit(bubble);
-    });
-  }
-
-  /**
-   * hits every non-defeated, non-direct-hit enemy the bubble touches and
-   * marks the bubble for removal.
-   * @param {Bubble} bubble - the active bubble to test
-   */
-  checkBubbleEnemyHit(bubble) {
-    this.level.enemies.forEach((enemy) => {
-      if (!enemy.isDefeated && bubble.isColliding(enemy) && !enemy.canDirectHit) {
-        enemy.hitByBubble();
-        playSound("ENEMY_HIT");
-        bubble.readyToRemove = true;
-      }
-    });
-  }
-
-  /**
-   * hits the endboss when a poison bubble touches it and marks the bubble
-   * for removal.
-   * @param {Bubble} bubble - the active bubble to test
-   */
-  checkBubbleBossHit(bubble) {
-    this.level.endboss.forEach((boss) => {
-      if (!boss.isDefeated && bubble.isColliding(boss) && bubble.poison) {
-        boss.hitByBubble();
-        playSound("ENEMY_HIT");
-        bubble.readyToRemove = true;
-      }
-    });
-  }
-
-  /**
-   * removes bubbles that have hit an enemy or travelled too far.
-   */
-  removeBubbles() {
-    this.bubbles = this.bubbles.filter((bubble) => !bubble.readyToRemove);
-  }
-
-  /**
-   * picks which hurt/dead animation sharkie should play based on the enemy
-   * that hit him: jelly fish shock him, everything else poisons him.
-   * @param {Enemies} enemy - the enemy sharkie just collided with
-   */
-  getLastHitTypeSharkie(enemy) {
-    if (enemy instanceof JellyFish) {
-      this.sharkie.lastHitType = "ELECTRO";
-    } else {
-      this.sharkie.lastHitType = "POISON";
-    }
-  }
-
-  /**
-   * collects a coin sharkie touches, as long as the coin bar isn't already full.
-   */
-  checkCoinCollision() {
-    this.coins.forEach((coin, index) => {
-      if (this.sharkie.isColliding(coin) && this.coinbar.coinCounter < 100) {
-        this.coinbar.collectCoin();
-        playSound("COIN_COLLECT");
-        this.coins.splice(index, 1);
-      }
-    });
-  }
-
-  /**
-   * collects a poison bottle sharkie touches, as long as the bottle bar
-   * isn't already full.
-   */
-  checkPoisonBottleCollision() {
-    this.bottles.forEach((bottle, index) => {
-      if (this.sharkie.isColliding(bottle) && this.bottlebar.bottleCounter < 100) {
-        this.bottlebar.collectBottle();
-        playSound("BOTTLE_COLLECT");
-        this.bottles.splice(index, 1);
-      }
-    });
-  }
-
-  /**
-   * wraps an enemy that drifted past the world's left edge back around to
-   * the right edge with a fresh random height, so enemies loop endlessly.
-   */
-  checkEnemyBoundary() {
-    this.level.enemies.forEach((enemy) => {
-      if (enemy.x < this.worldBeginX) {
-        enemy.x = this.worldEndX + 800;
-        enemy.y = enemy.getRandomY();
-      }
-    });
-  }
-
-  /** removes every active bubble immediately. */
-  deleteBubble() {
-    this.bubbles = [];
   }
 
   /**

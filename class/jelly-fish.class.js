@@ -30,6 +30,7 @@ class JellyFish extends Enemies {
     },
   };
 
+  /** spawns a jelly fish in a random color that cannot be defeated by a direct fin slap. */
   constructor() {
     super();
     this.colors = {

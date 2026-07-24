@@ -1,6 +1,7 @@
 class Shop {
   lastShopBuy = 0;
 
+  /** @param {World} world - the world this shop buys/sells for */
   constructor(world) {
     this.world = world;
   }

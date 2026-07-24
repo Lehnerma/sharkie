@@ -1,4 +1,5 @@
 class Endbossbar extends DrawableObjects {
+  /** places the boss healthbar centered at the top of the canvas, starting full. */
   constructor() {
     super();
     this.width = 300;
@@ -32,14 +33,22 @@ class Endbossbar extends DrawableObjects {
     ctx.restore();
   }
 
-  /** dark background track behind the health fill. */
+  /**
+   * dark background track behind the health fill.
+   * @param {CanvasRenderingContext2D} ctx
+   * @param {number} radius - corner radius
+   */
   drawTrack(ctx, radius) {
     ctx.fillStyle = "rgba(0, 0, 0, 0.55)";
     this.roundRect(ctx, this.x, this.y, this.width, this.height, radius);
     ctx.fill();
   }
 
-  /** colored fill, its width proportional to the current health. */
+  /**
+   * colored fill, its width proportional to the current health.
+   * @param {CanvasRenderingContext2D} ctx
+   * @param {number} radius - corner radius
+   */
   drawFill(ctx, radius) {
     const fillWidth = (this.width - 4) * (this.healthPercentage / 100);
     if (fillWidth <= 0) return;
@@ -48,7 +57,11 @@ class Endbossbar extends DrawableObjects {
     ctx.fill();
   }
 
-  /** white outline around the whole bar. */
+  /**
+   * white outline around the whole bar.
+   * @param {CanvasRenderingContext2D} ctx
+   * @param {number} radius - corner radius
+   */
   drawBorder(ctx, radius) {
     ctx.lineWidth = 2;
     ctx.strokeStyle = "#ffffff";
@@ -75,6 +88,11 @@ class Endbossbar extends DrawableObjects {
   /**
    * builds a rounded-rectangle path (without filling/stroking it).
    * @param {CanvasRenderingContext2D} ctx
+   * @param {number} x - top-left x position
+   * @param {number} y - top-left y position
+   * @param {number} w - rectangle width
+   * @param {number} h - rectangle height
+   * @param {number} r - corner radius
    */
   roundRect(ctx, x, y, w, h, r) {
     r = Math.max(0, Math.min(r, w / 2, h / 2));

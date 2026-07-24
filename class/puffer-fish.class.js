@@ -22,6 +22,7 @@ class PufferFish extends Enemies {
     },
   };
 
+  /** spawns a puffer fish in a random color that can be defeated by a direct fin slap. */
   constructor() {
     super();
     this.preloadImages();

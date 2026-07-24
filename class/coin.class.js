@@ -1,6 +1,7 @@
 class Coin extends DrawableObjects {
   COINS = ["assets/images/4_Marcadores/coins/1.png", "assets/images/4_Marcadores/coins/2.png", "assets/images/4_Marcadores/coins/3.png", "assets/images/4_Marcadores/coins/4.png"];
 
+  /** spawns a coin at a random position within the level bounds. */
   constructor() {
     super();
     this.loadImage(this.COINS[1]);

@@ -23,6 +23,7 @@ class Poisonbottle extends MoveableObjects {
       RIGHT: "assets/images/4_Marcadores/poison/Light - Right.png",
     },
   };
+  /** spawns a poison bottle at a random position with a random type and facing. */
   constructor() {
     super();
     this.direction = this.rightOrLeft();

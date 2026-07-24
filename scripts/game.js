@@ -77,6 +77,7 @@ function setTouchKey(e, key, isPressed) {
   updateSwimSound();
 }
 
+/** flags the matching keyboard key as pressed, unless the game is paused. */
 window.addEventListener("keydown", (e) => {
   if (world?.paused) return;
   const pressedKey = keyMap[e.code];
@@ -86,6 +87,7 @@ window.addEventListener("keydown", (e) => {
   }
 });
 
+/** flags the matching keyboard key as released. */
 window.addEventListener("keyup", (e) => {
   const pressedKey = keyMap[e.code];
   if (pressedKey) {

@@ -32,6 +32,7 @@ class Endboss extends MoveableObjects {
     ATTACK: ["assets/images/2.Enemy/endboss/4_attack/1.png", "assets/images/2.Enemy/endboss/4_attack/2.png", "assets/images/2.Enemy/endboss/4_attack/3.png", "assets/images/2.Enemy/endboss/4_attack/4.png", "assets/images/2.Enemy/endboss/4_attack/5.png", "assets/images/2.Enemy/endboss/4_attack/6.png"],
   };
 
+  /** spawns the endboss off-screen, floating, waiting for sharkie to reach the boss arena. */
   constructor() {
     super();
     this.loadImage('assets/images/2.Enemy/endboss/2_floating/1.png');
@@ -77,7 +78,7 @@ class Endboss extends MoveableObjects {
     this.speedY = 3;
     this.yFollowFactor = 0.05;
     this.attackRange = 180;
-    this.attackCooldown = 1500;
+    this.attackCooldown = 2500;
     this.lastAttack = 0;
     this.attackLunge = 90;
     this.lungeApplied = 10;
