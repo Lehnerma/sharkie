@@ -103,6 +103,7 @@ class Sharkie extends MoveableObjects {
       "assets/images/1.Sharkie/4.Attack/fin_slap/6.png",
       "assets/images/1.Sharkie/4.Attack/fin_slap/7.png",
       "assets/images/1.Sharkie/4.Attack/fin_slap/8.png",
+      "assets/images/1.Sharkie/4.Attack/fin_slap/8.png",
     ],
     BUBBLE: [
       "assets/images/1.Sharkie/4.Attack/bubble_trap/op1/1.png",
@@ -137,18 +138,35 @@ class Sharkie extends MoveableObjects {
     this.animateSharkie();
   }
 
-  /**
-   * runs sharkie's state machine at 60fps for movement, and again on a
-   * slower interval to pick and play the animation matching his current
-   * state (dead, attacking, hurt, swimming, idle) in that priority order.
-   */
-  animateSharkie() {
-    this.setStoppableInterval(() => this.updateMovement(), 1000 / 60);
-    this.setStoppableInterval(() => this.updateAnimation(), 150);
+  /** loads every animation frame set sharkie can use. */
+  preloadImages() {
+    this.loadImages(this.IDLE.IDLE);
+    this.loadImages(this.IDLE.LONG_IDLE_INTRO);
+    this.loadImages(this.IDLE.LONG_IDLE_SLEEP);
+    this.loadImages(this.DEAD.ELECTRO);
+    this.loadImages(this.DEAD.POISON);
+    this.loadImages(this.HURT.ELECTRO);
+    this.loadImages(this.HURT.POISON);
+    this.loadImages(this.SWIM.SWIM_1);
+    this.loadImages(this.SWIM.SWIM_3);
+    this.loadImages(this.ATTACK.FIN_SLAP);
+    this.loadImages(this.ATTACK.BUBBLE);
   }
 
   /**
-   * determines and plays the correct animation based on sharkie's current state
+   * runs sharkie's state machine at 60fps for movement. animations are split
+   * into two intervals: attacks/dead/hurt run at 80ms, swimming/idle run at
+   * 150ms so the swim loop looks slower while attacks stay responsive.
+   */
+  animateSharkie() {
+    this.setStoppableInterval(() => this.updateMovement(), 1000 / 60);
+    this.setStoppableInterval(() => this.updateAnimation(), 90);
+    this.setStoppableInterval(() => this.updateSwimmingAnimation(), 150);
+  }
+
+  /**
+   * determines and plays the correct animation for combat states and attack
+   * inputs. runs on the faster 80ms interval.
    */
   updateAnimation() {
     if (this.world?.isFrozen) return;
@@ -163,12 +181,24 @@ class Sharkie extends MoveableObjects {
     } else if (this.isHurt()) {
       this.animate(this.HURT[this.lastHitType]);
     } else {
-      this.handleMovementAnimation();
+      this.handleAttackInput();
     }
   }
 
   /**
-   * handles animation for movement and attack inputs
+   * plays swimming and idle animations on the slower 150ms interval.
+   * skips combat states so attacks are not interrupted.
+   */
+  updateSwimmingAnimation() {
+    if (this.world?.isFrozen) return;
+    if (this.isSleeping && !this.timePassed(10)) this.wakeUp();
+    if (this.isDead() || this.isAttacking || this.isAttackingBubble || this.isHurt()) return;
+    this.handleMovementAnimation();
+  }
+
+  /**
+   * handles animation for movement inputs only. attack input is polled on the
+   * faster updateAnimation interval via handleAttackInput().
    */
   handleMovementAnimation() {
     if (this.isVerticalMovement()) {
@@ -179,15 +209,24 @@ class Sharkie extends MoveableObjects {
     } else if (this.isRightMovement()) {
       this.animate(this.SWIM.SWIM_3);
       this.otherDirection = false;
-    } else if (this.world.keyboard.E) {
-      this.executeFinalSlap();
-    } else if (this.world.keyboard.SPACE && this.isBubbleShoot) {
-      this.executeBubbleAttack();
     } else if (this.timePassed(10)) {
       this.playLongIdle();
     } else {
       this.animate(this.IDLE.IDLE);
       this.moving = false;
+    }
+  }
+
+  /**
+   * checks attack inputs and triggers fin slap or bubble attack. runs at 80ms
+   * but only when no movement keys are held, matching the original priority.
+   */
+  handleAttackInput() {
+    if (this.isVerticalMovement() || this.isLeftMovement() || this.isRightMovement()) return;
+    if (this.world.keyboard.E) {
+      this.executeFinalSlap();
+    } else if (this.world.keyboard.SPACE && this.isBubbleShoot) {
+      this.executeBubbleAttack();
     }
   }
 
@@ -279,21 +318,6 @@ class Sharkie extends MoveableObjects {
     this.levelBoundary.bottom = 290;
   }
 
-  /** loads every animation frame set sharkie can use. */
-  preloadImages() {
-    this.loadImages(this.IDLE.IDLE);
-    this.loadImages(this.IDLE.LONG_IDLE_INTRO);
-    this.loadImages(this.IDLE.LONG_IDLE_SLEEP);
-    this.loadImages(this.DEAD.ELECTRO);
-    this.loadImages(this.DEAD.POISON);
-    this.loadImages(this.HURT.ELECTRO);
-    this.loadImages(this.HURT.POISON);
-    this.loadImages(this.SWIM.SWIM_1);
-    this.loadImages(this.SWIM.SWIM_3);
-    this.loadImages(this.ATTACK.FIN_SLAP);
-    this.loadImages(this.ATTACK.BUBBLE);
-  }
-
   /**
    * plays the dead animation exactly once and freezes on the last frame.
    * the animation type (POISON / ELECTRO) is chosen via lastHitType.
@@ -336,21 +360,25 @@ class Sharkie extends MoveableObjects {
    */
   playFinSlapAttack() {
     if (this.attackFrame === this.ATTACK.FIN_SLAP.length - 2) {
-      playSound("FIN_HIT");
+      playSound("FIN_HIT"); 
     }
     this.playAttack(this.ATTACK.FIN_SLAP, () => this.finishFinSlap());
   }
 
   /**
-   * ends the fin slap attack and kills every enemy that was marked as a
-   * pending slap kill, so their death animation only plays once the slap
-   * has fully played through.
+   * ends the fin slap attack: turns sharkie to face the other way (matching
+   * the spin in the slap sprite), clears the attacking flag and kills every
+   * enemy marked as a pending slap kill. handleMovementAnimation() refreshes
+   * the idle/swim image in the same tick as the turn, so the last attack frame
+   * isn't left drawn mirrored for a few frames (flashing the wrong facing).
    */
   finishFinSlap() {
+    this.otherDirection = !this.otherDirection;
     this.isAttacking = false;
     this.world.level.enemies.forEach((enemy) => {
       if (enemy.pendingDeath) enemy.defeat();
     });
+    this.handleMovementAnimation();
   }
 
   /**

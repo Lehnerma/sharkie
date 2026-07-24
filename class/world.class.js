@@ -150,7 +150,7 @@ class World {
       this.flipImage(mo);
     }
     mo.drawObject(this.ctx);
-    mo.drawBorderCollision(this.ctx);
+    // mo.drawBorderCollision(this.ctx);
     if (mo.otherDirection) {
       this.flipImageBack(mo);
     }
