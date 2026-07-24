@@ -14,7 +14,7 @@ class Enemies extends MoveableObjects {
   /** spawns the enemy at a random position and sets its base speed and health. */
   constructor() {
     super();
-    this.x = this.getRandomX(720, 4000);
+    this.x = this.getRandomX(800, 4000);
     this.y = this.getRandomY();
     this.speedX = Math.random() * 2;
     this.health = 15;
