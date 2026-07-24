@@ -59,8 +59,8 @@ class Endboss extends MoveableObjects {
     this.attackRange = 180;
     this.attackCooldown = 1500;
     this.lastAttack = 0;
-    this.attackLunge = 50;
-    this.lungeApplied = 0;
+    this.attackLunge = 90;
+    this.lungeApplied = 10;
     this.minX = 0;
     this.yOffset = -100;
     this.minY = -100;
